@@ -1,0 +1,258 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% block 'style' %}
+<link href="{% static 'admin_site/vendor/jquery-smartwizard/dist/css/smart_wizard.min.css' %}" rel="stylesheet">
+{% endblock %}
+{% block 'main' %}
+<form action="" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+<div class="row">
+	<div class="col-xl-12 col-xxl-12">
+		<div class="card">
+			<div class="card-header">
+				<h1 class="card-title">Staff Registration</h1>
+			</div>
+			<div class="card-body">
+				<div id="smartwizard" class="form-wizard order-create">
+					<ul class="nav nav-wizard">
+						<li><a class="nav-link" href="#Main_Detail">
+							<span>1</span>
+						</a></li>
+						<li><a class="nav-link" href="#Other_Detail">
+							<span>2</span>
+						</a></li>
+						<li><a class="nav-link" href="#Work_Detail">
+							<span>3</span>
+						</a></li>
+
+					</ul>
+					<div class="tab-content">
+						<div id="Main_Detail" class="tab-pane" role="tabpanel">
+							<div class="">
+								<h2 class="" style="text-align:center">Main Details</h2>
+							</div>
+							<div class="row">
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">First Name <b style="color:red">*</b></label>
+									{{ form.first_name }}
+								</div>
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Middle Name</label>
+									{{ form.middle_name }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Last Name <b style="color:red">*</b></label>
+									{{ form.last_name }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Gender <b style="color:red">*</b></label>
+									{{ form.gender }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Phone Number</label>
+									{{ form.mobile }}
+								</div>
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Email</label>
+									{{ form.email }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Date of Birth</label>
+									{{ form.date_of_birth }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Photo</label>
+									{{ form.image }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Address</label>
+									{{ form.address }}
+								</div>
+							</div>
+						</div>
+						<div id="Other_Detail" class="tab-pane" role="tabpanel">
+							<div class="">
+								<h2 class="" style="text-align:center">Other Details</h2>
+							</div>
+							<div class="row">
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Marital Status</label>
+									{{ form.marital_status }}
+								</div>
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">State</label>
+									<select class="form-control" id="state" name="state">
+                                      <option value="">-----------------</option>
+                                      {% for state, lga_list in state_list.items %}
+                                      <option value="{{state|lower}}"  lga="<option value=''>----------</option>
+                                      {% for lga in lga_list %}
+                                      <option value='{{lga|lower}}'>{{lga|upper}}</option>
+                                      {% endfor %}
+                                      ">
+
+                                      {{state|upper}}</option>
+                                      {% endfor %}
+                                    </select>
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">LGA</label>
+									<select name="lga" class="form-control" id="lga">
+                                    <option value="">----------</option>
+                                    </select>
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Religion</label>
+									{{ form.religion }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Genotype</label>
+									{{ form.genotype }}
+								</div>
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Blood Group</label>
+									{{ form.blood_group }}
+								</div>
+
+								<div class="col-sm-8 m-b30">
+									<label class="form-label">Medical Note</label>
+									{{ form.medical_conditions }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Salary</label>
+									{{ form.salary }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Bank</label>
+									{{ form.bank_name }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Account Name</label>
+									{{ form.account_name }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Account Number</label>
+									{{ form.account_number }}
+								</div>
+
+							</div>
+						</div>
+						<div id="Work_Detail" class="tab-pane" role="tabpanel">
+							<div class="">
+								<h2 class="" style="text-align:center">Work Details</h2>
+							</div>
+							<div class="row">
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Department</label>
+									<select name="department" class="form-control" id="id_department" required>
+										<option value="" position="<option value=''>----------</option>">----------</option>
+										{% for department in department_list %}
+										<option value="{{department.id}}" position="<option value=''>----------</option>
+										{% for position in department.positions.all %}
+										<option value='{{position.id}}'>{{position.name|upper}}</option>
+										{% endfor %}
+										">
+
+										  {{department.name|upper}}</option>
+										{% endfor %}
+									</select>
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Position</label>
+									<select name="position" class="form-control" id="id_position" required>
+										<option value="">----------</option>
+									</select>
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">User Group</label>
+									{{ form.group }}
+								</div>
+								{% if not staff_setting.auto_generate_staff_id %}
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Staff ID</label>
+									{{ form.staff_id }}
+								</div>
+								{% endif %}
+
+								<div class="col-sm-4 m-b30">
+									<br />
+									<label class="form-label">Employment Date</label>
+									{{ form.employment_date }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<br />
+									<label class="form-label">CV</label>
+									{{ form.cv }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<br /><br /><br />
+									<label class="form-label"><b>Staff is Doctor</b></label>
+									{{ form.is_doctor }}
+								</div>
+
+							</div>
+							<div>
+								<br />
+								<button class="btn btn-primary">Register Staff</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</form>
+{% endblock %}
+
+{% block 'script' %}
+<!-- Form Steps -->
+	<script src="{% static 'admin_site/vendor/jquery-smartwizard/dist/js/jquery.smartWizard.js' %}"></script>
+	<script>
+		$(document).ready(function(){
+			// SmartWizard initialize
+			$('#smartwizard').smartWizard();
+		});
+	</script>
+
+<script>
+$(document).ready(function(){
+
+  $('#state').change(function(){
+    lga = $('option:selected', this).attr('lga')
+    $('#lga').html(lga)
+  })
+
+  $('#id_department').change(function(){
+    position = $('option:selected', this).attr('position')
+    $('#id_position').html(position)
+  })
+
+  $('form').submit(function(){
+  	$(this).submit(function(){
+		return false
+	})
+	return true
+ })
+})
+
+</script>
+
+{% endblock %}

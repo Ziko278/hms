@@ -1,0 +1,211 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% block 'main' %}
+<div class="card">
+    <div class="card-body ">
+        <h5 class="card-title">Actions</h5>
+        <button type="button" title="Edit Supplier" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#edit{{ forloop.counter }}"><i class="bi bi-pencil-square"></i></button>
+        <a type="button" title="Delete Supplier" href="{% url 'inventory_supplier_delete' inventory_supplier.id %}" class="btn btn-outline-danger"><i class="bi bi-trash"></i></a>
+        <a type="button" title="Go Back" class="btn btn-outline-danger" onclick="window.history.back()"><i class="bi bi-arrow-left"></i></a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body pt-3">
+                <ul class="nav nav-tabs nav-tabs-bordered">
+                    <li class="nav-item">
+                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Supplier Detail</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Inventory Brought</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content pt-2">
+                    <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                        <h5 class="card-title">Supplier Details</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card info-card sales-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title"></h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="ri-contacts-book-2-fill"></i>
+                                            </div>
+                                            <div class="ps-3">
+                                                <h6>{{ inventory_supplier.name|title }}</h6>
+                                                <span class="text-muted small pt-2 ps-1">Supplier</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card info-card sales-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title"></h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="ri-contacts-book-2-fill"></i>
+                                            </div>
+                                            <div class="ps-3">
+                                                <p>{{ inventory_supplier.phone_number|upper }}</p>
+                                                <p>{{ inventory_supplier.email|lower }}</p>
+                                                <p>{{ inventory_supplier.address }}</p>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card info-card sales-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Contact Person Detail</h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-person"></i>
+                                            </div>
+                                            <div class="ps-3">
+                                                <p>{{ inventory_supplier.contact_name|title }}</p>
+                                                <p>{{ inventory_supplier.contact_phone_number }}</p>
+                                                <p>{{ inventory_supplier.contact_email|lower }}</p>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+                        <div class="row">
+                            <div class="card-body">
+                                <h5 class="card-title">Items Supplied by {{ inventory_supplier.name|upper }}</h5>
+                                <table class="table table-borderless datatable" style="font-size:15px">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col" style="min-width:150px">Item</th>
+                                            <th scope="col">Qty</th>
+                                            <th scope="col" style="min-width:100px">Qty Left</th>
+                                            <th scope="col" style="min-width:120px">Date</th>
+                                            <th scope="col" style="min-width:100px">Unit Cost</th>
+                                            <th scope="col" style="min-width:100px">Sold At</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if stock_list %}
+                                        {% for stock in stock_list %}
+                                            <tr>
+                                                <th scope="col">{{forloop.counter}}</th>
+                                                <td><a style="color:black" href="{% url 'inventory_item_detail' stock.item.id %}">{{stock.item|title}}</a></td>
+                                                <td>{{stock.quantity}}</td>
+                                                <td>{{stock.quantity_left}}</td>
+                                                <td>{{stock.date|date}}</td>
+                                                <td>{{stock.unit_cost}}</td>
+                                                <td>{{stock.unit_selling}}</td>
+
+
+                                            </tr>
+                                        {% endfor %}
+                                        {% else %}
+                                            <tr><td colspan="9"><h3 class="text-center">No Stock Yet</h3></td></tr>
+                                        {% endif %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form action="{% url 'inventory_supplier_edit' inventory_supplier.id %}" method="post">
+	{% csrf_token %}
+	<div class="modal fade" id="edit">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+                    <h5 class="modal-title"><b>Edit Supplier Detail</b></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+
+                        <div class="col-sm-6 m-b30">
+							<label class="form-label">Supplier <b style="color:red">*</b></label>
+                            <input type="text" autocomplete="off" class="form-control" name="name" value="{{ inventory_supplier.name }}" required="required">
+
+						</div>
+
+                        <div class="col-sm-6 m-b30">
+							<label class="form-label">Phone Number <b style="color:red">*</b></label>
+                            <input type="text" autocomplete="off" class="form-control" name="phone_number" value="{{ inventory_supplier.phone_number }}" required="required">
+						</div>
+
+                        <div class="col-sm-6 m-b30">
+                            <br>
+							<label class="form-label">Email</label>
+                            <input type="email" autocomplete="off" class="form-control" name="email" value="{% if inventory_supplier.email %} {{ inventory_supplier.email|lower }} {% endif %}">
+						</div>
+
+                        <div class="col-sm-6 m-b30">
+                            <br>
+							<label class="form-label">Address <b style="color:red">*</b></label>
+                            <textarea class="form-control" name="address" style="height:50px" required>{{ inventory_supplier.address }}</textarea>
+						</div>
+
+                        <div class="col-sm-6 m-b30">
+                            <br>
+							<label class="form-label">Contact Person Name</label>
+                            <input type="text" autocomplete="off" class="form-control" name="contact_name" value="{% if inventory_supplier.contact_name %}{{ inventory_supplier.contact_name }}{% endif %}">
+						</div>
+
+                        <div class="col-sm-6 m-b30">
+                            <br>
+							<label class="form-label">Contact Person Mobile</label>
+                            <input type="text" autocomplete="off" class="form-control" name="contact_phone_number" value="{% if inventory_supplier.contact_phone_number %}{{ inventory_supplier.contact_phone_number }}{% endif %}">
+						</div>
+
+                        <div class="col-sm-6 m-b30">
+                            <br>
+							<label class="form-label">Contact Person Email</label>
+                            <input type="email" autocomplete="off" class="form-control" name="contact_email" value="{% if inventory_supplier.contact_email %}{{ inventory_supplier.contact_email }}{% endif %}">
+
+						</div>
+
+						<div class="col-sm-6 m-b30">
+                            <br>
+							<label class="form-label">Status</label>
+							<select class="form-control" name="status" required>
+                                <option {% if inventory_supplier.status|lower == 'active' %} selected {% endif %} value="active">ACTIVE</option>
+                                <option {% if inventory_supplier.status|lower == 'inactive' %} selected {% endif %} value="inactive">INACTIVE</option>
+                            </select>
+						</div>
+
+
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+					<input type="submit" class="btn btn-primary" value="Save" />
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+{%endblock %}

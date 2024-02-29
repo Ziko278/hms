@@ -1,0 +1,423 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<!-- row -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card card-profile">
+            <div class="admin-user">
+                <div class="img-wrraper">
+                    <div class="">
+                        <img {% if staff.image %} src="{{ staff.image.url }}" {% else %} src="{% static 'admin_site/images/user1.jpg' %}" {% endif %} class="rounded-circle"></div>
+                    <a class="icon-wrapper" href="{% url 'staff_edit' staff.id %}"><i class="fa-solid fa-pencil"></i></a>
+                </div>
+                <div class="user-details">
+                    <div class="title">
+                        <h4>{{ staff|title }}</h4>
+                        <h6><b>{{ staff.staff_id|upper }}</b></h6>
+                        <h6 style="margin-top:-20px" class="{% if staff.status|lower == 'active' %} text-success {% else %} text-danger {% endif %}">{{ staff.status|upper }}</h6>
+                    </div>
+
+                    <ul class="follow-list" style="margin-top:-30px">
+                        <li>
+                          <div class="follow-num ">{{ staff.department }}</div><span>Department</span>
+                        </li>
+
+                        <li>
+                          <div class="follow-num ">{{ staff.position }}</div><span>Position</span>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body profile-accordion pb-0">
+                        <div class="accordion" id="accordionExample1">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne1">
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne1" aria-expanded="true" aria-controls="collapseOne1">
+                                      <b>About Staff</b>
+                                  </button>
+                                </h2>
+                                <div id="collapseOne1" class="accordion-collapse collapse" aria-labelledby="headingOne1" data-bs-parent="#accordionExample1">
+                                  <div class="accordion-body">
+                                    <div class="about-me">
+                                        <ul>
+                                            <li>
+                                                <i class="fa-solid fa-location-dot"></i>
+                                                <div>
+                                                    <h6>{% if staff.mobile %} {{ staff.mobile }} {% else %} No Phone Number {% endif %}</h6>
+                                                    <h6>{% if staff.email %} {{ staff.email|lower }} {% else %} No Email {% endif %}</h6>
+                                                    <span>{% if staff.address %} {{ staff.address }} {% else %} No Address {% endif %}</span>
+                                                </div>
+                                            </li>
+
+                                            <li>
+                                                <i class="fa-solid fa-book"></i>
+                                                <div>
+                                                    <h6>Gender: {{ staff.gender|title }}</h6>
+                                                    <h6>DOB: {{ staff.date_of_birth|date }}</h6>
+                                                    <h6>Religion: {{ staff.religion|title }}</h6>
+                                                    <h6>State: {{ staff.state|title }} ({{staff.lga|title}})</h6>
+                                                    <h6>Marital Status: {{ staff.marital_status|title }}</h6>
+                                                </div>
+                                            </li>
+
+                                            <li>
+                                                <i class="fa-solid fa-stethoscope"></i>
+                                                <div>
+                                                    <h6>Blood Group: {% if staff.blood_group %} {{ staff.blood_group|upper }} {% endif %}</h6>
+                                                    <h6>Genotype: {% if staff.genotype %} {{ staff.genotype|upper }} {% endif %}</h6>
+                                                    <h6>Health Note: {% if staff.medical_conditions %} {{ staff.medical_conditions }} {% endif %}</h6>
+                                                </div>
+                                            </li>
+
+                                            <li>
+                                                <i class="fa-solid fa-money-bill"></i>
+                                                <div>
+                                                    <h6><del style="text-decoration-style:double">N</del>{{ staff.salary|intcomma }}</h6>
+                                                    <h6>Bank: {% if staff.bank_name %} {{ staff.bank_name|title }} {% endif %}</h6>
+                                                    <h6>Acc No: {% if staff.account_number %} {{ staff.account_number }} {% endif %}</h6>
+                                                    <h6>Acc Name: {% if staff.account_name %} {{ staff.account_name|title }} {% endif %}</h6>
+                                                </div>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body profile-accordion pb-0">
+                        <div class="accordion" id="accordionHealth">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingHealth">
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHealth" aria-expanded="true" aria-controls="collapseHealth">
+                                      <b>Professional Info</b>
+                                  </button>
+                                </h2>
+                                <div id="collapseHealth" class="accordion-collapse collapse" aria-labelledby="headingHealth" data-bs-parent="#accordionHealth">
+                                  <div class="accordion-body">
+                                    <div class="about-me">
+                                        <ul>
+                                            <li>
+                                                <i class="fa-solid fa-briefcase"></i>
+                                                <div>
+                                                    <h6><b>Department:</b> {{ staff.department }}</h6>
+                                                    <h6><b>Position:</b> {{ staff.position }}</h6>
+                                                    <h6><b>Staff ID:</b> {{ staff.staff_id|upper }}</h6>
+                                                    <h6><b>Is Staff Doctor?:</b> {% if staff.is_doctor %} YES {% else %} NO {% endif %}</h6>
+                                                    <h6><b>Employment Date:</b> {{ staff.employment_date|date }}</h6>
+                                                    <h6><b>CV:</b> {% if staff.cv %} <a href="{{ staff.cv.url }}" target="_blank"><b>Click To Download</b></a> {% endif %}</h6>
+                                                </div>
+                                            </li>
+
+                                            <li>
+                                                <i class="fa-solid fa-user"></i>
+                                                <div>
+                                                    <h6><b>Username:</b> {{ staff.staff_id }}</h6>
+                                                    <h6><b>Default Password:</b> {{ staff.staff_profile.default_password }}</h6>
+                                                </div>
+                                            </li>
+
+                                            <li class="second-head"><b>Professional Certificates</b> <span style="margin-left:50px"><a href="#" title="Add Certificate" data-bs-toggle="modal" data-bs-target="#exampleModalCenter"><i style="font-size:30px" class="bi bi-plus"></i></a> </span></li>
+                                            <div>
+                                                {% for certificate_data in staff.certificates.all %}
+                                                <h6><b>{{certificate_data.name}}</b> <a style="float:right;font-size:25px;" target="_blank" href="{{ certificate_data.certificate.url}}" title="Download Certificate"><b><i class="bi bi-download"></i></b></a></h6>
+                                                <span>{{ certificate_data.certificate_type|title }}</span>
+                                                {% if certificate_data.date_obtained %}
+                                                - <span>{{ certificate_data.date_obtained|date }}</span>
+                                                {% endif %}
+                                                <h4>
+
+                                                    <a style="margin-left:20px" title="Delete Certificate" href="{% url 'staff_certificate_delete' certificate_data.id %}" class="text-danger"><i class="bi bi-trash"></i> </a>
+                                                </h4>
+                                                <br><br>
+                                                {% endfor %}
+                                            </div>
+                                        </ul>
+                                    </div>
+
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body profile-accordion pb-0">
+                        <div class="accordion" id="accordionExample4">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne4">
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne4" aria-expanded="true" aria-controls="collapseOne4">
+                                    <b>Actions</b>
+                                  </button>
+                                </h2>
+                                <div id="collapseOne4" class="accordion-collapse collapse" aria-labelledby="headingOne4" data-bs-parent="#accordionExample4">
+                                    <div class="accordion-body">
+                                        <div class="profile-interest">
+                                            <div class="row mt-4 sp4" id="lightgallery">
+                                                <a href="{% url 'staff_edit' staff.id %}" style="width:50px;margin:15px" class="btn btn-warning" title="Edit Staff"><i class="bi bi-pencil"></i></a>
+                                                <a href="{% url 'staff_delete' staff.id %}" style="width:50px;margin:15px" class="btn btn-danger" title="Delete Staff"><i class="bi bi-trash"></i></a>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="row">
+<!--            <div class="col-md-12">-->
+<!--                <div class="card" style="overflow:auto">-->
+<!--                    <div class="card-body" style="overflow:auto">-->
+<!--                        <div id="calendar" class="app-fullcalendar"></div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <div class="products">
+                            <img src="images/user1.jpg" class="avatar avatar-md rounded-circle" alt="">
+                            <div>
+                                <h5 class="mb-0"><a href="javascript:void(0)" class="text-black">Thomas Fleming</a></h5>
+                                <span>8 Hours ago</span>
+                            </div>
+                        </div>
+                        <div class="dropdown custom-dropdown ">
+                            <div class="btn sharp btn-primary tp-btn  ms-3" data-bs-toggle="dropdown">
+                                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M13.5202 17.4167C13.5202 18.81 12.3927 19.9375 10.9994 19.9375C9.60601 19.9375 8.47852 18.81 8.47852 17.4167C8.47852 16.0233 9.60601 14.8958 10.9994 14.8958C12.3927 14.8958 13.5202 16.0233 13.5202 17.4167ZM9.85352 17.4167C9.85352 18.0492 10.3669 18.5625 10.9994 18.5625C11.6319 18.5625 12.1452 18.0492 12.1452 17.4167C12.1452 16.7842 11.6319 16.2708 10.9994 16.2708C10.3669 16.2708 9.85352 16.7842 9.85352 17.4167Z" fill="#2696FD"/>
+                                <path d="M13.5202 4.58369C13.5202 5.97699 12.3927 7.10449 10.9994 7.10449C9.60601 7.10449 8.47852 5.97699 8.47852 4.58369C8.47852 3.19029 9.60601 2.06279 10.9994 2.06279C12.3927 2.06279 13.5202 3.19029 13.5202 4.58369ZM9.85352 4.58369C9.85352 5.21619 10.3669 5.72949 10.9994 5.72949C11.6319 5.72949 12.1452 5.21619 12.1452 4.58369C12.1452 3.95119 11.6319 3.43779 10.9994 3.43779C10.3669 3.43779 9.85352 3.95119 9.85352 4.58369Z" fill="#2696FD"/>
+                                <path d="M13.5202 10.9997C13.5202 12.393 12.3927 13.5205 10.9994 13.5205C9.60601 13.5205 8.47852 12.393 8.47852 10.9997C8.47852 9.6063 9.60601 8.4788 10.9994 8.4788C12.3927 8.4788 13.5202 9.6063 13.5202 10.9997ZM9.85352 10.9997C9.85352 11.6322 10.3669 12.1455 10.9994 12.1455C11.6319 12.1455 12.1452 11.6322 12.1452 10.9997C12.1452 10.3672 11.6319 9.8538 10.9994 9.8538C10.3669 9.8538 9.85352 10.3672 9.85352 10.9997Z" fill="#2696FD"/>
+                                </svg>
+
+                            </div>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item"  href="javascript:void(0);">Option 1</a>
+                                <a class="dropdown-item"  href="javascript:void(0);">Option 2</a>
+                                <a class="dropdown-item"  href="javascript:void(0);">Option 3</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body pt-0">
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <div class="post-img">
+                                    <img src="images/post/post12.jpg" class="me-3">
+                                </div>
+
+                            </div>
+                            <div class="col-xl-6">
+                                <div class="post-img">
+                                  <img src="images/post/post13.jpg" class="ms-3">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="post-see d-flex align-items-center mt-3">
+                          <ul>
+                            <div class="avatar-list avatar-list-stacked">
+                                <img src="images/contacts/pic1.jpg" class="avatar rounded-circle" alt="">
+                                <img src="images/contacts/pic777.jpg" class="avatar rounded-circle" alt="">
+                                <img src="images/contacts/pic666.jpg" class="avatar rounded-circle" alt="">
+                            </div>
+                          </ul>
+                          <h6 class="mb-0 ms-3">+3 people see this post</h6>
+                        </div>
+                        <div class="mt-3">
+                            <span>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+                            when an unknown printer took a galley of type and scrambled it to make a type specimen book.</span>
+                        </div>
+                        <ul class="post-comment d-flex mt-3">
+                          <li>
+                            <label class="me-3"><a href="javascript:void(0)"><i class="fa-regular fa-heart me-2"></i>Like</a></label>
+                          </li>
+                          <li>
+                            <label class="me-3"><a href="javascript:void(0)"><i class="fa-regular fa-message me-2"></i>Comment</a></label>
+                          </li>
+                          <li>
+                            <label class="me-3"><a href="javascript:void(0)"><i class="fa-solid fa-share me-2"></i>Share</a></label>										  </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<form action="{% url 'staff_certificate_create' %}" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	<div class="modal fade" id="exampleModalCenter">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Add Certificate for {{ staff|title }}</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-12 m-b30">
+                            <input type="hidden" name="staff" value="{{staff.id}}">
+							<label class="form-label">Certificate Title <b style="color:red">*</b></label>
+							{{ certificate_form.name }}
+						</div>
+
+                        <div class="col-sm-12 m-b30">
+							<label class="form-label">Certificate Type</label>
+							{{ certificate_form.certificate_type }}
+						</div>
+
+                        <div class="col-sm-12 m-b30">
+							<label class="form-label">Certificate<b style="color:red">*</b></label>
+							{{ certificate_form.certificate }}
+						</div>
+
+						<div class="col-sm-12 m-b30">
+							<label class="form-label">Date Obtained</label>
+							{{ certificate_form.date_obtained }}
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+					<input type="submit" class="btn btn-primary" value="Save" />
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+
+
+{% block 'style' %}
+<link href="{% static 'admin_site/vendor/fullcalendar/css/main.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block 'script' %}
+<script src="{% static 'admin_site/vendor/fullcalendar/js/main.min.js' %}"></script>
+<script>
+
+"use strict"
+
+function fullCalender(){
+
+	/* initialize the external events
+		-----------------------------------------------------------------*/
+
+		var containerEl = document.getElementById('external-events');
+		if($('#external-events').length > 0){
+			new FullCalendar.Draggable(containerEl, {
+			  itemSelector: '.external-event',
+			  eventData: function(eventEl) {
+				return {
+				  title: eventEl.innerText.trim()
+				}
+			  }
+
+			});
+		}
+		/* initialize the calendar
+		-----------------------------------------------------------------*/
+
+		var calendarEl = document.getElementById('calendar');
+		var calendar = new FullCalendar.Calendar(calendarEl, {
+		  headerToolbar: {
+			left: 'prev,next today',
+			center: 'title',
+			right: 'dayGridMonth,timeGridWeek,timeGridDay'
+		  },
+
+		  selectable: true,
+		  selectMirror: true,
+		  select: function(arg) {
+			var title = prompt('Event Title:');
+			if (title) {
+			  calendar.addEvent({
+				title: title,
+				start: arg.start,
+				end: arg.end,
+				allDay: arg.allDay
+			  })
+			  alert(arg.allDay)
+			}
+			calendar.unselect()
+		  },
+
+		  editable: true,
+		  droppable: true, // this allows things to be dropped onto the calendar
+		  drop: function(arg) {
+			// is the "remove after drop" checkbox checked?
+			if (document.getElementById('drop-remove').checked) {
+			  // if so, remove the element from the "Draggable Events" list
+			  arg.draggedEl.parentNode.removeChild(arg.draggedEl);
+			}
+		  },
+		  initialDate: '2021-02-13',
+			  weekNumbers: true,
+			  navLinks: true, // can click day/week names to navigate views
+			  editable: true,
+			  selectable: true,
+			  nowIndicator: true,
+		   events: [
+
+				{
+				  title: 'Conference',
+				  start: '2021-02-11',
+				  end: '2021-02-13',
+				  className: "bg-success"
+				},
+
+			  ]
+		});
+		calendar.render();
+
+}
+
+
+
+jQuery(window).on('load',function(){
+	setTimeout(function(){
+		fullCalender();
+	}, 1000);
+
+
+});
+
+
+
+
+
+</script>
+{% endblock %}
+
+{% endblock %}

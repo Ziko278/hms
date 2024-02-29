@@ -1,0 +1,68 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<div class="row">
+    <div class="col-12 grid-margin">
+
+        <form method="POST" action="" class="form-sample" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title"> <b>Test Result for {{ lab_test.patient|title }}</b></h4>
+                    <h4 class="card-title"> <b>Test: {{ lab_test|title }}</b></h4>
+                    <div class="row" style="margin-top:20px">
+                        <div class="col-md-4">
+                            <p style="">Test Field</p>
+                        </div>
+
+                        <div class="col-md-4">
+                            <p style="">Normal Range</p>
+                        </div>
+
+                        <div class="col-md-4">
+                            <p style="">Value</p>
+                        </div>
+
+                    </div>
+                    {% for field in lab_test.test.fields.all %}
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p style="border:1px solid grey;padding:5px;border-radius:5px;color:black;font-family:cursive">{{field.name|title }}</p>
+                        </div>
+
+                        <div class="col-md-3">
+                            <p style="border:1px solid grey;padding:5px;border-radius:5px;color:black;font-family:cursive">{{field.range|title }}</p>
+                        </div>
+
+                        <div class="col-md-5">
+                            <input type="text" name="{{field.name|lower }}" class="form-control" placeholder="value for {{field.field_code|upper}}" value="{% for key, value in test_result.test_result.items %}{% if key|lower == field|lower %}{{value.value}}{% endif %}{% endfor %}">
+                        </div>
+
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="row">
+                    <div class="col-md-12" style="padding:30px">
+                        <input type="text" style="" name="lab_attendant_comment" class="form-control" placeholder="Additional Comment" value="{% if test_result.lab_attendant_comment %}{{ test_result.lab_attendant_comment }}{% endif %}">
+                    </div>
+                    <p style="margin-left:20px"><b>Mark Result as Ready</b> <input style="margin-left:20px" type="checkbox" name="result_ready" {% if lab_test.result_ready %} checked {% else %} {% if not test.result_computed %} checked {% endif %} {% endif %}> </p>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <button style="width:150px;margin:10px" class="btn btn-primary btn-rounded">SAVE</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+{% endblock %}

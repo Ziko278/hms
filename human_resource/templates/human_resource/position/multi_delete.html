@@ -1,0 +1,29 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% block 'main' %}
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Delete Positions</h4>
+
+            <p>{{ position_list|length }} position{{ position_list|length|pluralize }} will be permanently Deleted</p>
+            <p>Staff under the positions will also be deleted.</p>
+            <form style="display:inline" method="post">
+                {% csrf_token %}
+                <p>
+                {% for position in position_list %}
+                    {{ position|upper }}{% if position_list|length > forloop.counter %}, {% endif %}
+                    <input type="hidden" name="position" value="{{position.id}}">
+                {% endfor %}
+                </p>
+
+                <input type="hidden" name="action" value="delete">
+                <button class="btn btn-success">Proceed</button>
+            </form>
+            <a class="btn btn-danger" href="{% url 'position_index' %}"> Cancel</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

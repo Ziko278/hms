@@ -1,0 +1,53 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+
+<div class="row">
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<h4 class="heading mb-0"><b>Stocked Out Inventory</b></h4>
+		<div class="d-flex align-items-center"></div>
+	</div>
+	<div class="col-xl-12 active-p">
+		<div class="tab-content" id="pills-tabContent">
+			<div class="tab-pane fade show active" id="pills-colm" role="tabpanel" aria-labelledby="pills-colm-tab">
+				<div class="card">
+					<div class="card-body px-0">
+					  <div class="table-responsive active-projects user-tbl  dt-filter">
+						<table id="user-tbl" class="table shorting">
+							<thead>
+								<tr>
+									<th>S/N</th>
+									<th scope="col" style="min-width:150px">Inventory Item</th>
+                                    <th scope="col">Qty</th>
+                                    <th scope="col">Worth (N)</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Reason</th>
+                                    <th scope="col">Staff</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for stock in inventory_stock_out_list %}
+								<tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><a style="color:black" href="{% url 'inventory_item_detail' stock.item.id %}">{{stock.item|title}}</a></td>
+                                    <td>{{stock.quantity}}</td>
+                                    <td>{{stock.worth|floatformat|intcomma}}</td>
+                                    <td>{{stock.date|date}}</td>
+                                    <td>{{stock.reason}}</td>
+                                    <td>{{stock.user}}</td>
+
+								</tr>
+							{% endfor %}
+							</tbody>
+
+						</table>
+					</div>
+				   </div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+{%endblock %}

@@ -1,0 +1,298 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<div class="card">
+    <div class="card-body ">
+        <h5 class="card-title">Actions</h5>
+        <button type="button" title="Edit Inventory Item" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#edit{{ forloop.counter }}"><i class="bi bi-pencil-square"></i></button>
+        <a type="button" title="Delete Inventory Item" href="{% url 'inventory_item_delete' inventory_item.id %}" class="btn btn-outline-danger"><i class="bi bi-trash"></i></a>
+        <button type="button" title="Stock In Item" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#stock"><i class="bi bi-plus-circle-dotted"></i></button>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body pt-3">
+                <ul class="nav nav-tabs nav-tabs-bordered">
+                    <li class="nav-item">
+                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Inventory Detail</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Stock List</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content pt-2">
+                    <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                        <h5 class="card-title">Inventory Details</h5>
+                        <div class="row">
+                            <div class="col-xxl-4 col-md-8">
+                                <div class="card info-card sales-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title"></h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-bag-plus-fill"></i>
+                                            </div>
+                                            <div class="ps-3">
+                                                <h6 style="font-size:20px">{{ inventory_item.name|title }}</h6>
+                                                <span class="text-muted small pt-2 ps-1">Item Name</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xxl-4 col-md-4">
+                                <div class="card info-card sales-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title"></h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="ri-code-box-line"></i>
+                                            </div>
+                                            <div class="ps-3">
+                                                <h6>{{ inventory_item.category|title }}</h6>
+                                                <span class="text-muted small pt-2 ps-1">Item Category</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-xxl-4 col-md-4">
+                                <div class="card info-card sales-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title"></h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-battery-half"></i>
+                                            </div>
+                                            <div class="ps-3">
+                                                <h6>{{ inventory_item.quantity|intcomma }}</h6>
+                                                <span class="text-muted small pt-2 ps-1">Quantity Available</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xxl-4 col-md-4">
+                                <div class="card info-card sales-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title"></h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-cash"></i>
+                                            </div>
+                                            <div class="ps-3">
+                                                <h6>{{ inventory_item.selling_price|intcomma }}</h6>
+                                                <span class="text-muted small pt-2 ps-1">Selling Price</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+                        <div class="row">
+                            <div class="card-body"  style="overflow-x:auto">
+                                <h5 class="card-title">Stock Record of {{ inventory_item|title }}</h5>
+                                <table class="table table-borderless datatable" style="font-size:15px">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col" style="min-width:150px">Supplier</th>
+                                            <th scope="col">Qty</th>
+                                            <th scope="col" style="min-width:100px">Qty Left</th>
+                                            <th scope="col" style="min-width:120px">Date</th>
+                                            <th scope="col" style="min-width:100px">Unit Cost</th>
+                                            <th scope="col" style="min-width:100px">Sold At</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if inventory_item.stock_list.all %}
+                                        {% for stock in inventory_item.stock_list.all %}
+                                            <tr>
+                                                <th scope="col">{{forloop.counter}}</th>
+                                                <td>{{stock.supplier|title}}</td>
+                                                <td>{{stock.quantity}}</td>
+                                                <td>{{stock.quantity_left}}</td>
+                                                <td>{{stock.date|date}}</td>
+                                                <td>{{stock.unit_cost}}</td>
+                                                <td>{{stock.unit_selling}}</td>
+                                                <td style="min-width:120px;font-size:20px">
+                                                    <a title="Delete Stock" href="{% url 'inventory_stock_delete' stock.id %}" class="btn btn-danger"><i class="bi bi-trash"></i> </a>
+                                                    <button title="Stock Out Damaged Item" type="button" class="btn btn-danger" data-bs-toggle="modal" style="" data-bs-target="#stockout{{forloop.counter}}"><i class="bi bi-arrow-right"></i></button>
+
+                                                </td>
+
+                                            </tr>
+                                        {% endfor %}
+                                        {% else %}
+                                            <tr><td colspan="9"><h3 class="text-center">No Stock Yet</h3></td></tr>
+                                        {% endif %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form action="{% url 'inventory_item_edit' inventory_item.id %}" method="post">
+	{% csrf_token %}
+	<div class="modal fade" id="edit{{ forloop.counter }}">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+                    <h5 class="modal-title"><b>Edit Inventory Detail</b></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+
+                        <div class="col-sm-6 m-b30">
+							<label class="form-label">Inventory Name<b style="color:red">*</b></label>
+                            <input type="text" autocomplete="off" class="form-control" name="name" value="{{ inventory_item.name }}" required="required">
+
+						</div>
+
+                        <div class="col-sm-6 m-b30">
+							<label class="form-label">Category <b style="color:red">*</b></label>
+                            <select name="category" class="form-control" required>
+								{% for category in inventory_category_list %}
+								<option value="{{category.id}}" {% if inventory_item.category == category %} selected {% endif %}>{{ category|upper }}</option>
+								{% endfor %}
+							</select>
+						</div>
+
+                        <div class="col-sm-6 m-b30">
+                            <br>
+							<label class="form-label">Inventory Low Limit <b style="color:red">*</b></label>
+                            <input type="number" autocomplete="off" class="form-control" name="low_limit" value="{{ inventory_item.quantity }}">
+						</div>
+
+						<div class="col-sm-6 m-b30">
+                            <br>
+							<label class="form-label">Selling Price <b style="color:red">*</b></label>
+                            <input type="number" autocomplete="off" class="form-control" name="selling_price" value="{{ inventory_item.selling_price }}">
+						</div>
+
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+					<input type="submit" class="btn btn-primary" value="Save" />
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+
+
+<form method="POST" action="{% url 'inventory_stock_create' %}">
+    {% csrf_token %}
+    <div class="modal fade" id="stock" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><b>Stock in Item - {{ inventory_item.name|upper }}</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-floating col-6">
+                            <input type="hidden" name="user" value="{{ user.id }}" />
+                            <input type="hidden" value="{{inventory_item.id}}" name="item" class="form-control" required />
+                            {{ stock_form.supplier }}
+                            <label for="floatingName">Supplier </label>
+                            <br />
+                        </div>
+
+                        <div class="form-floating col-6">
+                            {{ stock_form.quantity }}
+                            <label for="floatingName">Quantity <span style="color:red"><b>*</b></span></label>
+                            <br />
+                        </div>
+
+                        <div class="form-floating col-6">
+                            {{ stock_form.unit_cost }}
+                            <label for="floatingName">Unit Cost (N) <span style="color:red"><b>*</b></span></label>
+                            <br />
+                        </div>
+
+                        <div class="form-floating col-6">
+                            {{ stock_form.unit_selling }}
+                            <label for="floatingName">Unit Selling Price (N) <span style="color:red"><b>*</b></span></label>
+                            <br />
+                        </div>
+
+                        <div class="form-floating col-6">
+                            {{ stock_form.date }}
+                            <label for="floatingName">Purchase Date <span style="color:red"><b>*</b></span></label>
+                        </div><br />
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Items</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+{% for stock in inventory_item.stock_list.all %}
+<form method="POST" action="{% url 'inventory_stock_out_damage' stock.id %}">
+    {% csrf_token %}
+    <div class="modal fade" id="stockout{{ forloop.counter }}" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Stock Out Damaged Inventory</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-floating col-6">
+                            <input type="number" max="{{ stock.quantity_left }}" name="quantity" class="form-control" autocomplete="off" required /> <br />
+
+                            <label for="floatingName">Quantity <span style="color:red"><b>*</b></span></label>
+                        </div><br />
+
+                        <div class="form-floating col-6">
+                            <textarea class="form-control" name="reason"></textarea>
+                            <label for="floatingName">Description/Reason <span style="color:red"><b>*</b></span></label>
+                        </div><br />
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Proceed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endfor %}
+
+{%endblock %}

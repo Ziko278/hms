@@ -1,0 +1,244 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+
+<div class="row">
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<h4 class="heading mb-0"><b>List of Consultations Patients</b></h4>
+		<b style="float:right">{% now '' %}</b>
+	</div>
+	<div class="col-xl-12 active-p">
+	<div class="tab-content" id="pills-tabContent">
+
+		<div class="tab-pane fade show active" id="pills-colm" role="tabpanel" aria-labelledby="pills-colm-tab">
+			<div class="card">
+				<div class="card-body px-0">
+				  <div class="table-responsive active-projects user-tbl  dt-filter">
+					<table id="user-tbl" class="table shorting">
+						<thead>
+							<tr>
+								<th>Image</th>
+								<th>Patient</th>
+								<th class="text-center">Vitals</th>
+								<th class="text-center">Posting</th>
+								<th class="text-center">Attended</th>
+								<th>Action</th>
+
+							</tr>
+						</thead>
+						<tbody>
+							{% for payment in consultation_payment_list %}
+							<tr>
+								<td>
+									<div class="d-flex align-items-center">
+										<img {% if payment.patient.image %} src="{{ payment.patient.image.url }}" {% else %} src="{% static 'admin_site/images/contacts/pic1.jpg' %}" {% endif %} class="avatar rounded-circle" alt="">
+										<p class="mb-0 ms-2">{{ user.profile }}</p>
+									</div>
+								</td>
+								<td>{{ payment.patient|title }} ({{ payment.patient.card_number|upper }})</td>
+								<td class="text-center">{% if payment.patient.today_vital %} <i class="bi bi-check text-success fs-2"></i> {% else %} <i class="bi bi-x text-danger fs-2"></i> {% endif %}</td>
+								<td class="text-center">{% if payment.is_posted %} <i class="bi bi-check text-success fs-2"></i> {% else %} <i class="bi bi-x text-danger fs-2"></i> {% endif %}</td>
+								<td class="text-center">{% if payment.is_attended %} <i class="bi bi-check text-success fs-2"></i> {% else %} <i class="bi bi-x text-danger fs-2"></i> {% endif %}</td>
+								<td>
+									<div class="dropdown">
+										<div class="btn-link" data-bs-toggle="dropdown" aria-expanded="false">
+											<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+												<path d="M11 12C11 12.5523 11.4477 13 12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12Z" stroke="#737B8B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+												<path d="M18 12C18 12.5523 18.4477 13 19 13C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11C18.4477 11 18 11.4477 18 12Z" stroke="#737B8B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+												<path d="M4 12C4 12.5523 4.44772 13 5 13C5.55228 13 6 12.5523 6 12C6 11.4477 5.55228 11 5 11C4.44772 11 4 11.4477 4 12Z" stroke="#737B8B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+											</svg>
+										</div>
+										<div class="dropdown-menu dropdown-menu-right" style="">
+											<a class="dropdown-item text-primary text-center" href="#" data-bs-toggle="modal" data-bs-target="#editdept{{ forloop.counter }}">Take Vital</a>
+											{% if not payment.is_posted %}<a class="dropdown-item text-primary text-center" href="#" data-bs-toggle="modal" data-bs-target="#post{{ forloop.counter }}">Post</a>{% endif %}
+                                        </div>
+									</div>
+								</td>
+							</tr>
+						{% endfor %}
+						</tbody>
+
+					</table>
+				</div>
+			   </div>
+			</div>
+
+		</div>
+	</div>
+	</div>
+</div>
+
+{% for payment in consultation_payment_list %}
+<form action="{% if not payment.patient.today_vital %} {% url 'patient_vitals_create' %} {% else %} {% url 'patient_vitals_edit' payment.patient.today_vital.id %} {% endif %}" method="post">
+	{% csrf_token %}
+	<div class="modal fade" id="editdept{{ forloop.counter }}">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Take Vital for {{ payment.patient|title }}</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-6 m-b30">
+							<input type="hidden" name="patient" value="{{ payment.patient.id }}" />
+							<label class="form-label">Blood Pressure <b style="color:red">*</b></label>
+							<br />
+							<input type="number" placeholder="diastolic" autocomplete="off" style="display:inline-block;width:100px" class="form-control" name="bp_diastolic" value="{{ payment.patient.today_vital.bp_diastolic }}" required="required">
+							<input type="number" placeholder="systolic" autocomplete="off" style="display:inline-block;width:100px" class="form-control" name="bp_systolic" value="{{ payment.patient.today_vital.bp_systolic }}" required="required">
+
+						</div>
+						<div class="col-sm-6 m-b30">
+							<label class="form-label">Pulse</label>
+							<input type="number" placeholder="pulse (B/min)" autocomplete="off" style="" class="form-control" name="pulse" value="{{ payment.patient.today_vital.pulse }}">
+						</div>
+
+						<div class="col-sm-6 m-b30"><br/>
+							<label class="form-label">Temperature</label>
+							<input type="number" placeholder="temperature (C)" autocomplete="off" style="" class="form-control" name="temperature" value="{{ payment.patient.today_vital.temperature }}">
+						</div>
+
+						<div class="col-sm-6 m-b30"><br/>
+							<label class="form-label">Weight</label>
+							<input type="number" placeholder="weight (Kg)" autocomplete="off" style="" class="form-control" name="weight" value="{{ payment.patient.today_vital.weight }}">
+						</div>
+
+						<div class="col-sm-6 m-b30"><br/>
+							<label class="form-label">Respiratory Rate</label>
+							<input type="number" placeholder="" autocomplete="off" style="" class="form-control" name="respiratory_rate" value="{{ payment.patient.today_vital.respiratory_rate }}">
+						</div>
+
+						<div class="col-sm-6 m-b30"><br/>
+							<label class="form-label">Extra Note</label>
+							<textarea placeholder="" autocomplete="off" style="" class="form-control" name="extra_note">{{ payment.patient.today_vital.extra_note }}</textarea>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+					<input type="submit" class="btn btn-primary" value="Save" />
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+{% endfor %}
+
+{% for payment in consultation_payment_list %}
+
+	<div class="modal fade" id="post{{ forloop.counter }}">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Post {{ payment.patient|title }}</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+				</div>
+				<div class="modal-body">
+					{% if consultation_doctor_list %}
+					<div class="table-responsive">
+						<table class="table table-striped table-responsive-sm">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Doctor</th>
+									<th>Specialization</th>
+									<th>Patient Left</th>
+									<th>Attended</th>
+									<th>Total</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for consultant in consultation_doctor_list %}
+								<tr>
+									<th>{{ forloop.counter }}</th>
+									<td>{{ consultant.doctor|title }}</td>
+									<td></td>
+									<td class="text-center">{{ consultant.patients.all|length }}</td>
+									<td></td>
+									<td></td>
+									<td><a href="{% url 'consultation_queue_add' payment.id consultant.id  %}" class="btn btn-primary" title="Post Patient"><i class="bi bi-arrow-right"></i></a></td>
+
+								</tr>
+								{% endfor %}
+
+							</tbody>
+						</table>
+					</div>
+
+					{% else %}
+					<h1 class="text-center">NO ACTIVE DOCTOR</h1>
+					{% endif %}
+
+					{% if consultation_doctor_list %}
+					<div style="margin-top:50px" class="default-tab">
+						<ul class="nav nav-tabs" role="tablist">
+							{% for consultant in consultation_doctor_list %}
+							<li class="nav-item">
+								<a class="nav-link {% if forloop.counter == 1 %} active {% endif %}" data-bs-toggle="tab" href="#ctab{{forloop.counter}}"><i class="la la-user me-2"></i> {{ consultant.doctor|title }} </a>
+							</li>
+							{% endfor %}
+
+						</ul>
+						<div class="tab-content">
+							{% for consultant_inner in consultation_doctor_list %}
+							<div class="tab-pane fade {% if forloop.counter == 1 %} show active {% endif %}" id="ctab{{forloop.counter}}" role="tabpanel">
+								<div class="pt-4">
+									<div class="table-responsive active-projects user-tbl  dt-filter">
+										<table id="" class="table shorting">
+											<thead>
+												<tr>
+													<th>Image </th>
+													<th>Patient</th>
+													<th>Card Number</th>
+													<th>Action</th>
+
+												</tr>
+											</thead>
+											<tbody>
+												{% for patient in consultant_inner.patients.all %}
+												<tr>
+
+													<td>
+														<div class="d-flex align-items-center">
+															<img {% if patient.image %} src="{{ patient.image.url }}" {% else %} src="{% static 'admin_site/images/contacts/pic1.jpg' %}" {% endif %} class="avatar rounded-circle" alt="">
+															<p class="mb-0 ms-2">{{ user.profile }}</p>
+														</div>
+													</td>
+													<td>{{ patient|title }}</td>
+													<td>{{ patient.card_number }}</td>
+													<td>
+														<div class="dropdown">
+															<div class="dropdown-menu dropdown-menu-right" style="">
+																<a class="dropdown-item" href="{% url 'patient_detail' patient.id %}">Detail</a>
+																<a class="dropdown-item" href="{% url 'patient_edit' patient.id %}">Update</a>
+															</div>
+														</div>
+													</td>
+												</tr>
+											{% endfor %}
+											</tbody>
+
+										</table>
+									</div>
+								</div>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
+					{% endif %}
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+					<input type="submit" class="btn btn-primary" value="Save" />
+				</div>
+			</div>
+		</div>
+	</div>
+{% endfor %}
+
+{% endblock %}

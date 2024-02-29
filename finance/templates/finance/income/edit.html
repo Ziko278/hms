@@ -1,0 +1,75 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% block 'main' %}
+
+<form action="" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	<input type="hidden" name="user" value="{{request.user.id}}">
+	<div class="row">
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h4 class="heading mb-0"><b>Update Income Detail</b></h4>
+
+		</div>
+		<div class="col-xl-12 active-p">
+			<div class="tab-content" id="pills-tabContent">
+				<div class="tab-pane fade show active" id="pills-colm" role="tabpanel" aria-labelledby="pills-colm-tab">
+					<div class="card">
+						<div class="card-body px-0" style="padding:20px">
+							<div class="row" style="margin:20px">
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Expense Category <span class="text-danger"> *</span></label>
+                                    {{ form.category }}
+								</div>
+
+                                <div class="col-sm-4 m-b30">
+									<label class="form-label">Amount <span class="text-danger"> *</span></label>
+                                    {{ form.amount }}
+
+								</div>
+
+                                <div class="col-sm-4 m-b30">
+									<label class="form-label">Date</label>
+                                    {{ form.date }}
+
+								</div>
+
+                                <div class="col-sm-4 m-b30">
+                                    <br />
+									<label class="form-label">Proof of Fund</label>
+                                    {{ form.income_proof }}
+								</div>
+
+                                <div class="col-sm-4 m-b30">
+                                    <br />
+									<label class="form-label">Extra Info</label>
+                                    {{ form.description }}
+								</div>
+
+								<div class="col-sm-8 m-b30" id="reg_button">
+                                    <br /><br />
+									<button class="btn btn-primary" style="margin-top:25px;float:right">Update Expense</button>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+
+<script src="{% static 'admin_site/scripts/jquery.js' %}"></script>
+<script>
+$(document).ready(function(){
+  $('#id_category').change(function(){
+
+    type = $('option:selected', this).attr('type')
+    $('#id_type').html(type)
+  })
+})
+
+</script>
+{% endblock %}

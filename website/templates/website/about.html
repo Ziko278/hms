@@ -1,0 +1,360 @@
+{% extends 'website/layout.html' %}
+{% block 'main' %}
+{% load static %}
+
+<!-- About Start -->
+    <div class="uni-banner-default uni-background-1">
+                    <div class="container">
+                        <!-- Page title -->
+                        <div class="page-title">
+                            <div class="page-title-inner">
+                                <h1>about</h1>
+                            </div>
+                        </div>
+                        <!-- End page title -->
+
+                        <!-- Breadcrumbs -->
+                        <ul class="breadcrumbs">
+                            <li><a href="{% url 'homepage' %}">home</a></li>
+                            <li><a href="">about</a></li>
+                        </ul>
+                        <!-- End breadcrumbs -->
+                    </div>
+                </div>
+
+                <div class="uni-about-body">
+
+                    <!--WHO WE ARE-->
+                    <div class="uni-about-who-are-you">
+                        <div class="container">
+                            <div class="uni-services-title">
+                                <h3>who we are</h3>
+                                <div class="uni-underline"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="uni-about-who-are-you-left">
+                                        <img src="media/{{ about_us.picture }}" alt="" class="img-responsive">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="uni-about-who-are-you-right">
+                                        <p>
+                                            {{ about_us.description }}
+                                        </p>
+                                        <h4>our missions</h4>
+                                        <ul>
+                                            <li>{{ about_us.mission_one }}</li>
+                                            <li>{{ about_us.mission_two }}</li>
+                                            <li>{{ about_us.mission_three }}</li>
+                                            <li>{{ about_us.mission_four }}</li>
+                                            <li>{{ about_us.mission_five }}</li>
+                                            <li>{{ about_us.mission_six }}</li>
+                                            <li>{{ about_us.mission_seven }}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Team 2-->
+                    <div class="uni-our-doctor-body">
+                    <div class="container">
+                        <div class="uni-shortcode-tabs-default">
+                            <div class="uni-shortcode-tab-2">
+                                <div class="tabbable-panel">
+                                    <div class="tabbable-line">
+                                         <div class="uni-services-title">
+                                            <h3 style="text-align: center">Our Team</h3>
+                                            <div class="uni-underline"></div>
+                                         </div>
+                                        <br>
+                                        <div class="tab-content">
+                                            <div class="tab-pane active" id="tab_default_1">
+                                                <div class="row">
+                                                    {% for doctor in doctor_list %}
+                                                    <div class="col-md-3 col-sm-6">
+                                                        <div class="uni-our-doctor-item-default">
+                                                            <div class="item-img">
+                                                                <a href="{% url 'doctors_details' doctor.id %}"><img src="media/{{ doctor.picture }}" alt="" class="img-responsive"></a>
+                                                            </div>
+                                                            <div class="item-caption">
+                                                                <div class="item-caption-head">
+                                                                    <div class="col-md-3 col-sm-3 col-xs-3 uni-clear-padding">
+                                                                        <div class="item-icons">
+                                                                            <img src="" alt="">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-9 uni-clear-padding">
+                                                                        <div class="item-title">
+                                                                            <h4>{{ doctor.name }}</h4>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="item-caption-info">
+                                                                    <table class="table">
+                                                                        <tbody>
+                                                                        <tr>
+                                                                            <td style="text-align: center; color: black;">
+                                                                                {{ doctor.position | upper }}
+                                                                            </td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                        <tfoot>
+                                                                        <tr>
+                                                                            <td colspan="2">
+                                                                                <ul>
+                                                                                    <li>
+                                                                                        <a {% if doctor.facebook_url %} href="{{ doctor.facebook_url }}" {% else %} href="" {% endif %}><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                                                                    </li>
+                                                                                    <li><a {% if doctor.twitter_url %} href="{{ doctor.twitter_url }}" {% else %} href="" {% endif %}><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                                                                                    <li><a {% if doctor.linkedin_url %} href="{{ doctor.linkedin_url }} " {% else %} href="" {% endif %}><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+                                                                                </ul>
+                                                                            </td>
+                                                                        </tr>
+                                                                        </tfoot>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    <!--ICONS BOX 3-->
+                    <div class="uni-shortcode-icons-box-3">
+                        <div class="container">
+                            <div class="row">
+                                {% for item in about %}
+                                <div class="col-md-4">
+                                    <div class="uni-shortcode-icons-box-3-default">
+                                        <div class="item-icons">
+                                            <i class="{{ item.Class }}" aria-hidden="true"></i>
+                                        </div>
+                                        <div class="item-caption">
+                                            <h4>{{ item.name }}</h4>
+                                            <div class="uni-line"></div>
+                                            <p>
+                                                {{ item.description }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--OUR SERVICES 2-->
+                    <div class="uni-our-services-2 uni-background-4" id="my_services">
+                        <div class="container">
+                            <div class="uni-services-title">
+                                <h3>Our services</h3>
+                                <div class="uni-underline"></div>
+                            </div>
+
+                            <div class="uni-our-service-2-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="tab-nav">
+                                            <ul class="nav-pills nav-stacked">
+                                                {% for service in service_list %}
+                                                <li {% if forloop.counter == 1 %} class="active" {% else %} class="" {% endif %}><a href="#tab_{{service.id}}" data-toggle="pill">{{ service.name }}</a></li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="tab-content">
+                                            {% for service in service_list %}
+                                            <div class="tab-pane {% if forloop.counter == 1 %}  active {% endif %}" id="tab_{{ service.id }}">
+                                                <div class="uni-our-service-2-content-default">
+                                                    <div class="row">
+                                                        <div class="col-md-5">
+                                                            <div class="item-img">
+                                                                <img src="media/{{service.picture}}" alt="" class="img-responsive" ">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-7">
+                                                            <div class="item-caption">
+                                                                <div class="item-caption-title">
+
+                                                                    <h3>{{ service.name }}</h3>
+                                                                    <div class="uni-line"></div>
+                                                                </div>
+                                                                <p>{{ service.description }}
+                                                                </p>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--DEPARTMENT, TESTIMONIAL, OPNING HOURES-->
+                    <div class="uni-services-de-test-hours">
+                        <div class="container">
+                            <div class="row">
+                                <!--DEPARTMENTS-->
+                                <div class="col-md-4">
+                                    <div class="uni-services-department">
+                                        <div class="uni-services-title">
+                                            <h3>Departments</h3>
+                                            <div class="uni-line"></div>
+                                        </div>
+                                        <div class="uni-services-department-content">
+                                            <div class="accordion-default">
+                                                <div class="accordion-icons-img">
+                                                    <div class="accordion">
+                                                        {% for department in department_list %}
+                                                        <div class="accordion-item">
+                                                            <div  {% if forloop.counter == 1 %} class="active accordion-toggle"  {% else %} class="accordion-toggle" {% endif %}>
+                                                                <div class="accordion-icosn">
+                                                                    <img src="media/{{ department.picture }}" alt="">
+                                                                </div>
+                                                                <h4>{{ department.name }}</h4>
+                                                            </div>
+                                                            <div class="accordion-content" {% if forloop.counter == 1 %} style="display: block" {% endif %}>
+                                                                <p>
+                                                                    {{ department.description }}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--TESTIMONIALS-->
+                                <div class="col-md-4">
+                                    <div class="uni-services-testimonials">
+                                        <div class="uni-services-title">
+                                            <h3>testimonials</h3>
+                                            <div class="uni-line"></div>
+                                        </div>
+                                        <div class="uni-services-testimonials-content">
+                                            <div class="uni-owl-one-item owl-carousel owl-theme">
+                                                <div class="item">
+                                                    {% for testimonial in testimonial_list %}
+                                                    <div class="uni-shortcode-testimonials-default">
+                                                        <div class="item-info">
+                                                            <div class="row">
+                                                                <div class="col-md-3">
+                                                                    <div class="item-info-img">
+                                                                        <img src="media/{{ testimonial.picture }}" alt="" class="img-responsive">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-9">
+                                                                    <div class="item-info-title">
+                                                                        <h4>{{ testimonial.patient_name }}</h4>
+                                                                        <p class="testimonial_subtitle">{{ testimonial.patient_sickness }}</p>
+                                                                    </div>
+                                                                    <div class="uni-divider"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="item-caption">
+                                                            <p>
+                                                                {{ testimonial.info }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+
+                                                <div class="item">
+                                                    {% for testimonial in partial_testimonial_list %}
+                                                    <div class="uni-shortcode-testimonials-default">
+                                                        <div class="item-info">
+                                                            <div class="row">
+                                                                <div class="col-md-3">
+                                                                    <div class="item-info-img">
+                                                                        <img src="media/{{ testimonial.picture }}" alt="" class="img-responsive">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-9">
+                                                                    <div class="item-info-title">
+                                                                        <h4>{{ testimonial.patient_name }}</h4>
+                                                                        <p class="testimonial_subtitle">{{ testimonial.patient_sickness }}</p>
+                                                                    </div>
+                                                                    <div class="uni-divider"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="item-caption">
+                                                            <p>
+                                                                {{ testimonial.info }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--OPENING HOURS-->
+                                <div class="col-md-4">
+                                    <div class="uni-services-opinging-hours">
+                                        <div class="uni-services-opinging-hours-title">
+                                            <div class="icon">
+                                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                            </div>
+                                            <h4>opening hours</h4>
+                                        </div>
+                                        <div class="uni-services-opinging-hours-content">
+                                            <table class="table">
+                                                <tr>
+                                                    <td>monday</td>
+                                                    <td>8:00 - 17:00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>tuesday</td>
+                                                    <td>8:00 - 17:00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>wednesday</td>
+                                                    <td>8:00 - 17:00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>thursday</td>
+                                                    <td>8:00 - 17:00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>friday</td>
+                                                    <td>8:00 - 17:00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>sunday</td>
+                                                    <td>8:00 - 17:00</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+
+<div class="row">
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<h4 class="heading mb-0"><b>Pending Patient Registration</b></h4>
+	</div>
+	<div class="col-xl-12 active-p">
+		<div class="tab-content" id="pills-tabContent">
+			<div class="tab-pane fade show active" id="pills-colm" role="tabpanel" aria-labelledby="pills-colm-tab">
+				<div class="card">
+					<div class="card-body px-0">
+					  <div class="table-responsive active-projects user-tbl  dt-filter">
+						<table id="user-tbl" class="table shorting">
+							<thead>
+								<tr>
+									<th>Full Name</th>
+									<th>Reference</th>
+									<th>Type</th>
+									<th>Amount</th>
+									<th>Payment Date</th>
+									<th>Action</th>
+
+								</tr>
+							</thead>
+							<tbody>
+								{% for payment in pending_payment_list %}
+								<tr>
+									<td>{{ payment.full_name|title }}</td>
+									<td>{{ payment.transaction_id|upper }}</td>
+									<td>{{ payment.registration_type }}</td>
+									<td>{{ payment.amount|floatformat|intcomma }}</td>
+									<td>{{ payment.created_at }}</td>
+									<td>
+										<a href="{% url 'patient_create' %}?pay_id={{payment.id}}" class="btn btn-primary">Register</a>
+									</td>
+								</tr>
+							{% endfor %}
+							</tbody>
+
+						</table>
+					</div>
+				   </div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,208 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% block 'style' %}
+<link href="{% static 'admin_site/vendor/jquery-smartwizard/dist/css/smart_wizard.min.css' %}" rel="stylesheet">
+{% endblock %}
+{% block 'main' %}
+<form action="" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+<div class="row">
+	<div class="col-xl-12 col-xxl-12">
+		<div class="card">
+			<div class="card-header">
+				<h1 class="card-title"><b>Patient Detail Update: {{ patient|upper }}  </b></h1>
+				<a style="float:right" class="btn btn-primary" href="#" onclick="window.history.back()"><i class="bi bi-arrow-left"></i> Back</a>
+			</div>
+			<div class="card-body">
+				<div id="smartwizard" class="form-wizard order-create">
+					<ul class="nav nav-wizard">
+						<li><a class="nav-link" href="#Main_Detail">
+							<span>1</span>
+						</a></li>
+						<li><a class="nav-link" href="#Other_Detail">
+							<span>2</span>
+						</a></li>
+						<li><a class="nav-link" href="#Health_Detail">
+							<span>3</span>
+						</a></li>
+
+					</ul>
+					<div class="tab-content">
+						<div id="Main_Detail" class="tab-pane" role="tabpanel">
+							<div class="">
+								<h2 class="" style="text-align:center">Main Details</h2>
+							</div>
+							<div class="row">
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">First Name <b style="color:red">*</b></label>
+									{{ form.first_name }}
+								</div>
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Middle Name</label>
+									{{ form.middle_name }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Last Name <b style="color:red">*</b></label>
+									{{ form.last_name }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Gender <b style="color:red">*</b></label>
+									{{ form.gender }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Phone Number</label>
+									{{ form.mobile }}
+								</div>
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Email</label>
+									{{ form.email }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Date of Birth</label>
+									{{ form.date_of_birth }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Photo</label>
+									{{ form.image }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Address</label>
+									{{ form.address }}
+								</div>
+
+								{% if not patient_setting.auto_generate_card_number %}
+								<div class="col-sm-4 m-b30">
+									<br>
+									<label class="form-label">Card Number</label>
+									{{ form.card_number }}
+								</div>
+								{% endif %}
+							</div>
+						</div>
+						<div id="Other_Detail" class="tab-pane" role="tabpanel">
+							<div class="">
+								<h2 class="" style="text-align:center">Other Details</h2>
+							</div>
+							<div class="row">
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Marital Status</label>
+									{{ form.marital_status }}
+								</div>
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">State</label>
+									<select class="form-control" id="state" name="state">
+                                      <option value="">-----------------</option>
+                                      {% for state, lga_list in state_list.items %}
+                                      <option value="{{state|lower}}" {% if state|lower == patient.state|lower %} selected {% endif %}  lga="<option value=''>----------</option>
+                                      {% for lga in lga_list %}
+                                      <option value='{{lga|lower}}'>{{lga|upper}}</option>
+                                      {% endfor %}
+                                      ">
+
+                                      {{state|upper}}</option>
+                                      {% endfor %}
+                                    </select>
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">LGA</label>
+									<select name="lga" class="form-control" id="lga">
+                                    <option value="">----------</option>
+                                        {% for state, lga_list in state_list.items %}
+                                            {% if state|lower == patient.state|lower %}
+                                                {% for lga in lga_list %}
+                                                    <option value='{{lga|lower}}' {% if lga|lower == patient.lga|lower %} selected {% endif %} >{{lga|upper}}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Religion</label>
+									{{ form.religion }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Emergency Contact Name</label>
+									{{ form.emergency_contact_name }}
+								</div>
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Emergency Contact Number</label>
+									{{ form.emergency_contact_number }}
+								</div>
+
+							</div>
+						</div>
+						<div id="Health_Detail" class="tab-pane" role="tabpanel">
+							<div class="">
+								<h2 class="" style="text-align:center">Health Details</h2>
+							</div>
+							<div class="row">
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Blood Group</label>
+									{{ form.blood_group }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Genotype</label>
+									{{ form.genotype }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Insurance Provider</label>
+									{{ form.insurance_provider }}
+								</div>
+
+								<div class="col-sm-4 m-b30">
+									<label class="form-label">Insurance Provider Number</label>
+									{{ form.insurance_provider_number }}
+								</div>
+
+								<div class="col-sm-8 m-b30">
+									<label class="form-label">Medical Note</label>
+									{{ form.medical_conditions }}
+								</div>
+							</div>
+							<div>
+								<br />
+								<button class="btn btn-primary">Update Patient</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</form>
+{% endblock %}
+
+{% block 'script' %}
+<!-- Form Steps -->
+	<script src="{% static 'admin_site/vendor/jquery-smartwizard/dist/js/jquery.smartWizard.js' %}"></script>
+	<script>
+		$(document).ready(function(){
+			// SmartWizard initialize
+			$('#smartwizard').smartWizard();
+		});
+	</script>
+
+<script>
+$(document).ready(function(){
+
+  $('#state').change(function(){
+    lga = $('option:selected', this).attr('lga')
+    $('#lga').html(lga)
+  })
+})
+
+</script>
+{% endblock %}

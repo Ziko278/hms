@@ -1,0 +1,167 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<div class="card">
+    <div class="card-body ">
+        <h5 class="card-title">Actions</h5>
+        <button type="button" title="Edit Asset" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#edit{{ forloop.counter }}"><i class="bi bi-pencil-square"></i></button>
+        <a type="button" title="Delete Asset" href="{% url 'asset_delete' asset.id %}" class="btn btn-outline-danger"><i class="bi bi-trash"></i></a>
+        <a type="button" title="Go Back" onclick="window.history.back()" class="btn btn-outline-danger"><i class="bi bi-arrow-left"></i></a>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body pt-3">
+                <ul class="nav nav-tabs nav-tabs-bordered">
+                    <li class="nav-item">
+                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Asset Detail</button>
+                    </li>
+
+                </ul>
+
+                <div class="tab-content pt-2">
+                    <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                        <h5 class="card-title"> </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card info-card sales-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title"></h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-bag-plus-fill"></i>
+                                            </div>
+                                            <div class="ps-3">
+                                                <h6 style="font-size:20px">{{ asset.name|title }}</h6>
+                                                <span class="text-muted small pt-2 ps-1">Asset Name</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card info-card sales-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title"></h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="ri-code-box-line"></i>
+                                            </div>
+                                            <div class="ps-3">
+                                                <h6>{{ asset.category|title }}</h6>
+                                                <span class="text-muted small pt-2 ps-1">Asset Category</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card info-card sales-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title"></h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-battery-half"></i>
+                                            </div>
+                                            <div class="ps-3">
+                                                <h6>{{ asset.quantity|intcomma }}</h6>
+                                                <span class="text-muted small pt-2 ps-1">Available Unit</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card info-card sales-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title"></h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-cash"></i>
+                                            </div>
+                                            <div class="ps-3">
+                                                <h6>N{{ asset.worth|intcomma }}</h6>
+                                                <span class="text-muted small pt-2 ps-1">Total Worth</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            {% if asset.description %}<p class="card-description"><b>Extra Info: </b>{{ asset.description }} </p>{% endif %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form action="{% url 'asset_edit' asset.id %}" method="post">
+	{% csrf_token %}
+	<div class="modal fade" id="edit">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+                    <h5 class="modal-title"><b>Edit Asset Detail</b></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+
+                        <div class="col-sm-6 m-b30">
+							<label class="form-label">Asset Name<b style="color:red">*</b></label>
+                            <input type="text" autocomplete="off" class="form-control" name="name" value="{{ asset.name }}" required="required">
+
+						</div>
+
+                        <div class="col-sm-6 m-b30">
+							<label class="form-label">Category <b style="color:red">*</b></label>
+                            <select name="category" class="form-control" required>
+								{% for category in asset_category_list %}
+								<option value="{{category.id}}" {% if asset.category == category %} selected {% endif %}>{{ category|upper }}</option>
+								{% endfor %}
+							</select>
+						</div>
+
+                        <div class="col-sm-6 m-b30">
+                            <br>
+							<label class="form-label">Available Quantity <b style="color:red">*</b></label>
+                            <input type="number" autocomplete="off" class="form-control" name="quantity" value="{{ asset.quantity }}">
+						</div>
+
+						<div class="col-sm-6 m-b30">
+                            <br>
+							<label class="form-label">Total Worth <b style="color:red">*</b></label>
+                            <input type="number" autocomplete="off" class="form-control" name="worth" value="{{ asset.worth }}">
+						</div>
+
+                        <div class="col-sm-6 m-b30">
+                            <br>
+							<label class="form-label">Extra Information <b style="color:red">*</b></label>
+                            <textarea class="form-control" name="description" style="height:50px" required>{{ asset.description }}</textarea>
+						</div>
+
+
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+					<input type="submit" class="btn btn-primary" value="Save" />
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+{%endblock %}

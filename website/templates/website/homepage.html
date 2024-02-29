@@ -1,0 +1,268 @@
+{% extends 'website/layout.html' %}
+{% block 'main' %}
+{% load static %}
+
+<!--BANNER-->
+                <div class="uni-banner">
+                    <div class="uni-owl-one-item owl-carousel owl-theme">
+                        {% for slider in slider_list %}
+                        <div class="item">
+                            <div class="uni-banner-img uni-background-5" style="background: url(media/{{slider.picture}}") no-repeat;"></div>\
+                            <div class="content animated" data-animation="flipInX" data-delay="0.9s">
+                                <div class="container">
+                                    <div class="caption">
+                                        <h1>{{ slider.heading }}</h1>
+                                        <p>
+                                            {{ slider.description }}
+                                            <br>
+                                            {% if slider.subtitle_two %} {{ slider.subtitle_two }} {% endif %}
+                                        </p>
+                                        <a href="{% url slider.button_link %}">{{ slider.button_text }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+
+                <!--OPENING HOURS AND BOOK APPOINTMENT-->
+                <div class="uni-home-opening-book">
+                    <div class="container">
+                        <div class="uni-home-opening-book-content">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="uni-services-opinging-hours">
+                                        <div class="uni-services-opinging-hours-title">
+                                            <div class="icon">
+                                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                            </div>
+                                            <h4>opening hours</h4>
+                                        </div>
+                                        <div class="uni-services-opinging-hours-content">
+                                            <table class="table">
+                                                <tr>
+                                                    <td>monday</td>
+                                                    <td>{{ opening_hours.monday }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>tuesday</td>
+                                                    <td>{{ opening_hours.tuesday }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>wednesday</td>
+                                                    <td>{{ opening_hours.wednesday }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>thursday</td>
+                                                    <td>{{ opening_hours.thursday }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>friday</td>
+                                                    <td>{{ opening_hours.friday }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>saturday</td>
+                                                    <td>{{ opening_hours.saturday }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>sunday</td>
+                                                    <td>{{ opening_hours.sunday }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="uni-single-department-appointment-form">
+
+                                        <div class="uni-home-title">
+                                            <h3>Book appointment</h3>
+                                            <div class="uni-underline"></div>
+                                        </div>
+
+                                        <form action="{% url 'homepage' %}" method="post">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="input-group form-group">
+                                                        <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
+                                                        <input type="text" class="form-control" name="name" value="" placeholder="your name">
+                                                    </div>
+                                                    <div class="input-group form-group">
+                                                        <span class="input-group-addon"><i class="fa fa-phone" aria-hidden="true"></i></span>
+                                                        <input type="tel" class="form-control" name="phone_number" value="" placeholder="phone number">
+                                                    </div>
+                                                    <div class="input-group form-group">
+                                                        <span class="input-group-addon"><i class="fa fa-envelope" aria-hidden="true"></i></span>
+                                                        <input type="email" class="form-control" name="email" value="" placeholder="email">
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-md-7">
+                                                    <div class="input-group form-group">
+                                                        <textarea id="message" name="description" class="form-control" placeholder="note"></textarea>
+                                                    </div>
+                                                    <button class="vk-btn vk-btn-send" type="submit">send</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!--OUR SERVICES-->
+                <div class="uni-home-our-services">
+                    <div class="uni-shortcode-icons-box-5">
+                        <div class="container">
+
+                            <div class="uni-home-title">
+                                <h3>Our Services</h3>
+                                <div class="uni-underline"></div>
+                            </div>
+
+                            <div class="row">
+                                {% for service in service_list %}
+                                <div class="col-md-4 col-sm-6">
+                                    <div class="uni-shortcode-icons-box-5-default">
+                                        <div class="item-icons-title">
+                                            <div class="col-md-4 uni-clear-padding">
+                                                <div class="item-icons">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8 uni-clear-padding">
+                                                <div class="item-title">
+                                                    <h4>{{ service.name }}</h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="item-caption">
+                                            <p>
+                                                {{ service.description }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+
+                <!--CUSTOMERS SAY-->
+                <div class="uni-home-customers-says">
+                    <div class="uni-shortcode-testimonials-2 uni-background-3">
+                        <div class="container">
+
+                            <div class="uni-home-title">
+                                <h3>Customers say</h3>
+                                <div class="uni-underline"></div>
+                            </div>
+
+
+                            <div class="uni-owl-two-item owl-carousel owl-theme">
+                                {% for testimonial in testimonial_list %}
+                                <div class="item">
+                                    <div class="uni-shortcode-testimonials-default">
+                                        <div class="item-info">
+                                            <div class="row">
+                                                <div class="col-md-3 col-sm-4">
+                                                    <div class="item-info-img">
+                                                        <img src="media/{{ testimonial.picture }}" alt="" class="img-responsive">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-9 col-sm-8">
+                                                    <div class="item-info-title">
+                                                        <h4>{{ testimonial.patient_name }}</h4>
+                                                        <p class="testimonial_subtitle">{{ testimonial.patient_sickness }}</p>
+                                                    </div>
+                                                    <div class="uni-divider"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="item-caption">
+                                            <p>
+                                                {{ testimonial.info }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!--FAQ'S  and LASTEST POST-->
+                <div class="uni-home-faq-latest-post">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="uni-home-faq">
+                                    <div class="uni-home-title">
+                                        <h3>Faq's</h3>
+                                        <div class="uni-line"></div>
+                                    </div>
+                                    <div class="accordion-default">
+                                        <div class="accordion-min-plus">
+                                            <div class="accordion">
+                                                <div class="accordion-item">
+                                                    {% for faq in faq_list %}
+                                                    <h4 class="accordion-toggle">{{ faq.question }}</h4>
+                                                    <div class="accordion-content">
+                                                        <p>
+                                                            {{ faq.answer }}
+                                                        </p>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="uni-home-latest-post">
+                                    <div class="uni-home-title">
+                                        <h3>latest posts</h3>
+                                        <div class="uni-line"></div>
+                                    </div>
+                                    <div class="uni-home-latest-post-body">
+                                        {% for blog in blog_list %}
+                                        <div class="item">
+                                            <div class="item-img">
+                                                <a href="#"><img src="media/{{ blog.picture }}" alt="" class="img-responsive"></a>
+                                            </div>
+                                            <div class="item-caption">
+                                                <h4><a href="#">{{ blog.title }}</a></h4>
+                                                <span class="time">{{ blog.date }}</span>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+<script src="{% static 'HospitalPage/js/jquery.min.js' %}"></script>
+<script>
+<!--    $(document).ready(function(){-->
+<!--        $('#myinput').change(function(){-->
+<!--            date = $(this).val()-->
+<!--            $('#myinput').attr('value') = date-->
+<!--            myinput = $('#myinput').attr('value')-->
+<!--            me = $('#myinput').text(myinput)-->
+<!--                alert()-->
+<!--        })-->
+<!--    })-->
+</script>
+
+{% endblock %}

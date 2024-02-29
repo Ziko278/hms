@@ -1,0 +1,332 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <div class="products"></div>
+                        <div class="dropdown custom-dropdown ">
+                            <div class="btn sharp btn-primary tp-btn  ms-3" data-bs-toggle="dropdown">
+                                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M13.5202 17.4167C13.5202 18.81 12.3927 19.9375 10.9994 19.9375C9.60601 19.9375 8.47852 18.81 8.47852 17.4167C8.47852 16.0233 9.60601 14.8958 10.9994 14.8958C12.3927 14.8958 13.5202 16.0233 13.5202 17.4167ZM9.85352 17.4167C9.85352 18.0492 10.3669 18.5625 10.9994 18.5625C11.6319 18.5625 12.1452 18.0492 12.1452 17.4167C12.1452 16.7842 11.6319 16.2708 10.9994 16.2708C10.3669 16.2708 9.85352 16.7842 9.85352 17.4167Z" fill="#2696FD"/>
+                                <path d="M13.5202 4.58369C13.5202 5.97699 12.3927 7.10449 10.9994 7.10449C9.60601 7.10449 8.47852 5.97699 8.47852 4.58369C8.47852 3.19029 9.60601 2.06279 10.9994 2.06279C12.3927 2.06279 13.5202 3.19029 13.5202 4.58369ZM9.85352 4.58369C9.85352 5.21619 10.3669 5.72949 10.9994 5.72949C11.6319 5.72949 12.1452 5.21619 12.1452 4.58369C12.1452 3.95119 11.6319 3.43779 10.9994 3.43779C10.3669 3.43779 9.85352 3.95119 9.85352 4.58369Z" fill="#2696FD"/>
+                                <path d="M13.5202 10.9997C13.5202 12.393 12.3927 13.5205 10.9994 13.5205C9.60601 13.5205 8.47852 12.393 8.47852 10.9997C8.47852 9.6063 9.60601 8.4788 10.9994 8.4788C12.3927 8.4788 13.5202 9.6063 13.5202 10.9997ZM9.85352 10.9997C9.85352 11.6322 10.3669 12.1455 10.9994 12.1455C11.6319 12.1455 12.1452 11.6322 12.1452 10.9997C12.1452 10.3672 11.6319 9.8538 10.9994 9.8538C10.3669 9.8538 9.85352 10.3672 9.85352 10.9997Z" fill="#2696FD"/>
+                                </svg>
+
+                            </div>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item"  href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">Add Variant</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body pt-0">
+                        <div class="mt-3">
+                            <h4 class="card-title">Drug: <b>{{ drug|upper }}</b></h4>
+                            <h4 class="card-title">Description: {{ drug.description }}</h4>
+                            <h4 class="card-title">Possible Illness: {% for sickness in drug.sickness.all %} <b>{{ sickness }}{% if forloop.counter < drug.possible_sicknesses.all|length %},{% endif %} </b> {% endfor %}</h4>
+                            <br>
+                            <h3 class="text-center">Variants for {{ drug|title }}</h3>
+                            <div class="table-responsive active-projects user-tbl">
+                                <table id="" class="table shorting">
+                                    <thead>
+                                        <tr>
+                                            <th>Manufacturer </th>
+                                            <th>Strength </th>
+                                            <th>Unit </th>
+                                            <th>Form</th>
+                                            <th class="text-center">Quantity Available</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% if drug.drug_variants.all %}
+                                        {% for variant in drug.drug_variants.all %}
+                                        <tr>
+                                            <td>{% if variant.manufacturer %} {{ variant.manufacturer|title }} {% endif %}</td>
+                                            <td>{% if variant.strength %} {{ variant.strength|title }} {% endif %}</td>
+                                            <td>{% if variant.unit %} {{ variant.unit|title }} {% endif %}</td>
+                                            <td>{% if variant.form %} {{ variant.form|title }} {% endif %}</td>
+                                            <td class="text-center">{{ variant.quantity|floatformat }}</td>
+                                            <td>
+                                                <div class="dropdown">
+                                                    <div class="btn-link" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M11 12C11 12.5523 11.4477 13 12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12Z" stroke="#737B8B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                            <path d="M18 12C18 12.5523 18.4477 13 19 13C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11C18.4477 11 18 11.4477 18 12Z" stroke="#737B8B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                            <path d="M4 12C4 12.5523 4.44772 13 5 13C5.55228 13 6 12.5523 6 12C6 11.4477 5.55228 11 5 11C4.44772 11 4 11.4477 4 12Z" stroke="#737B8B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                        </svg>
+                                                    </div>
+                                                    <div class="dropdown-menu dropdown-menu-right" style="">
+                                                        <a class="dropdown-item text-primary" href="#" data-bs-toggle="modal" data-bs-target="#exampleModalCenter{{forloop.counter}}">Add Price</a>
+                                                        <a class="dropdown-item text-warning" href="#" data-bs-toggle="modal" data-bs-target="#editdept{{ forloop.counter }}">Update</a>
+                                                        <a class="dropdown-item text-danger" href="{% url 'drug_variant_delete' variant.id %}">Delete</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr><td class="text-center" colspan="4">NO VARIANT ADDED YET</td></tr>
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body pt-0">
+                        <div class="mt-3">
+                            <h3 class="text-center">Drug Prices</h3>
+                            <div class="table-responsive active-projects user-tbl">
+                                <table id="" class="table shorting">
+                                    <thead>
+                                        <tr>
+                                            <th>Drug Variant (unit) (form)</th>
+                                            <th>Patient Type</th>
+                                            <th>Amount</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for variant in drug.drug_variants.all %}
+                                        {% for price in variant.variant_prices.all %}
+                                        <tr>
+                                            <td>{{ price.drug_variant|title }}</td>
+                                            <td>{% if price.insurance %} {{ price.insurance|upper }} {% else %} General {% endif %}</td>
+                                            <td>{{ price.amount|floatformat|intcomma}}</td>
+                                            <td>
+                                                <div class="dropdown">
+                                                    <div class="btn-link" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M11 12C11 12.5523 11.4477 13 12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12Z" stroke="#737B8B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                            <path d="M18 12C18 12.5523 18.4477 13 19 13C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11C18.4477 11 18 11.4477 18 12Z" stroke="#737B8B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                            <path d="M4 12C4 12.5523 4.44772 13 5 13C5.55228 13 6 12.5523 6 12C6 11.4477 5.55228 11 5 11C4.44772 11 4 11.4477 4 12Z" stroke="#737B8B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                        </svg>
+                                                    </div>
+                                                    <div class="dropdown-menu dropdown-menu-right" style="">
+                                                        <a class="dropdown-item text-warning" href="#" data-bs-toggle="modal" data-bs-target="#editvp{{ forloop.counter }}">Update</a>
+                                                        <a class="dropdown-item text-danger" href="{% url 'drug_variant_price_delete' price.id %}">Delete</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<form action="{% url 'drug_variant_create' %}" method="post">
+	{% csrf_token %}
+	<div class="modal fade" id="exampleModalCenter">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+                    <h5 class="modal-title"><b>Add Variant for {{ drug|title }} </b></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-12 m-b30">
+							<label class="form-label">Manufacturer </label>
+                            <input type="hidden" name="drug" value="{{drug.id}}" />
+							{{ variant_form.manufacturer }}
+						</div>
+
+                        <div class="col-sm-12 m-b30">
+                            <br />
+							<label class="form-label">Drug Strength </label>
+							{{ variant_form.strength }}
+						</div>
+
+                        <div class="col-sm-12 m-b30">
+                            <br />
+							<label class="form-label">Drug Unit </label>
+							{{ variant_form.unit }}
+						</div>
+
+                        <div class="col-sm-12 m-b30">
+                            <br />
+							<label class="form-label">Drug Form </label>
+							{{ variant_form.form }}
+						</div>
+
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+					<input type="submit" class="btn btn-primary" value="Save" />
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+{% for variant in drug.drug_variants.all %}
+<form action="{% url 'drug_variant_price_create' %}" method="post">
+	{% csrf_token %}
+	<div class="modal fade" id="exampleModalCenter{{forloop.counter}}">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+                    <h5 class="modal-title"><b>Add Price for {{ variant|title }} </b></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-12 m-b30">
+							<label class="form-label">Insurance </label>
+                            <input type="hidden" name="drug_variant" value="{{variant.id}}" />
+							{{ variant_price_form.insurance }}
+						</div>
+
+                        <div class="col-sm-12 m-b30">
+                            <br />
+							<label class="form-label">Amount</label>
+							{{ variant_price_form.amount }}
+						</div>
+
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+					<input type="submit" class="btn btn-primary" value="Save" />
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+{% endfor %}
+
+{% for variant in drug.drug_variants.all  %}
+<form action="{% url 'drug_variant_edit' variant.id %}" method="post">
+	{% csrf_token %}
+	<div class="modal fade" id="editdept{{ forloop.counter }}">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+                    <h5 class="modal-title"><b>Edit Drug Price</b></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-12 m-b30">
+							<label class="form-label">Manufacturer</label>
+                            <input type="hidden" name="drug" value="{{drug.id}}" />
+							<select class="form-control" name="manufacturer">
+                                <option value="">-------------------</option>
+                                {% for manufacturer in manufacturer_list %}
+                                    <option value="{{manufacturer.id}}" {% if manufacturer == variant.manufacturer %} selected {% endif %}> {{ manufacturer|upper }}</option>
+                                {% endfor %}
+                            </select>
+						</div>
+
+                        <div class="col-sm-12 m-b30">
+                            <br />
+							<label class="form-label">Drug Strength</label>
+							<select class="form-control" name="strength">
+                                <option value="">-------------------</option>
+                                {% for strength in strength_list %}
+                                    <option value="{{strength.id}}" {% if strength == variant.strength %} selected {% endif %}> {{ strength|upper }}</option>
+                                {% endfor %}
+                            </select>
+						</div>
+
+                        <div class="col-sm-12 m-b30">
+                            <br />
+							<label class="form-label">Drug Unit</label>
+							<select class="form-control" name="unit">
+                                <option value="">-------------------</option>
+                                {% for unit in unit_list %}
+                                    <option value="{{unit.id}}" {% if unit == variant.unit %} selected {% endif %}> {{ unit|upper }}</option>
+                                {% endfor %}
+                            </select>
+						</div>
+
+                        <div class="col-sm-12 m-b30">
+                            <br />
+							<label class="form-label">Drug Form</label>
+							<select class="form-control" name="form">
+                                <option value="">-------------------</option>
+                                {% for form, value in form_list %}
+                                    <option value="{{form|lower}}" {% if form|lower == variant.form|lower %} selected {% endif %}> {{ form|upper }}</option>
+                                {% endfor %}
+                            </select>
+						</div>
+
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+					<input type="submit" class="btn btn-primary" value="Save" />
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+{% endfor %}
+
+
+{% for variant in drug.drug_variants.all %}
+    {% for price in variant.variant_prices.all %}
+        <form action="{% url 'drug_variant_price_edit' price.id %}" method="post">
+            {% csrf_token %}
+            <div class="modal fade" id="editvp{{forloop.counter}}">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>Edit Price for {{ price.drug_variant|title }} </b></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal">
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-sm-12 m-b30">
+                                    <label class="form-label">Insurance </label>
+                                    <input type="hidden" name="drug_variant" value="{{variant.id}}" />
+                                    <select name="insurance" class="form-control">
+                                        <option value="">---------------</option>
+                                        {% for key, provider in insurance_list %}
+                                        <option value="{{key|lower}}" {% if key|lower == price.insurance|lower %} selected {% endif %}>{{key|upper}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-sm-12 m-b30">
+                                    <br />
+                                    <label class="form-label">Amount</label>
+
+                                    <input type="number" class="form-control" name="amount" value="{{price.amount}}" required>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+                            <input type="submit" class="btn btn-primary" value="Save" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    {% endfor %}
+{% endfor %}
+
+
+{% endblock %}

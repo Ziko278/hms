@@ -1,0 +1,24 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% block 'main' %}
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title"><b>Delete Inventory Supplier</b></h4>
+            <p>Supplier: <i>{{inventory_supplier.name|upper }}</i></p>
+
+            <p>The Supplier will be permanently deleted.</p>
+            <p>Goods supplied by this supplier might be lost</p>
+
+            <form style="display:inline" method="post">
+                {% csrf_token %}
+
+                <button class="btn btn-success">Proceed</button>
+            </form>
+            <a class="btn btn-danger" onclick="window.history.back()"> Cancel</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

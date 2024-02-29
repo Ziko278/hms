@@ -1,0 +1,607 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% block 'style' %}
+<style>
+
+	.customer-list li{
+		width:300px;
+		border:1px solid black;
+		margin:2px;
+		padding:2px;
+		border-radius:5px;
+		color:white;
+		background:grey;
+	}
+
+	.customer-list li:hover{
+		background:black;
+	}
+
+.search-result{
+	position:absolute;z-index:1000;
+	background:white;
+	min-width:200px;
+	padding:10px;
+	border:1px solid black;
+	left:50px;
+	border-radius:10px;
+	display:none;
+}
+.search-result li{
+	width:100%;
+	height:30px;
+	padding-left:10px;
+	border:1px solid grey;
+	margin-bottom:1px;
+}
+.search-result li:hover{
+	background:grey;
+	color:white;
+}
+</style>
+
+{% endblock %}
+
+{% block 'main' %}
+
+<div class="row">
+    <div class="col-xl-3">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body profile-accordion pb-0">
+                        <div class="accordion" id="accordionExample1">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne1">
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne1" aria-expanded="true" aria-controls="collapseOne1">
+                                      <b>About Patient</b>
+                                  </button>
+                                </h2>
+                                <div id="collapseOne1" class="accordion-collapse collapse" aria-labelledby="headingOne1" data-bs-parent="#accordionExample1">
+                                  <div class="accordion-body">
+                                    <div class="about-me">
+                                        <ul>
+                                            <li>
+                                                <i class="fa-solid fa-location-dot"></i>
+                                                <div>
+                                                    <h6>{% if patient.mobile %} {{ patient.mobile }} {% else %} No Phone Number {% endif %}</h6>
+                                                    <h6>{% if patient.email %} {{ patient.email|lower }} {% else %} No Email {% endif %}</h6>
+                                                    <span>{% if patient.address %} {{ patient.address }} {% else %} No Address {% endif %}</span>
+                                                </div>
+                                            </li>
+
+                                            <li>
+                                                <i class="fa-solid fa-book"></i>
+                                                <div>
+                                                    <h6>Gender: {{ patient.gender|title }}</h6>
+                                                    <h6>DOB: {{ patient.date_of_birth|date }}</h6>
+                                                    <h6>Religion: {{ patient.religion|title }}</h6>
+                                                    <h6>State: {% if patient.state %} {{ patient.state|title }} {% endif %} {% if patient.state and patient.lga %} ({{patient.lga|title}}) {% endif %}</h6>
+                                                    <h6>Marital Status: {{ patient.marital_status|title }}</h6>
+                                                </div>
+                                            </li>
+
+                                            <li>
+                                                <i class="fa-solid fa-stethoscope"></i>
+                                                <div>
+                                                    <h6>Blood Group: {% if patient.blood_group %} {{ patient.blood_group|upper }} {% endif %}</h6>
+                                                    <h6>Genotype: {% if patient.genotype %} {{ patient.genotype|upper }} {% endif %}</h6>
+                                                    <h6>Health Note: {% if patient.medical_conditions %} {{ patient.medical_conditions }} {% endif %}</h6>
+                                                </div>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body profile-accordion pb-0">
+                        <div class="accordion" id="accordionHealth">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingHealth">
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHealth" aria-expanded="true" aria-controls="collapseHealth">
+                                      <b>Today's Vitals</b>
+                                  </button>
+                                </h2>
+                                <div id="collapseHealth" class="accordion-collapse collapse" aria-labelledby="headingHealth" data-bs-parent="#accordionHealth">
+                                  <div class="accordion-body">
+                                    <div class="about-me">
+                                        <ul>
+                                            <li>
+                                                <i class="fa-solid fa-stethoscope"></i>
+                                                <div>
+                                                    <h6>BP: {{patient.today_vital.bp_diastolic}}/{{patient.today_vital.bp_systolic}}</h6>
+                                                    <h6>Pulse: {{patient.today_vital.pulse }} B/min</h6>
+                                                    <h6>Temp: {{patient.today_vital.temperature }} C</h6>
+                                                    <h6>Weight: {{patient.today_vital.weight }} Kg</h6>
+                                                    <h6>Respiration: {{patient.today_vital.respiratory_rate }} </h6>
+                                                    <h6>Extra Note: {{patient.today_vital.extra_note }} </h6>
+                                                </div>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-xl-9 col-xxl-9">
+        <div class="card">
+            <div class="card-headr p-2">
+                <h4 class="card-title"><b>Consultation History of {{ patient|title }}</b>
+                    <button title="Add Prescription" data-bs-toggle="modal" data-bs-target=".pres-modal" style="float:right;margin-right:20px" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-prescription" viewBox="0 0 16 16">
+                          <path d="M5.5 6a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 1 0V9h.293l2 2-1.147 1.146a.5.5 0 0 0 .708.708L9 11.707l1.146 1.147a.5.5 0 0 0 .708-.708L9.707 11l1.147-1.146a.5.5 0 0 0-.708-.708L9 10.293 7.695 8.987A1.5 1.5 0 0 0 7.5 6zM6 7h1.5a.5.5 0 0 1 0 1H6z"/>
+                          <path d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v10.5a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 14.5V4a1 1 0 0 1-1-1zm2 3v10.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V4zM3 3h10V1H3z"/>
+                        </svg>
+                    </button>
+
+                    <button title="Add Test" data-bs-toggle="modal" data-bs-target=".drug-modal" style="float:right;margin-right:20px" class="btn btn-primary">
+                        <i class="fa-solid fa-stethoscope"></i>
+                    </button>
+
+                    <button title="Record Consultation" data-bs-toggle="modal" data-bs-target=".consultation-modal" style="float:right;margin-right:20px" class="btn btn-primary">
+                        <i class="fa-solid fa-book"></i>
+                    </button>
+                </h4>
+                {% if history_list %}
+                    <div class="container">
+                        <div class="accordion accordion-rounded-stylish accordion-gradient" id="accordion-twelve">
+                            {% for history in history_list %}
+                            <div class="accordion-item">
+                                <div class="accordion-header collapsed rounded-lg" id="accord-{{ forloop.counter }}" data-bs-toggle="collapse" data-bs-target="#collapse{{forloop.counter}}" aria-controls="collapse{{forloop.counter}}"   aria-expanded="true"  role="button">
+                                    <span class="accordion-header-icon"></span>
+                                <span class="accordion-header-text"><b>
+                                    {% if history.type == 'consultation' %}
+                                        Consultation: {{ history.subject|upper }} - {{ history.created_at }}
+                                    {% elif history.type == 'test' %}
+                                        Lab Test: {{ history.created_at }}
+                                    {% elif history.type == 'test_result' %}
+                                        Test Result For {{ history.test }}
+                                    {% elif history.type == 'prescription' %}
+                                        Drug Prescription: {{ history.created_at }}
+                                    {% endif %}
+                                </b></span>
+                                <span class="accordion-header-indicator"></span>
+                                </div>
+
+                                <div id="collapse{{forloop.counter}}" class="collapse accordion__body" aria-labelledby="accord-{{forloop.counter}}" data-bs-parent="#accordion-twelve">
+                                <div class="accordion-body-text">
+                                    {% if history.type == 'consultation' %}
+                                        <div class="card">
+                                            <div class="card-body pb-0" style="color:black">
+                                                {{ history.detail|safe }}
+                                                <p>Doctor: <b><i>{{ history.doctor|title }}</i></b> <span style="float:right">Date: <b><i>{{ history.created_at|date }}</i></b></span></p>
+                                                <p>Status: {{ history.status|upper }}</p>
+                                                {% if request.user.user_staff_profile.staff == history.doctor %}
+                                                <p>
+                                                    <a class="btn btn-warning" title="Edit Consultation Record" href="{% url 'consultation_edit' history.id %}"><i class="bi bi-pencil"></i> </a>
+                                                    <a class="btn btn-danger" title="Delete Consultation Record" data-bs-toggle="modal" data-bs-target="#consultation-delete"><i class="bi bi-trash"></i> </a>
+                                                </p>
+                                                {% endif %}
+
+                                            </div>
+
+                                        </div>
+
+                                    {% elif history.type == 'test' %}
+                                        <table class="table text-white">
+                                            <thead>
+                                                <tr class="bg-dark">
+                                                    <th>TEST</th>
+                                                    <th>Payment</th>
+                                                    <th>Test Sample</th>
+                                                    <th>Test Result</th>
+                                                    <th class="text-center">Action</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                {% for test in history.tests.all %}
+                                                <tr>
+                                                    <td>{{ test }}</td>
+                                                    <td class="text-center">{% if test.payment_made %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
+                                                    <td class="text-center">{% if test.sample_collected %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
+                                                    <td class="text-center">{% if test.result_ready %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
+                                                    <td class="text-center">
+                                                        {% if not test.payment_made %} <a class="btn btn-danger" title="Remove Test" data-bs-toggle="modal" data-bs-target="#remove-test"><i class="bi bi-trash"></i></a> {% endif %}
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% elif history.type == 'prescription' %}
+                                        <table class="table text-white">
+                                            <thead>
+                                                <tr class="bg-dark">
+                                                    <th>Drug</th>
+                                                    <th>Payment</th>
+                                                    <th>Test Sample</th>
+                                                    <th>Test Result</th>
+                                                    <th class="text-center">Action</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                {% for prescription in history.prescriptions.all %}
+                                                <tr>
+                                                    <td>{{ prescription }}</td>
+                                                    <td class="text-center">{% if test.payment_made %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
+                                                    <td class="text-center">{% if test.payment_made %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
+                                                    <td class="text-center">{% if test.payment_made %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
+                                                    <td class="text-center">
+                                                        <a class="btn btn-primary" title="View Test Result"><i class="bi bi-eye"></i></a>
+                                                        <a class="btn btn-warning" title="Edit Test Result"><i class="bi bi-pencil"></i></a>
+                                                        <a class="btn btn-danger" title="Delete Test Result"><i class="bi bi-trash"></i></a>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% elif history.type == 'test_result' %}
+                                        <p>Date: {{ history.created_at|date}}</p>
+                                        <p>Lab Attendant Comment: {{ history.lab_attendant_comment}}</p>
+                                        <div class="table-responsive">
+                                            <table class="text-white table table-bordered verticle-middle table-responsive-sm">
+                                                <thead>
+                                                    <tr class="bg-dark">
+                                                        <th scope="col">Test Field</th>
+                                                        <th scope="col">Normal Range</th>
+                                                        <th scope="col" class="text-center">Result</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for field, result in history.test_result.items %}
+                                                    <tr {% if result.value >= result.low_limit and result.value <= result.high_limit %} class="bg-success" {% else %} class="bg-warning" {% endif %}>
+                                                        <td>{{ field|title }}</td>
+                                                        <td>{{ result.normal_range }}</td>
+                                                        <td class="text-center">{{ result.value }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                {% else %}
+
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<form action="{% url 'consultation_prescription_create' %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="patient_pk" value="{{patient.id}}">
+    <input type="hidden" name="doctor" value="{{ request.user.user_staff_profile.staff.id }}">
+    <div class="modal fade pres-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Prescription for {{ patient|title }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class='text-center'>Drug</th>
+                                    <th class='text-center'>Strength</th>
+                                    <th class='text-center'>Quantity</th>
+                                    <th class='text-center'>Unit</th>
+                                    <th class='text-center'>Extra Note</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                              <tr class='blank_row'><td></td><td></td><td></td><td></td><td></td></tr>
+                              <tr class='product_row' id='sale_row1' row=1>
+                                  <td><a id='1' class='remove_sale_row' href='#' style='display:inline;color:red;background:white;height:40px;'><i style='font-size:25px' class='fa fa-close'></i></a>
+                                      <input autocomplete=off class="form-control m-bot15 product-name-input" type='text' style='display:inline;width:150px;' id='product-name1' row=1 />
+                                        <input type='hidden' name='drugs' id='product-id1' /><br>
+                                        <ul style='' class='search-result' id='result1'></ul>
+                                  </td>
+
+                                  <td class='text-center'>
+                                      <select id="strength1" class="form-control" style='width:150px;display:none'>
+                                            <option>---- select ----- </option>
+                                            {% for strength in drug_strength_list %}
+                                            <option value="{{ strength.id }}">{{ strength|upper }}</option>
+                                            {% endfor %}
+                                      </select>
+                                  </td>
+
+                                  <td class='text-center'>
+                                        <input id='quantity_input1' step=".01" style='width:100px;' min=0 row='1' type='number' class='one form-control col-lg-6'  name='quantity'>
+                                  </td>
+
+                                  <td class='text-center'>
+                                      <select id="unit1" class="form-control" style="width:150px">
+                                          <option>---- select ----- </option>
+                                        {% for unit in drug_unit_list %}
+                                        <option value="{{ unit.id }}">{{ unit|upper }}</option>
+                                        {% endfor %}
+                                      </select>
+                                  </td>
+
+                                  <td class='text-center'>
+                                      <div class="form-group col-md-4 text-center" style='align:center'>
+                                          <textarea id='note1' style='width:100px;' row='1' class='one form-control col-lg-6'  name='note[]'></textarea>
+                                    </div>
+                                  </td>
+
+                              </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<form action="{% url 'consultation_test_create' %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="patient_pk" value="{{patient.id}}">
+    <input type="hidden" name="doctor" value="{{ request.user.user_staff_profile.staff.id }}">
+
+    <div class="modal fade drug-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><b>Add Test for {{ patient|title }}</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="card-body">
+                            <p><b>No of Test: <span id="test-count">0</span></b></p>
+                            <p><b>Selected Test: <span id="selected_test"></span></b></p>
+                        </div>
+                    </div>
+                   <div class="table-responsive active-projects user-tbl  dt-filter">
+						<table id="user-tbl" class="table shorting" style="min-height:120px">
+							<thead>
+								<tr>
+									<th>
+										<div class="form-check custom-checkbox ms-0">
+										    S/N
+										</div>
+									</th>
+									<th>Test Name</th>
+									<th>Status</th>
+
+								</tr>
+							</thead>
+							<tbody>
+								{% for test in test_list %}
+								<tr>
+									<td>
+										<div class="form-check custom-checkbox">
+											<input type="checkbox" test_name="{{ test|title }}" {% if test.status|lower != 'active' %} disabled {% endif %}" name="tests[]" value="{{test.id}}" class="select-test" id="customCheckBox2">
+											<label class="form-check-label" for="customCheckBox2"></label>
+										</div>
+									</td>
+
+									<td>{{ test|title }}</td>
+									<td>{% if test.status|lower == 'active' %} <i class="bi bi-check text-success fs-2"></i> {% else %} <i class="bi bi-x text-danger fs-2"></i> {% endif %}</td>
+
+								</tr>
+							{% endfor %}
+							</tbody>
+
+						</table>
+					</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary" value="save">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<!--    ---------------------------------------------------------    -->
+<!--                 CONSULTATION MODAL START                        -->
+<!--    ---------------------------------------------------------    -->
+<form action="" method="POST">
+    {% csrf_token %}
+    <div class="modal fade consultation-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Record Consultation for {{ patient|title }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+                        {% csrf_token %}
+                        <input type="hidden" name="patient" value="{{patient.id}}">
+                        <input type="hidden" name="doctor" value="{{ request.user.user_staff_profile.staff.id }}">
+                        <div class="row p-2">
+                            <div class="col-9">
+                                <input type="text" autocomplete="off" name="subject" class="form-control" required placeholder="Consultation Subject">
+                            </div>
+
+                            <div class="col-3">
+                                <select class="form-control" name="status" required>
+                                    <option value="">----- STATUS ----</option>
+                                    <option value="new">NEW CONSULTATION</option>
+                                    <option value="follow up">FOLLOW UP</option>
+                                    <option value="conclusion">CONCLUSION</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="card-body custom-ekeditor">
+                            <textarea id="ckeditor" name="detail"></textarea>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary" value="save">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+{% for history in history_list %}
+      {% if history.type == 'consultation' %}
+        <form action="{% url 'consultation_delete' history.id %}" method="post">
+            {% csrf_token %}
+        <div class="modal fade" id="consultation-delete">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b>Delete Consultation Record</b></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal">
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="card-description" style="font-size:20px">
+                            The consultation record will be permanently deleted
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary">Proceed</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+    {% endif %}
+{% endfor %}
+
+
+{% for history in history_list %}
+      {% if history.type == 'test' %}
+            {% for test in history.tests.all %}
+                <form action="{% url 'consultation_test_remove' history.id test.id %}" method="post">
+                    {% csrf_token %}
+                <div class="modal fade" id="remove-test">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"><b>Remove Test</b></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="card-description" style="font-size:20px">
+                                    {{test|title}} test will be permanently removed
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Cancel</button>
+                                <button class="btn btn-primary">Proceed</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </form>
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+
+{% endblock %}
+{% block 'script' %}
+
+    <script src="{% static 'admin_site/vendor/ckeditor/ckeditor.js' %}"></script>
+
+    <script>
+        $(document).ready(function(){
+            $('.select-test').on('click', function() {
+                var count = 0;
+                selected_test = ''
+
+                $('.select-test').each(function() {
+                  // If checkbox is checked, add its amount to the sum
+                  if ($(this).prop('checked')) {
+                    count += 1;
+                    test_name = $(this).attr('test_name')
+                    selected_test += test_name + ', '
+                  }
+                });
+                $('#test-count').text(count)
+                $('#selected_test').text(selected_test)
+
+            });
+
+            $(document).on('keyup', '.product-name-input', function() {
+                row=$(this).attr('row')
+                search_value = $(this).val().toLowerCase()
+
+                if(search_value==''){
+                    $('#result'+row).slideUp('fast')
+                }else{
+                    $.ajax({
+                        url: "{% url 'get_drug_from_name' %}",
+                        data: {'name': search_value, 'row': row},
+                        success: function(data){
+                            $('#result'+row).html(data)
+			                $('#result'+row).slideDown('fast')
+                        }
+                    })
+                }
+
+            })
+
+            $(document).on('click', '.result-item', function() {
+                row=$(this).attr('row')
+                product_name=$(this).text()
+                if(product_name==''){
+                    $('#quantity_input'+row).fadeOut()
+                    totalAmount()
+                }else{
+                    id=$(this).attr('id')
+                    alert(id)
+                    $('#product-name'+row).val(product_name)
+                    $('#product-id'+row).val(id)
+                    $('#product-name'+row).attr('readonly',true)
+                    $('#result'+row).slideUp('fast')
+                }
+
+			})
+
+        })
+    </script>
+{% endblock %}
+

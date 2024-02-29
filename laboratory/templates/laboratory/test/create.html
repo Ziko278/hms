@@ -1,0 +1,99 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% block 'style' %}
+<link href="{% static 'admin_site/vendor/jquery-smartwizard/dist/css/smart_wizard.min.css' %}" rel="stylesheet">
+{% endblock %}
+{% block 'main' %}
+<form action="" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+<div class="row">
+	<div class="col-xl-12 col-xxl-12">
+		<div class="card">
+			<div class="card-header">
+				<h1 class="card-title">Add Laboratory Test</h1>
+			</div>
+			<div class="card-body">
+				<div id="smartwizard" class="form-wizard order-create">
+					<ul class="nav nav-wizard">
+						<li><a class="nav-link" href="#Main_Detail">
+							<span>1</span>
+						</a></li>
+						<li><a class="nav-link" href="#Field_Detail">
+							<span>2</span>
+						</a></li>
+						<li><a class="nav-link" href="#Sickness_Detail">
+							<span>3</span>
+						</a></li>
+
+					</ul>
+					<div class="tab-content">
+						<div id="Main_Detail" class="tab-pane" role="tabpanel">
+							<div class="">
+								<h2 class="" style="text-align:center">Main Details</h2>
+							</div>
+							<div class="row">
+								<div class="col-sm-6 m-b30">
+									<label class="form-label">Test Name <b style="color:red">*</b></label>
+									{{ form.name }}
+								</div>
+
+								<div class="col-sm-6 m-b30">
+									<label class="form-label">Test Code </label>
+									{{ form.code }}
+								</div>
+
+                                <div class="col-sm-12 m-b30">
+									<label class="form-label">Test Description</label>
+									{{ form.description }}
+								</div>
+
+							</div>
+						</div>
+						<div id="Field_Detail" class="tab-pane" role="tabpanel">
+							<div class="">
+								<h2 class="" style="text-align:center">Test Fields</h2>
+							</div>
+							<div class="row">
+								<div class="col-sm-12 m-b30">
+									{{ form.fields }}
+								</div>
+
+							</div>
+						</div>
+						<div id="Sickness_Detail" class="tab-pane" role="tabpanel">
+							<div class="">
+								<h2 class="" style="text-align:center">Associated Illness</h2>
+							</div>
+							<div class="row">
+								<div class="col-sm-12 m-b30">
+									{{ form.possible_sicknesses }}
+								</div>
+
+							</div>
+							<div>
+								<br />
+								<button class="btn btn-primary">Add Test</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</form>
+{% endblock %}
+
+{% block 'script' %}
+<!-- Form Steps -->
+	<script src="{% static 'admin_site/vendor/jquery-smartwizard/dist/js/jquery.smartWizard.js' %}"></script>
+	<script>
+		$(document).ready(function(){
+			// SmartWizard initialize
+			$('#smartwizard').smartWizard();
+		});
+	</script>
+
+
+{% endblock %}

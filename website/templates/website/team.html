@@ -1,0 +1,97 @@
+{% extends 'website/layout.html' %}
+{% block 'main' %}
+{% load static %}
+
+<div class="uni-banner-default uni-background-1">
+    <div class="container">
+        <!-- Page title -->
+        <div class="page-title">
+            <div class="page-title-inner">
+                <h1>Our Team</h1>
+            </div>
+        </div>
+        <!-- End page title -->
+
+        <!-- Breadcrumbs -->
+        <ul class="breadcrumbs">
+            <li><a href="{% url 'homepage' %}">home</a></li>
+            <li><a href="">our team</a></li>
+        </ul>
+        <!-- End breadcrumbs -->
+    </div>
+</div>
+
+<div class="uni-about-body">
+    <div class="uni-our-doctor-body">
+        <div class="container">
+            <div class="uni-shortcode-tabs-default">
+                <div class="uni-shortcode-tab-2">
+                    <div class="tabbable-panel">
+                        <div class="tabbable-line">
+                             <div class="uni-services-title">
+                                <h3 style="text-align: center">Our Team</h3>
+                                <div class="uni-underline"></div>
+                             </div>
+                            <br>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="tab_default_1">
+                                    <div class="row">
+                                        {% for doctor in doctors_list %}
+                                        <div class="col-md-3 col-sm-6">
+                                            <div class="uni-our-doctor-item-default">
+                                                <div class="item-img">
+                                                    <a href="{% url 'doctors_details' doctor.id %}"><img src="media/{{ doctor.picture }}" alt="" class="img-responsive"></a>
+                                                </div>
+                                                <div class="item-caption">
+                                                    <div class="item-caption-head">
+                                                        <div class="col-md-3 col-sm-3 col-xs-3 uni-clear-padding">
+                                                            <div class="item-icons">
+                                                                <img src="" alt="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-9 col-sm-9 col-xs-9 uni-clear-padding">
+                                                            <div class="item-title">
+                                                                <h4>{{ doctor.name }}</h4>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="item-caption-info">
+                                                        <table class="table">
+                                                            <tbody>
+                                                            <tr>
+                                                                <td style="text-align: center; color: black;">
+                                                                    {{ doctor.position | upper }}
+                                                                </td>
+                                                            </tr>
+                                                            </tbody>
+                                                            <tfoot>
+                                                            <tr>
+                                                                <td colspan="2">
+                                                                    <ul>
+                                                                        <li>
+                                                                            <a {% if doctor.facebook_url %} href="{{ doctor.facebook_url }}" {% else %} href="" {% endif %}><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                                                        </li>
+                                                                        <li><a {% if doctor.twitter_url %} href="{{ doctor.twitter_url }}" {% else %} href="" {% endif %}><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                                                                        <li><a {% if doctor.linkedin_url %} href="{{ doctor.linkedin_url }} " {% else %} href="" {% endif %}><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+                                                                    </ul>
+                                                                </td>
+                                                            </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,114 @@
+{% if history_list %}
+<div class="container">
+    <div class="accordion accordion-rounded-stylish accordion-gradient" id="accordion-twelve">
+        {% for history in history_list %}
+        <div class="accordion-item">
+            <div class="accordion-header collapsed rounded-lg" id="accord-{{ forloop.counter }}" data-bs-toggle="collapse" data-bs-target="#collapse{{forloop.counter}}" aria-controls="collapse{{forloop.counter}}"   aria-expanded="true"  role="button">
+                <span class="accordion-header-icon"></span>
+            <span class="accordion-header-text"><b>
+                {% if history.type == 'consultation' %}
+                    Consultation: {{ history.subject|upper }} - {{ history.created_at }}
+                {% elif history.type == 'test' %}
+                    Lab Test: {{ history.created_at }}
+                {% elif history.type == 'test_result' %}
+                    Test Result For {{ history.test }}
+                {% elif history.type == 'prescription' %}
+                    Drug Prescription: {{ history.created_at }}
+                {% endif %}
+            </b></span>
+            <span class="accordion-header-indicator"></span>
+            </div>
+            <div id="collapse{{forloop.counter}}" class="collapse accordion__body" aria-labelledby="accord-{{forloop.counter}}" data-bs-parent="#accordion-twelve">
+            <div class="accordion-body-text">
+                {% if history.type == 'consultation' %}
+                    {{ history.detail|safe }}
+                {% elif history.type == 'test' %}
+                    <table class="table text-white">
+                        <thead>
+                            <tr class="bg-dark">
+                                <th>TEST</th>
+                                <th>Payment</th>
+                                <th>Test Sample</th>
+                                <th>Test Result</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for test in history.tests.all %}
+                            <tr>
+                                <td>{{ test }}</td>
+                                <td class="text-center">{% if test.payment_made %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
+                                <td class="text-center">{% if test.payment_made %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
+                                <td class="text-center">{% if test.payment_made %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
+                                <td class="text-center">
+                                    <a class="btn btn-primary" title="View Test Result"><i class="bi bi-eye"></i></a>
+                                    <a class="btn btn-warning" title="Edit Test Result"><i class="bi bi-pencil"></i></a>
+                                    <a class="btn btn-danger" title="Delete Test Result"><i class="bi bi-trash"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% elif history.type == 'prescription' %}
+                    <table class="table text-white">
+                        <thead>
+                            <tr class="bg-dark">
+                                <th>Drug</th>
+                                <th>Payment</th>
+                                <th>Test Sample</th>
+                                <th>Test Result</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for prescription in history.prescriptions.all %}
+                            <tr>
+                                <td>{{ prescription }}</td>
+                                <td class="text-center">{% if test.payment_made %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
+                                <td class="text-center">{% if test.payment_made %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
+                                <td class="text-center">{% if test.payment_made %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
+                                <td class="text-center">
+                                    <a class="btn btn-primary" title="View Test Result"><i class="bi bi-eye"></i></a>
+                                    <a class="btn btn-warning" title="Edit Test Result"><i class="bi bi-pencil"></i></a>
+                                    <a class="btn btn-danger" title="Delete Test Result"><i class="bi bi-trash"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% elif history.type == 'test_result' %}
+                    <p>Date: {{ history.created_at|date}}</p>
+                    <div class="table-responsive">
+                        <table class="text-white table table-bordered verticle-middle table-responsive-sm">
+                            <thead>
+                                <tr class="bg-dark">
+                                    <th scope="col">Test Field</th>
+                                    <th scope="col">Normal Range</th>
+                                    <th scope="col" class="text-center">Result</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for field, result in history.test_result.items %}
+                                <tr {% if result.value >= result.low_limit and result.value <= result.high_limit %} class="bg-success" {% else %} class="bg-warning" {% endif %}>
+                                    <td>{{ field|title }}</td>
+                                    <td>{{ result.normal_range }}</td>
+                                    <td class="text-center">{{ result.value }}</td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% else %}
+    <p class="text-center">No History Recorded Yet</p>
+{% endif %}

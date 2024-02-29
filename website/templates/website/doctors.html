@@ -1,0 +1,133 @@
+{% extends 'website/layout.html' %}
+{% block 'main' %}
+{% load static %}
+
+<div id="main-content" class="site-main-content">
+            <section class="site-content-area">
+
+                <div class="uni-banner-default uni-background-1">
+                    <div class="container">
+                        <!-- Page title -->
+                        <div class="page-title">
+                            <div class="page-title-inner">
+                                <h1>{{ doctors_list.name }} - Details</h1>
+                            </div>
+                        </div>
+                        <!-- End page title -->
+
+                        <!-- Breadcrumbs -->
+                        <ul class="breadcrumbs">
+                            <li><a href="{% url 'homepage' %}">home</a></li>
+                            <li><a href="{% url 'our_team' %}">Doctors</a></li>
+                            <li><a href="">{{ doctors_list.name }}</a></li>
+                        </ul>
+                        <!-- End breadcrumbs -->
+                    </div>
+                </div>
+
+
+                <div class="uni-doctor-details-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="uni-our-doctor-item-default">
+                                    <div class="item-img">
+                                        <img src="/media/{{ doctors_list.picture }}" alt="" class="img-responsive">
+                                    </div>
+                                    <div class="item-caption">
+                                        <div class="item-caption-head">
+                                            <div class="col-md-3 col-sm-3 col-xs-3 uni-clear-padding">
+                                                <div class="item-icons">
+                                                    <img src="images/icons_box/icon_4/icon-5.png" alt="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-9 col-sm-9 col-xs-9 uni-clear-padding">
+                                                <div class="item-title">
+                                                    <h4>{{ doctors_list.name }}</h4>
+                                                    <span>{{ doctors_list.position }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="item-caption-info">
+                                            <table class="table">
+                                                {% if doctors_list.degree %}
+                                                <thead>
+                                                <tr>
+                                                    <td>Degrees</td>
+                                                    <td>{{ doctors_list.degree }}</td>
+                                                </tr>
+                                                </thead>
+                                                {% else %}
+
+                                                {% endif %}
+                                                <tbody>
+                                                <tr>
+                                                    <td>Mon - fri</td>
+                                                    <td>{{ opening_hours.monday }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>saturday</td>
+                                                    <td>{{ opening_hours.saturday }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Sunday</td>
+                                                    <td>{{ opening_hours.sunday }}</td>
+                                                </tr>
+                                                </tbody>
+                                                <tfoot>
+                                                <tr>
+                                                    <td colspan="2">
+                                                        <ul>
+                                                            <li>
+                                                                <a {% if doctors_list.facebook_url %} href="{{ doctors_list.facebook_url }}" {% else %} href="" {% endif %}><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                                            </li>
+                                                            <li><a {% if doctors_list.twitter_url %} href="{{ doctors_list.twitter_url }}" {% else %} href="" {% endif %}><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                                                            <li><a {% if doctors_list.linkedin_url %} href="{{ doctors_list.linkedin_url }}" {% else %} href="" {% endif %}><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-8">
+                                <div class="uni-doctor-details-right">
+
+                                    <!--SUMMARY-->
+                                    <div class="uni-doctor-details-summary">
+                                        <div class="uni-doctor-details-title">
+                                            <h3>Summary</h3>
+                                            <div class="uni-divider"></div>
+                                        </div>
+                                        <p>
+                                            {{ doctors_list.summary }}
+                                        </p>
+                                    </div>
+                                    <br>
+
+                                    <!--EDUCATION/DEGREE-->
+
+                                    <!--CONTACT-->
+                                    <div class="uni-doctor-details-contact">
+                                        <div class="uni-doctor-details-title">
+                                            <h3>Contact</h3>
+                                            <div class="uni-divider"></div>
+                                        </div>
+                                        <ul>
+                                            <li> <i class="fa fa-map-marker" aria-hidden="true"></i> {% if doctors_list.address %} {{ doctors_list.address }} {% else %} {{ site_info.site_address }} {% endif %}</li>
+                                            <li><i class="fa fa-phone" aria-hidden="true"></i> {% if doctors_list.phone_number %} {{ doctors_list.phone_number }} {% else %} {{ site_info.site_number }} {% endif %}</li>
+                                            <li><i class="fa fa-envelope-o" aria-hidden="true"></i> {% if doctors_list.email_address %} {{ doctors_list.email_address }} {% else %} {{ site_info.site_email }} {% endif %}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+    </div>
+{% endblock %}

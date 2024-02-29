@@ -1,0 +1,185 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% block 'main' %}
+<!-- row -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card card-profile">
+            <div class="admin-user">
+                <div class="img-wrraper">
+                    <div class="">
+                        <img {% if patient.image %} src="{{ patient.image.url }}" {% else %} src="{% static 'admin_site/images/user1.jpg' %}" {% endif %} class="rounded-circle"></div>
+                    <a class="icon-wrapper" href="{% url 'patient_edit' patient.id %}"><i class="fa-solid fa-pencil"></i></a>
+                </div>
+                <div class="user-details">
+                    <div class="title">
+                        <h4>{{ patient|title }}</h4>
+                      <h6>{{ patient.card_number|upper }}</h6>
+                    </div>
+
+                      <ul class="follow-list">
+                        <li>
+                          <div class="follow-num ">{{ patient.number_of_visits }}</div><span>Visits</span>
+                        </li>
+                        <li>
+                          <div class="follow-num ">{{ patient.last_visit }}</div><span>Last Visit</span>
+                        </li>
+
+
+                      </ul>
+
+                  </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-3 col-xxl-4">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body profile-accordion pb-0">
+                        <div class="accordion" id="accordionExample1">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne1">
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne1" aria-expanded="true" aria-controls="collapseOne1">
+                                      <b>About Patient</b>
+                                  </button>
+                                </h2>
+                                <div id="collapseOne1" class="accordion-collapse collapse" aria-labelledby="headingOne1" data-bs-parent="#accordionExample1">
+                                  <div class="accordion-body">
+                                    <div class="about-me">
+                                        <ul>
+                                            <li>
+                                                <i class="fa-solid fa-location-dot"></i>
+                                                <div>
+                                                    <h6>{% if patient.mobile %} {{ patient.mobile }} {% else %} No Phone Number {% endif %}</h6>
+                                                    <h6>{% if patient.email %} {{ patient.email|lower }} {% else %} No Email {% endif %}</h6>
+                                                    <span>{% if patient.address %} {{ patient.address }} {% else %} No Address {% endif %}</span>
+                                                </div>
+                                            </li>
+
+                                            <li>
+                                                <i class="fa-solid fa-book"></i>
+                                                <div>
+                                                    <h6>Gender: {{ patient.gender|title }}</h6>
+                                                    <h6>DOB: {{ patient.date_of_birth|date }}</h6>
+                                                    <h6>Religion: {{ patient.religion|title }}</h6>
+                                                    <h6>State: {% if patient.state %} {{ patient.state|title }} {% endif %} {% if patient.state and patient.lga %} ({{patient.lga|title}}) {% endif %}</h6>
+                                                    <h6>Marital Status: {{ patient.marital_status|title }}</h6>
+                                                </div>
+                                            </li>
+
+                                            <li>
+                                                <i class="fa-solid fa-stethoscope"></i>
+                                                <div>
+                                                    <h6>Blood Group: {% if patient.blood_group %} {{ patient.blood_group|upper }} {% endif %}</h6>
+                                                    <h6>Genotype: {% if patient.genotype %} {{ patient.genotype|upper }} {% endif %}</h6>
+                                                    <h6>Health Note: {% if patient.medical_conditions %} {{ patient.medical_conditions }} {% endif %}</h6>
+                                                </div>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body profile-accordion pb-0">
+                        <div class="accordion" id="accordionHealth">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingHealth">
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHealth" aria-expanded="true" aria-controls="collapseHealth">
+                                    <b>Other Info</b>
+                                  </button>
+                                </h2>
+                                <div id="collapseHealth" class="accordion-collapse collapse" aria-labelledby="headingHealth" data-bs-parent="#accordionHealth">
+                                  <div class="accordion-body">
+                                    <div class="about-me">
+                                        <ul>
+                                            <li>
+                                                <i class="fa-solid fa-person"></i>
+                                                <div>
+                                                    <h6>Emergency Contact: {% if patient.emergency_contact_name %} {{ patient.emergency_contact_name|title }} {% endif %}</h6>
+                                                    <h6>Phone No: {% if patient.emergency_contact_number %} {{ patient.emergency_contact_number }} {% endif %}</h6>
+                                                </div>
+                                            </li>
+
+                                            <li>
+                                                <i class="fa-solid fa-briefcase"></i>
+                                                <div>
+                                                     <h6><b>Insurance Provider:</b> {% if patient.insurance_provider %} {{ patient.insurance_provider|upper }} {% endif %}</h6>
+                                                    <h6><b>Insurance Number:</b> {% if patient.insurance_provider %} {{ patient.insurance_provider_number}} {% endif %}</h6>
+                                                </div>
+                                            </li>
+
+                                            <li>
+                                                <i class="fa-solid fa-user"></i>
+                                                <div>
+                                                    <h6><b>Username:</b> {{ patient.card_number|upper }}</h6>
+                                                    <h6><b>Default Password:</b> {{ patient.patient_profile.default_password }}</h6>
+                                                </div>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body profile-accordion pb-0">
+                        <div class="accordion" id="accordionExample4">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne4">
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne4" aria-expanded="true" aria-controls="collapseOne4">
+                                      <b>Actions</b>
+                                  </button>
+                                </h2>
+                                <div id="collapseOne4" class="accordion-collapse collapse" aria-labelledby="headingOne4" data-bs-parent="#accordionExample4">
+                                    <div class="accordion-body">
+                                        <div class="profile-interest">
+                                            <div class="row mt-4 sp4" id="lightgallery">
+                                                <a href="{% url 'patient_edit' patient.id %}" style="width:50px;margin:15px" class="btn btn-warning" title="Edit Patient"><i class="bi bi-pencil"></i></a>
+                                                <a href="{% url 'patient_delete' patient.id %}" style="width:50px;margin:15px" class="btn btn-danger" title="Delete Patient"><i class="bi bi-trash"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-xl-9 col-xxl-8">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body pb-0">
+                        <h2 class="card-title"><b>Patient Medical History</b></h2>
+                        {% include 'patient/partial/history.html' %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

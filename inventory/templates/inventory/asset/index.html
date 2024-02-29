@@ -1,0 +1,183 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+
+<div class="row">
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<h4 class="heading mb-0"><b>List of Assets</b></h4>
+		<div class="d-flex align-items-center">
+			<button type="button" class="btn btn-primary btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">+ Add Asset</button>
+		</div>
+	</div>
+	<div class="col-xl-12 active-p">
+		<div class="tab-content" id="pills-tabContent">
+			<div class="tab-pane fade show active" id="pills-colm" role="tabpanel" aria-labelledby="pills-colm-tab">
+				<div class="card">
+					<div class="card-body px-0">
+					  <div class="table-responsive active-projects user-tbl  dt-filter">
+						<table id="user-tbl" class="table shorting">
+							<thead>
+								<tr>
+									<th>S/N</th>
+									<th scope="col">Asset</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Total Worth</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for asset in asset_list %}
+								<tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td> {{ asset|upper }}</td>
+                                    <td>{{ asset.category|title }}</td>
+                                    <td>{{ asset.quantity }}</td>
+                                    <td>{{ asset.worth|floatformat|intcomma }}</td>
+
+									<td>
+										<div class="dropdown">
+											<div class="btn-link" data-bs-toggle="dropdown" aria-expanded="false">
+												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+													<path d="M11 12C11 12.5523 11.4477 13 12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12Z" stroke="#737B8B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+													<path d="M18 12C18 12.5523 18.4477 13 19 13C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11C18.4477 11 18 11.4477 18 12Z" stroke="#737B8B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+													<path d="M4 12C4 12.5523 4.44772 13 5 13C5.55228 13 6 12.5523 6 12C6 11.4477 5.55228 11 5 11C4.44772 11 4 11.4477 4 12Z" stroke="#737B8B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+												</svg>
+											</div>
+											<div class="dropdown-menu dropdown-menu-right" style="">
+                                                <a class="dropdown-item text-primary" href="{% url 'asset_detail' asset.id %}">Detail</a>
+												<a class="dropdown-item text-warning" href="#" data-bs-toggle="modal" data-bs-target="#editdept{{ forloop.counter }}">Update</a>
+												<a class="dropdown-item text-danger" href="{% url 'asset_delete' asset.id %}">Delete</a>
+                                            </div>
+										</div>
+									</td>
+								</tr>
+							{% endfor %}
+							</tbody>
+
+						</table>
+					</div>
+				   </div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<form action="{% url 'asset_create' %}" method="post">
+	{% csrf_token %}
+    <input type="hidden" name="user" value="{{ user.id }}" />
+	<div class="modal fade" id="exampleModalCenter">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+                    <h5 class="modal-title"><b>Add Asset</b></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-6 m-b30">
+							<label class="form-label">Asset Name<b style="color:red">*</b></label>
+							{{ form.name }}
+						</div>
+
+                        <div class="col-sm-6 m-b30">
+							<label class="form-label">Category <b style="color:red">*</b></label>
+							{{ form.category }}
+						</div>
+
+                        <div class="col-sm-6 m-b30">
+                            <br>
+							<label class="form-label">Available Quantity <b style="color:red">*</b></label>
+							{{ form.quantity }}
+						</div>
+
+                        <div class="col-sm-6 m-b30">
+                            <br>
+							<label class="form-label">Total Worth <b style="color:red">*</b></label>
+							{{ form.worth }}
+						</div>
+
+                        <div class="col-sm-6 m-b30">
+                            <br>
+							<label class="form-label">Extra Information</label>
+							{{ form.description }}
+						</div>
+
+
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+					<input type="submit" class="btn btn-primary" value="Save" />
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+{% for asset in asset_list %}
+<form action="{% url 'asset_edit' asset.id %}" method="post">
+	{% csrf_token %}
+	<div class="modal fade" id="editdept{{ forloop.counter }}">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+                    <h5 class="modal-title"><b>Edit Asset Detail</b></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+
+                        <div class="col-sm-6 m-b30">
+							<label class="form-label">Asset Name<b style="color:red">*</b></label>
+                            <input type="text" autocomplete="off" class="form-control" name="name" value="{{ asset.name }}" required="required">
+
+						</div>
+
+                        <div class="col-sm-6 m-b30">
+							<label class="form-label">Category <b style="color:red">*</b></label>
+                            <select name="category" class="form-control" required>
+								{% for category in asset_category_list %}
+								<option value="{{category.id}}" {% if asset.category == category %} selected {% endif %}>{{ category|upper }}</option>
+								{% endfor %}
+							</select>
+						</div>
+
+                        <div class="col-sm-6 m-b30">
+                            <br>
+							<label class="form-label">Available Quantity <b style="color:red">*</b></label>
+                            <input type="number" autocomplete="off" class="form-control" name="quantity" value="{{ asset.quantity }}">
+						</div>
+
+						<div class="col-sm-6 m-b30">
+                            <br>
+							<label class="form-label">Total Worth <b style="color:red">*</b></label>
+                            <input type="number" autocomplete="off" class="form-control" name="worth" value="{{ asset.worth }}">
+						</div>
+
+                        <div class="col-sm-6 m-b30">
+                            <br>
+							<label class="form-label">Extra Information <b style="color:red">*</b></label>
+                            <textarea class="form-control" name="description" style="height:50px" required>{{ asset.description }}</textarea>
+						</div>
+
+
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+					<input type="submit" class="btn btn-primary" value="Save" />
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+{% endfor %}
+
+{% endblock %}

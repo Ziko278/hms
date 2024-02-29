@@ -1,0 +1,21 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% block 'main' %}
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Delete Block</h4>
+            <p>Block: <i>{{consultation_block.name|upper }}</i></p>
+            <p>The Block will be permanently deleted.</p>
+            <form style="display:inline" method="post">
+                {% csrf_token %}
+
+                <button class="btn btn-success">Proceed</button>
+            </form>
+            <a class="btn btn-danger" href="{% url 'block_index' %}"> Cancel</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
