@@ -15,6 +15,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from admin_site.forms import SiteInfoForm
 from admin_site.models import SiteInfoModel
 from patient.models import PatientModel
+from communication.models import RecentActivityModel
+from finance.models import ExpenseModel
+from datetime import date
 
 
 class AdminDashboardView(LoginRequiredMixin, TemplateView):
@@ -23,6 +26,20 @@ class AdminDashboardView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['number_of_patient'] = PatientModel.objects.all().count()
+        today = date.today()
+        expenses = ExpenseModel.objects.filter(date=today)
+        today_expense = 0
+        expense_list = {}
+        for expense in expenses:
+            if expense.expense_type.__str__() not in expense_list:
+                expense_list[expense.expense_type.__str__()] = expense.amount
+            else:
+                expense_list[expense.expense_type.__str__()] += expense.amount
+            today_expense += expense.amount
+        context['recent_activity_list'] = RecentActivityModel.objects.all().order_by('id').reverse()[:15]
+        context['expense_list'] = expense_list
+        context['today_expense'] = today_expense
+
         return context
 
 

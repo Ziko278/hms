@@ -4,6 +4,7 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from patient.models import PatientModel, PatientIDGeneratorModel, PatientProfileModel
 from django.contrib.auth.models import User
+from communication.models import RecentActivityModel
 
 
 @receiver(post_save, sender=PatientModel)
@@ -28,4 +29,8 @@ def create_patient_account(sender, instance, created, **kwargs):
             registration_payment.registration_status = 'completed'
             registration_payment.save()
 
-
+        category = 'patient_registration'
+        subject = "{} just completed patient registration".format(patient.__str__().title())
+        recent_activity = RecentActivityModel.objects.create(category=category, subject=subject, reference_id=patient.id,
+                                                             user=patient.created_by)
+        recent_activity.save()

@@ -108,6 +108,7 @@ class StaffModel(models.Model):
     barcode = models.FileField(upload_to='barcode/staff', null=True, blank=True)
     thumbprints = models.ManyToManyField(ThumbPrint, blank=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='staff_created_by')
 
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)

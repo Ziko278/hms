@@ -57,6 +57,7 @@ class PatientModel(models.Model):
     # barcode = models.FileField(upload_to='barcode/patient', null=True, blank=True)
     registration_payment = models.ForeignKey(RegistrationPaymentModel, on_delete=models.SET_NULL, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='patient_created_by')
     number_of_visits = models.IntegerField(blank=True, default=1)
     last_visit = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
