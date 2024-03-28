@@ -40,7 +40,7 @@ class PatientEditForm(ModelForm):
     class Meta:
         model = PatientModel
         fields = '__all__'
-        exclude = ['registration_payment', 'user']
+        exclude = ['registration_payment', 'user', 'no_of_visits', 'last_visit']
         widgets = {
             'date_of_birth': DateInput(attrs={
                 'type': 'date'

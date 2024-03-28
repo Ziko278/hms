@@ -8,6 +8,12 @@ urlpatterns = [
     path('test-unit/<int:pk>/edit', TestUnitUpdateView.as_view(), name='test_unit_edit'),
     path('test-unit/<int:pk>/delete', TestUnitDeleteView.as_view(), name='test_unit_delete'),
 
+    path('test-observation/create', TestObservationCreateView.as_view(), name='test_observation_create'),
+    path('test-observation/index', TestObservationListView.as_view(), name='test_observation_index'),
+    path('test-observation/<int:pk>/edit', TestObservationUpdateView.as_view(), name='test_observation_edit'),
+    path('test-observation/<int:pk>/delete', TestObservationDeleteView.as_view(), name='test_observation_delete'),
+
+
     path('test-field/create', TestFieldCreateView.as_view(), name='test_field_create'),
     path('test-field/index', TestFieldListView.as_view(), name='test_field_index'),
     path('test-field/<int:pk>/edit', TestFieldUpdateView.as_view(), name='test_field_edit'),
@@ -24,10 +30,12 @@ urlpatterns = [
     path('test-price/<int:pk>/delete', TestPriceDeleteView.as_view(), name='test_price_delete'),
 
     path('lab-test/index', ConsultationTestListView.as_view(), name='lab_test_index'),
+    path('admission/lab-test/index', AdmissionTestListView.as_view(), name='admission_lab_test_index'),
     path('lab-test/<int:pk>/detail', ConsultationTestDetailView.as_view(), name='lab_test_detail'),
 
     path('lab-test/<int:pk>/collect-sample', test_sample_collection_view, name='lab_test_sample'),
-    path('lab-test/<int:pk>/test-result', test_result_record_view, name='lab_test_result')
+    path('lab-test/<int:pk>/test-result', test_result_record_view, name='lab_test_result'),
+    path('lab-test/<int:pk>/test-result/print', print_test_result_view, name='print_test_result')
 
 ]
 

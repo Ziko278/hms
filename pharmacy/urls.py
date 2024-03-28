@@ -53,6 +53,11 @@ urlpatterns = [
 
     path('get-drug-from-name', get_drug_from_name, name='get_drug_from_name'),
     path('get-drug-detail-from-id', get_drug_detail_from_id, name='get_drug_detail_from_id'),
+    path('prescription/index', ConsultationPrescriptionListView.as_view(), name='prescription_index'),
+    path('admission/prescription/index', AdmissionPrescriptionListView.as_view(), name='admission_prescription_index'),
+
+    path('prescription/<int:pk>/mark-one-collected', mark_prescription_collected, name='prescription_collected'),
+    path('prescription/<int:pk>/mark-all-collected', mark_all_prescription_collected, name='all_prescription_collected'),
 
 ]
 

@@ -1,0 +1,81 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+
+<div class="row">
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<h4 class="heading mb-0"><b>Patient Admission Payments {% if start_date == end_date %} for {{ start_date|date }} {% else %} from {{ start_date|date }} to {{ end_date|date }} {% endif %}</b></h4>
+		<form action="">
+			<b>From:</b><input type="date" value="{{ start_date|date:'Y-m-d' }}" style="display:inline;width:100px" class="form-control" name="start_date" required>
+			<b>To:</b><input type="date" value="{{ end_date|date:'Y-m-d' }}" id="end_date" style="display:inline;width:100px" class="form-control" name="end_date" required>
+			<button class="btn btn-primary" id="button">Filter</button>
+		</form>
+	</div>
+	<div class="col-xl-12 active-p">
+	<div class="tab-content" id="pills-tabContent">
+
+		<div class="tab-pane fade show active" id="pills-colm" role="tabpanel" aria-labelledby="pills-colm-tab">
+			<div class="card">
+				<div class="card-body px-0">
+				  <div class="table-responsive active-projects user-tbl  dt-filter">
+					<table id="user-tbl" class="table shorting">
+						<thead>
+							<tr>
+								<th>S/N</th>
+								<th>Image</th>
+								<th>Patient</th>
+								<th>Amount Paid</th>
+								<th>Date</th>
+								<th>Action</th>
+
+							</tr>
+						</thead>
+						<tbody>
+							{% for payment in admission_payment_list %}
+							<tr>
+								<td>{{ forloop.counter }}</td>
+								<td>
+									<div class="d-flex align-items-center">
+										<img {% if payment.admission.patient.image %} src="{{ payment.admission.patient.image.url }}" {% else %} src="{% static 'admin_site/images/default_image.jpg' %}" {% endif %} class="avatar rounded-circle" alt="">
+										<p class="mb-0 ms-2">{{ user.profile }}</p>
+									</div>
+								</td>
+								<td>{{ payment.admission.patient|title }} ({{ payment.admission.patient.card_number|upper }})</td>
+								<td>{{ payment.amount|floatformat|intcomma }}</td>
+								<td>{{ payment.date }}</td>
+								<td>
+									<div class="dropdown">
+										<div class="btn-link" data-bs-toggle="dropdown" aria-expanded="false">
+											<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+												<path d="M11 12C11 12.5523 11.4477 13 12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12Z" stroke="#737B8B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+												<path d="M18 12C18 12.5523 18.4477 13 19 13C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11C18.4477 11 18 11.4477 18 12Z" stroke="#737B8B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+												<path d="M4 12C4 12.5523 4.44772 13 5 13C5.55228 13 6 12.5523 6 12C6 11.4477 5.55228 11 5 11C4.44772 11 4 11.4477 4 12Z" stroke="#737B8B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+											</svg>
+										</div>
+										<div class="dropdown-menu dropdown-menu-right" style="">
+											<a class="dropdown-item text-primary text-center" href="#">Print Receipt</a>
+                                        </div>
+									</div>
+								</td>
+							</tr>
+						{% endfor %}
+						</tbody>
+
+					</table>
+				</div>
+			   </div>
+			</div>
+
+		</div>
+	</div>
+	</div>
+</div>
+<script src="{% static 'admin_site/scripts/jquery.js' %}"></script>
+<script>
+	$(document).ready(function(){
+		max_date = new Date().toISOString().split('T')[0]
+		$('#end_date').attr('max', max_date)
+	})
+</script>
+{% endblock %}

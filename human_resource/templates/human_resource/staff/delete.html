@@ -12,7 +12,7 @@
                 {% csrf_token %}
                 <button class="btn btn-success">Proceed</button>
             </form>
-            <a class="btn btn-danger" href="{% url 'staff_detail' staff.id %}"> Cancel</a>
+            <a class="btn btn-danger" onclick="window.history.back()"> Cancel</a>
         </div>
     </div>
 </div>

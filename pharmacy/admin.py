@@ -7,4 +7,6 @@ admin.site.register(DrugUnitModel)
 admin.site.register(DrugCategoryModel)
 admin.site.register(DrugStrengthModel)
 admin.site.register(DrugBatchModel)
+admin.site.register(DrugStockModel)
+admin.site.register(DrugVariantModel)
 

@@ -1,3 +1,4 @@
+from django.db.models.functions import Lower
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.http import HttpResponse
@@ -13,6 +14,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 import io
+from xlsxwriter.workbook import Workbook
 from django.forms.models import model_to_dict
 from human_resource.models import *
 from human_resource.forms import *
@@ -38,7 +40,7 @@ class DepartmentCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessM
 
 class DepartmentListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = DepartmentModel
-    permission_required = 'human_resource.view_departmentmodel'
+    permission_required = 'human_resource.add_departmentmodel'
     fields = '__all__'
     template_name = 'human_resource/department/index.html'
     context_object_name = "department_list"
@@ -54,7 +56,7 @@ class DepartmentListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
 class DepartmentUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = DepartmentModel
-    permission_required = 'human_resource.change_departmentmodel'
+    permission_required = 'human_resource.add_departmentmodel'
     form_class = DepartmentForm
     template_name = 'human_resource/department/index.html'
     success_message = 'Department Successfully Updated'
@@ -69,7 +71,7 @@ class DepartmentUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessM
 
 class DepartmentDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = DepartmentModel
-    permission_required = 'human_resource.delete_departmentmodel'
+    permission_required = 'human_resource.add_departmentmodel'
     fields = '__all__'
     template_name = 'human_resource/department/delete.html'
     context_object_name = "department"
@@ -111,7 +113,7 @@ def multi_department_action(request):
 
 class PositionCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = PositionModel
-    permission_required = 'human_resource.add_positionmodel'
+    permission_required = 'human_resource.add_departmentmodel'
     form_class = PositionForm
     template_name = 'human_resource/position/index.html'
     success_message = 'Position Successfully Registered'
@@ -129,7 +131,7 @@ class PositionCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMes
 
 class PositionListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = PositionModel
-    permission_required = 'human_resource.view_positionmodel'
+    permission_required = 'human_resource.add_departmentmodel'
     fields = '__all__'
     template_name = 'human_resource/position/index.html'
     context_object_name = "position_list"
@@ -147,7 +149,7 @@ class PositionListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
 class PositionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = PositionModel
-    permission_required = 'human_resource.change_positionmodel'
+    permission_required = 'human_resource.add_departmentmodel'
     form_class = PositionForm
     template_name = 'human_resource/position/index.html'
     success_message = 'Position Successfully Updated'
@@ -162,7 +164,7 @@ class PositionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMes
 
 class PositionDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = PositionModel
-    permission_required = 'human_resource.delete_positionmodel'
+    permission_required = 'human_resource.add_departmentmodel'
     fields = '__all__'
     template_name = 'human_resource/position/delete.html'
     context_object_name = "position"
@@ -216,7 +218,7 @@ class StaffCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessag
         context = super().get_context_data(**kwargs)
 
         context['department_list'] = DepartmentModel.objects.all().order_by('name')
-        context['staff_setting'] = HRSettingModel.objects.filter().first()
+        context['staff_setting'] = GeneralSettingModel.objects.filter().first()
         context['state_list'] = state_list
         return context
 
@@ -229,7 +231,7 @@ class StaffListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     context_object_name = "staff_list"
 
     def get_queryset(self):
-        return StaffModel.objects.all().order_by('first_name')
+        return StaffModel.objects.all().order_by(Lower('first_name'))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -263,7 +265,7 @@ class StaffUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessag
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['department_list'] = DepartmentModel.objects.all().order_by('name')
-        context['staff_setting'] = HRSettingModel.objects.filter().first()
+        context['staff_setting'] = GeneralSettingModel.objects.filter().first()
         context['state_list'] = state_list
         context['staff'] = self.object
         return context
@@ -288,7 +290,7 @@ class StaffDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessag
 
 class StaffCertificateCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = StaffCertificateModel
-    permission_required = 'human_resource.add_staffcertificatemodel'
+    permission_required = 'human_resource.change_staffmodel'
     form_class = StaffCertificateForm
     template_name = 'human_resource/staff/detail.html'
     success_message = 'Certificate Successfully Added'
@@ -303,7 +305,7 @@ class StaffCertificateCreateView(LoginRequiredMixin, PermissionRequiredMixin, Su
 
 class StaffCertificateUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = StaffCertificateModel
-    permission_required = 'human_resource.change_staffcertificatemodel'
+    permission_required = 'human_resource.change_staffmodel'
     form_class = StaffCertificateForm
     template_name = 'human_resource/staff/detail.html'
     success_message = 'Certificate Successfully Updated'
@@ -318,7 +320,7 @@ class StaffCertificateUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Su
 
 class StaffCertificateDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = StaffCertificateModel
-    permission_required = 'human_resource.delete_staffcertificatemodel'
+    permission_required = 'human_resource.change_staffmodel'
     fields = '__all__'
     template_name = 'human_resource/staff/cert_delete.html'
     context_object_name = "certificate"
@@ -345,3 +347,61 @@ def add_shift_view(request, pk):
     else:
         messages.warning(request, 'Method Not Allowed')
     return redirect(reverse('staff_detail', kwargs={'pk': staff.id}))
+
+
+def generate_form_view(request):
+    if request.method == 'POST':
+        staff_list = request.POST.getlist('staff_list[]')
+        field_list = request.POST.getlist('form_field[]')
+        file_name = request.POST['file_name']
+        if not staff_list:
+            messages.warning(request, 'No staff Selected')
+            return redirect(reverse('staff_form'))
+        if not field_list:
+            messages.warning(request, 'No Field Selected')
+            return redirect(reverse('staff_form'))
+
+        output = io.BytesIO()
+
+        workbook = Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet()
+
+        for num in range(len(field_list)):
+            field = field_list[num]
+            worksheet.write(0, num, field.title())
+
+        for row in range(len(staff_list)):
+            staff_pk = staff_list[row]
+            staff = StaffModel.objects.get(pk=staff_pk)
+
+            for col in range(len(field_list)):
+                field = field_list[col]
+                if field == 'full_name':
+                    value = staff.__str__()
+                elif field == 'department':
+                    value = staff.department.name.title()
+                elif field == 'position':
+                    value = staff.position.name.title()
+                else:
+                    value = getattr(staff, field)
+                if isinstance(value, str):
+                    value = value.title()
+                worksheet.write(row + 1, col, value)
+        workbook.close()
+
+        output.seek(0)
+
+        response = HttpResponse(output.read(),
+                                content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        response['Content-Disposition'] = "attachment; filename="+file_name+".xlsx"
+
+        output.close()
+
+        return response
+
+    staff_list = StaffModel.objects.filter(status='active').order_by(Lower('first_name'))
+
+    context = {
+        'staff_list': staff_list
+    }
+    return render(request, 'human_resource/staff/generate_form.html', context)

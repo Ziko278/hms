@@ -1,7 +1,70 @@
 {% extends 'admin_site/layout.html' %}
 {% load static %}
-{% load humanize %}
 {% block 'main' %}
 
+    <div class="card">
+        <div class="card-header border-0">
+            <div class="products"></div>
+            <div class="dropdown custom-dropdown ">
+                <div class="btn sharp btn-primary tp-btn  ms-3" data-bs-toggle="dropdown">
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13.5202 17.4167C13.5202 18.81 12.3927 19.9375 10.9994 19.9375C9.60601 19.9375 8.47852 18.81 8.47852 17.4167C8.47852 16.0233 9.60601 14.8958 10.9994 14.8958C12.3927 14.8958 13.5202 16.0233 13.5202 17.4167ZM9.85352 17.4167C9.85352 18.0492 10.3669 18.5625 10.9994 18.5625C11.6319 18.5625 12.1452 18.0492 12.1452 17.4167C12.1452 16.7842 11.6319 16.2708 10.9994 16.2708C10.3669 16.2708 9.85352 16.7842 9.85352 17.4167Z" fill="#2696FD"/>
+                    <path d="M13.5202 4.58369C13.5202 5.97699 12.3927 7.10449 10.9994 7.10449C9.60601 7.10449 8.47852 5.97699 8.47852 4.58369C8.47852 3.19029 9.60601 2.06279 10.9994 2.06279C12.3927 2.06279 13.5202 3.19029 13.5202 4.58369ZM9.85352 4.58369C9.85352 5.21619 10.3669 5.72949 10.9994 5.72949C11.6319 5.72949 12.1452 5.21619 12.1452 4.58369C12.1452 3.95119 11.6319 3.43779 10.9994 3.43779C10.3669 3.43779 9.85352 3.95119 9.85352 4.58369Z" fill="#2696FD"/>
+                    <path d="M13.5202 10.9997C13.5202 12.393 12.3927 13.5205 10.9994 13.5205C9.60601 13.5205 8.47852 12.393 8.47852 10.9997C8.47852 9.6063 9.60601 8.4788 10.9994 8.4788C12.3927 8.4788 13.5202 9.6063 13.5202 10.9997ZM9.85352 10.9997C9.85352 11.6322 10.3669 12.1455 10.9994 12.1455C11.6319 12.1455 12.1452 11.6322 12.1452 10.9997C12.1452 10.3672 11.6319 9.8538 10.9994 9.8538C10.3669 9.8538 9.85352 10.3672 9.85352 10.9997Z" fill="#2696FD"/>
+                    </svg>
 
+                </div>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <a class="text-primary" href="{% url 'print_test_result' lab_test.id %}" target="_blank">Print Result</a>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body" style="margin-top:-50px">
+            <p class="card-title">Patient: <b>{{ lab_test.patient }}</b></p>
+            <p class="card-title">Doctor: <b>{{ lab_test.doctor.user_staff_profile }}</b></p>
+            <p class="card-title">Test: <b>{{ lab_test.test}}</b></p>
+            <p class="card-title">Date: <b>{{ lab_test.date }}</b></p>
+        </div>
+    </div>
+
+    {% if test_result %}
+    <div class="card">
+        <div class="card-body">
+            <h1 class="card-title">Test Results</h1>
+            <p>Date: {{ test_result.created_at|date}}</p>
+            <p>Lab Attendant Comment: {{ test_result.lab_attendant_comment}}</p>
+            <div class="table-responsive">
+                <table class="text-white table table-bordered verticle-middle table-responsive-sm">
+                    <thead>
+                        <tr class="bg-dark">
+                            <th scope="col">Test Field</th>
+                            <th scope="col">Normal Range</th>
+                            <th scope="col" class="text-center">Result</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for field, result in test_result.test_result.items %}
+                        <tr {% if result.low_limit %} {% if result.value >= result.low_limit and result.value <= result.high_limit %} class="bg-success" {% else %} class="bg-warning" {% endif %} {% endif %} {% for observation, status in observation_list.items %} {% if observation|lower == result.value|lower %} {% if status|lower == 'negative' %} class="bg-warning" {% else %} class="bg-success" {% endif %} {% endif %} {% endfor %}>
+                            <td>{{ field|title }}</td>
+                            <td>{{ result.normal_range }}</td>
+                            <td class="text-center">{{ result.value|title }}</td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+        <div class="card">
+            <div class="card-body">
+                <p class="card-title">
+                    TEST RESULT NOT YET READY
+                </p>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

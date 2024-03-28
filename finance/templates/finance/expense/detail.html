@@ -110,6 +110,23 @@
                                 </div>
                             </div>
 
+                            <div class="col-xxl-4 col-md-4">
+                                <div class="card info-card sales-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title"></h5>
+                                        <div class="d-flex align-items-center">
+                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-calendar2-week-fill"></i>
+                                            </div>
+                                            <div class="ps-3">
+                                                <h6>{{ expense.status|upper }}</h6>
+                                                <span class="text-muted small pt-2 ps-1">Confirmation Status</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
 
                             <p><span class="card-title">Extra Info:</span> <b>{{ expense.description }}</b></p>
                             <p><span class="card-title">Proof of Fund:</span> <b>{% if expense.expense_proof %} <a href="{{ expense.expense_proof.url }}" target="_blank">View</a> {% endif %}</b></p>

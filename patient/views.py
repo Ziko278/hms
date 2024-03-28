@@ -2,9 +2,11 @@ from itertools import chain
 from operator import attrgetter
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models.functions import Lower
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from datetime import datetime
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
@@ -65,7 +67,7 @@ class PatientCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMess
         context['first_name'] = first_name
         context['middle_name'] = middle_name
         context['last_name'] = last_name
-        context['patient_setting'] = PatientSettingModel.objects.filter().first()
+        context['patient_setting'] = GeneralSettingModel.objects.filter().first()
         context['insurance_provider'] = insurance_provider
         context['insurance_provider_list'] = INSURANCE_PROVIDER
         return context
@@ -79,7 +81,7 @@ class PatientPendingListView(LoginRequiredMixin, PermissionRequiredMixin, ListVi
     context_object_name = "pending_payment_list"
 
     def get_queryset(self):
-        return RegistrationPaymentModel.objects.filter(registration_status='pending').order_by('created_at').reverse()
+        return RegistrationPaymentModel.objects.filter(registration_status='pending').order_by('created_at')
 
 
 class PatientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -91,6 +93,23 @@ class PatientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
     def get_queryset(self):
         return PatientModel.objects.all().order_by('first_name')
+
+
+class ReturningPatientListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    model = PatientModel
+    permission_required = 'patient.view_patientmodel'
+    fields = '__all__'
+    template_name = 'patient/index.html'
+    context_object_name = "patient_list"
+
+    def get_queryset(self):
+        today = datetime.today()
+        return PatientModel.objects.filter(last_visit__year=today.year, last_visit__month=today.month).order_by('first_name')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['returning_patient'] = True
+        return context
 
 
 class PatientDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
@@ -107,7 +126,7 @@ class PatientDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView)
         test_result_list = ConductTestResultModel.objects.filter(test__patient__id=self.object.pk)
         consultation_test_list = ConsultationTestModel.objects.filter(patient__id=self.object.pk)
         history_list = sorted(chain(consultation_list, consultation_test_list, test_result_list, prescription_list),
-                              key=attrgetter('created_at'))
+                              key=attrgetter('created_at'))[-20:]
         history_list.reverse()
         context['history_list'] = history_list
         return context
@@ -130,7 +149,7 @@ class PatientUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMess
         context = super().get_context_data(**kwargs)
         context['state_list'] = state_list
         context['patient'] = self.object
-        context['patient_setting'] = PatientSettingModel.objects.filter().first()
+        context['patient_setting'] = GeneralSettingModel.objects.filter().first()
         return context
 
 
@@ -160,9 +179,8 @@ def get_patient_with_card(request):
     return render(request, 'patient/get_detail_from_card.html', context)
 
 
-class PatientVitalsCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
+class PatientVitalsCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = PatientVitalsModel
-    permission_required = 'patient.add_patientvitalsmodel'
     form_class = PatientVitalsForm
     template_name = 'consultation/consultation/payments.html'
     success_message = 'Patient Vitals Successfully Recorded'
@@ -177,16 +195,16 @@ class PatientVitalsCreateView(LoginRequiredMixin, PermissionRequiredMixin, Succe
         return super(PatientVitalsCreateView, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        return reverse('consultation_payment_index')
+        redirect_url =  self.request.META.get('HTTP_REFERER') or reverse_lazy('admin_dashboard')
+        return redirect_url
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
 
 
-class PatientVitalsUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
+class PatientVitalsUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = PatientVitalsModel
-    permission_required = 'patient.change_patientvitalsmodel'
     form_class = PatientVitalsForm
     template_name = 'consultation/consultation/payments.html'
     success_message = 'Patient Vitals Updated Recorded'

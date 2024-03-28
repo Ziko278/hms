@@ -1,0 +1,359 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'style' %}
+<style>
+
+	.customer-list li{
+		width:300px;
+		border:1px solid black;
+		margin:2px;
+		padding:2px;
+		border-radius:5px;
+		color:white;
+		background:grey;
+	}
+
+	.customer-list li:hover{
+		background:black;
+	}
+
+.search-result{
+	position:absolute;z-index:1000;
+	background:white;
+	min-width:200px;
+	padding:10px;
+	border:1px solid black;
+	left:50px;
+	border-radius:10px;
+	display:none;
+}
+.search-result li{
+	width:100%;
+	height:30px;
+	padding-left:10px;
+	border:1px solid grey;
+	margin-bottom:1px;
+}
+.search-result li:hover{
+	background:grey;
+	color:white;
+}
+</style>
+
+{% endblock %}
+
+{% block 'main' %}
+<div class="col-lg-12">
+    <div class="card card-profile">
+        <div class="admin-user">
+            <div class="img-wrraper">
+                <div class="">
+                    <img {% if patient.image %} src="{{ patient.image.url }}" {% else %} src="{% static 'admin_site/images/default_image.jpg' %}" {% endif %} class="rounded-circle"></div>
+            </div>
+            <div class="user-details">
+                <div class="title">
+                    <h4>{{ patient|title }}</h4>
+                  <h6>{{ patient.card_number|upper }}</h6>
+                </div>
+
+                  <ul class="follow-list">
+
+                    <li>
+                      <div class="follow-num ">{{ delivery.admission_date|date }}</div><span>Date Admitted</span>
+                    </li>
+                      <li>
+                      <div class="follow-num ">{{ delivery.status|upper }}</div><span>Delivery Status</span>
+                    </li>
+
+                  </ul>
+
+              </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-xl-3 col-xxl-4">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body profile-accordion pb-0">
+                        <div class="accordion" id="accordionExample1">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne1">
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne1" aria-expanded="true" aria-controls="collapseOne1">
+                                      <b>About Patient</b>
+                                  </button>
+                                </h2>
+                                <div id="collapseOne1" class="accordion-collapse collapse" aria-labelledby="headingOne1" data-bs-parent="#accordionExample1">
+                                  <div class="accordion-body">
+                                    <div class="about-me">
+                                        <ul>
+                                            <li>
+                                                <i class="fa-solid fa-location-dot"></i>
+                                                <div>
+                                                    <h6>{% if patient.mobile %} {{ patient.mobile }} {% else %} No Phone Number {% endif %}</h6>
+                                                    <span>{% if patient.address %} {{ patient.address }} {% else %} No Address {% endif %}</span>
+                                                    <h6>Gender: {{ patient.gender|title }}</h6>
+                                                    <h6>DOB: {{ patient.date_of_birth|date }}</h6>
+                                                </div>
+                                            </li>
+
+                                            <li>
+                                                <i class="fa-solid fa-box"></i>
+                                                <div>
+                                                    <h6>Date Admitted: {% if delivery.delivery_date %} {{ delivery.delivery_date|date }} {% endif %}</h6>
+                                                    <h6>Ward: {% if delivery.ward %} {{ delivery.ward|upper }} {% endif %}</h6>
+                                                    <h6>Bed: {% if delivery.bed %} {{ delivery.bed }} {% endif %}</h6>
+                                                    <h6>Purpose:  {{ delivery.purpose }} </h6>
+                                                </div>
+                                            </li>
+
+                                            <li>
+                                                <i class="fa-solid fa-stethoscope"></i>
+                                                <div>
+                                                    <h6>Blood Group: {% if patient.blood_group %} {{ patient.blood_group|upper }} {% endif %}</h6>
+                                                    <h6>Genotype: {% if patient.genotype %} {{ patient.genotype|upper }} {% endif %}</h6>
+                                                    <h6>Health Note: {% if patient.medical_conditions %} {{ patient.medical_conditions }} {% endif %}</h6>
+                                                </div>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body profile-accordion pb-0">
+                        <div class="accordion" id="accordionHealth">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingHealth">
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHealth" aria-expanded="true" aria-controls="collapseHealth">
+                                    <b>Patient Vitals</b>
+                                  </button>
+                                </h2>
+                                <div id="collapseHealth" class="accordion-collapse collapse" aria-labelledby="headingHealth" data-bs-parent="#accordionHealth">
+                                  <div class="accordion-body">
+                                    <div class="about-me">
+                                        <ul>
+                                            <li>
+                                                <i class="fa-solid fa-person"></i>
+                                                <div>
+                                                    <h6>BP: {{patient.today_vital.bp_diastolic}}/{{patient.today_vital.bp_systolic}}</h6>
+                                                    <h6>Pulse: {{patient.today_vital.pulse }} B/min</h6>
+                                                    <h6>Temp: {{patient.today_vital.temperature }} C</h6>
+                                                    <h6>Weight: {{patient.today_vital.weight }} Kg</h6>
+                                                    <h6>Respiration: {{patient.today_vital.respiratory_rate }} </h6>
+                                                    <h6>Extra Note: {{patient.today_vital.extra_note }} </h6>
+                                                </div>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-xl-9 col-xxl-8">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body pb-0">
+                        <a href="#" class="btn btn-primary" style="float:right" title="Register Baby" data-bs-toggle="modal" data-bs-target="#exampleModalCenter"><i class="bi bi-plus"></i> </a>
+                        <h2 class="card-title"><b>Patient Delivery Cost Breakdown</b></h2>
+                        <h6>Total Cost:<b> N{{ delivery_fee|floatformat|intcomma }}</b></h6>
+                        <h6>Amount Paid:<b> N{{ delivery.amount_paid|floatformat|intcomma }}</b></h6>
+                        <h6>Wave Fee:<b> N{{ delivery.amount_waved|floatformat|intcomma }}</b></h6>
+                        <h6>Balance:<b> N{{ delivery.balance|floatformat|intcomma }}</b></h6>
+                        <br />
+                        <h6>No of Babies:<b> {{ delivery.babies.all|length }}</b></h6>
+                        <h6>Discharge Date:<b> {{ delivery.discharge_date|date }}</b></h6>
+                        <h6>Discharge Note:<b> {{ delivery.discharge_note}}</b></h6>
+                        <h6>Discharge Status:<b> {{ delivery.patient_status|upper }}</b></h6>
+
+
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body pb-0">
+                        <h3 class="card-title"><b>Delivered Babies</b></h3>
+                        <div class="table-responsive active-projects user-tbl  dt-filter">
+                            <table id="user-tbl" class="table shorting">
+                                <thead>
+                                    <tr>
+                                        <th>S/N</th>
+                                        <th>Gender</th>
+                                        <th>Weight (KG)</th>
+                                        <th>Status</th>
+                                        <th>Delivery Date/Time</th>
+                                        <th>Action</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for baby in delivery.babies.all %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ baby.gender|title }}</td>
+                                        <td>{{ baby.weight }}</td>
+                                        <td>{{ baby.status|title }}</td>
+                                        <td>{{ baby.delivery_date }}/ {{ baby.delivery_time }}</td>
+
+                                        <td>
+                                            <div class="dropdown">
+                                                <div class="btn-link" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M11 12C11 12.5523 11.4477 13 12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12Z" stroke="#737B8B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                        <path d="M18 12C18 12.5523 18.4477 13 19 13C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11C18.4477 11 18 11.4477 18 12Z" stroke="#737B8B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                        <path d="M4 12C4 12.5523 4.44772 13 5 13C5.55228 13 6 12.5523 6 12C6 11.4477 5.55228 11 5 11C4.44772 11 4 11.4477 4 12Z" stroke="#737B8B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                    </svg>
+                                                </div>
+                                                <div class="dropdown-menu dropdown-menu-right" style="">
+                                                    <a class="dropdown-item text-warning" href="#" data-bs-toggle="modal" data-bs-target="#exampleModalCenter{{ forloop.counter }}">Update</a>
+                                                    <a class="dropdown-item text-danger" href="{% url 'delivery_baby_delete' baby.id %}">Delete</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<form action="{% url 'delivery_baby_create' %}" method="post">
+	{% csrf_token %}
+	<input type="hidden" name="user" value="{{ request.user.id }}">
+	<input type="hidden" name="delivery" value="{{ delivery.id }}">
+	<div class="modal fade" id="exampleModalCenter">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+                    <h5 class="modal-title"><b>Register Delivered Baby</b></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-12 m-b30">
+							<label class="form-label">Baby Gender <b style="color:red">*</b></label>
+							{{ form.gender }}
+						</div>
+						<div class="col-sm-12 m-b30">
+                            <br />
+							<label class="form-label">Baby Weight (KG)</label>
+							{{ form.weight }}
+						</div>
+                        <div class="col-sm-12 m-b30">
+                            <br />
+							<label class="form-label">Mortality Status</label>
+							{{ form.status }}
+						</div>
+                        <div class="col-sm-12 m-b30">
+                            <br />
+							<label class="form-label">Delivery Date</label>
+							{{ form.delivery_date }}
+						</div>
+                        <div class="col-sm-12 m-b30">
+                            <br />
+							<label class="form-label">Delivery Time</label>
+							{{ form.delivery_time }}
+						</div>
+
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+					<input type="submit" class="btn btn-primary" value="Save" />
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+{% for baby in delivery.babies.all %}
+<form action="{% url 'delivery_baby_edit' baby.id %}" method="post">
+	{% csrf_token %}
+	<input type="hidden" name="user" value="{{ request.user.id }}">
+	<input type="hidden" name="delivery" value="{{ delivery.id }}">
+	<div class="modal fade" id="exampleModalCenter{{forloop.counter}}">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+                    <h5 class="modal-title"><b>Update Delivered Baby</b></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-12 m-b30">
+							<label class="form-label">Baby Gender <b style="color:red">*</b></label>
+                            <select class="form-control" name="gender">
+                                <option value="male" {% if baby.gender == 'male' %} selected {% endif %}>Male</option>
+                                <option value="female" {% if baby.gender == 'female' %} selected {% endif %}>Female</option>
+                            </select>
+
+						</div>
+						<div class="col-sm-12 m-b30">
+                            <br />
+							<label class="form-label">Baby Weight (KG)</label>
+							<input type="number" class="form-control" style=".01" name="weight" value="{{baby.weight}}">
+						</div>
+                        <div class="col-sm-12 m-b30">
+                            <br />
+							<label class="form-label">Mortality Status</label>
+							<select class="form-control" name="status">
+                                <option value="alive" {% if baby.gender == 'alive' %} selected {% endif %}>Alive</option>
+                                <option value="dead" {% if baby.gender == 'alive' %} selected {% endif %}>Dead</option>
+                            </select>
+						</div>
+                        <div class="col-sm-12 m-b30">
+                            <br />
+							<label class="form-label">Delivery Date</label>
+                            <input class="form-control" type="date" name="delivery_date" value="{{ baby.delivery_date|date:'Y-m-d' }}">
+						</div>
+                        <div class="col-sm-12 m-b30">
+                            <br />
+							<label class="form-label">Delivery Time</label>
+                            <input type="time" class="form-control"  name="delivery_time" value="{{ baby.delivery_time|time:'H:i:s' }}">
+						</div>
+
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+					<input type="submit" class="btn btn-primary" value="Save" />
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+{% endfor %}
+{% endblock %}
+

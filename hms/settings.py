@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-q#2tb+j3j-rh&52mcss_20^6t_$knre8g(@2$#m4j+vvk61g40
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -144,3 +144,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
+
+handler404 = 'admin_site.views.error_404'
+handler403 = 'admin_site.views.error_403'

@@ -1,8 +1,7 @@
 from django.contrib import admin
-from patient.models import PatientModel, PatientSettingModel, PatientVitalsModel
-
+from patient.models import PatientModel, PatientVitalsModel, PatientMonthlyStatisticModel
 
 admin.site.register(PatientModel)
-admin.site.register(PatientSettingModel)
 admin.site.register(PatientVitalsModel)
+admin.site.register(PatientMonthlyStatisticModel)
 

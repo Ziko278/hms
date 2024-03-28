@@ -72,7 +72,7 @@ CONSULTATION_STATUS = (
 )
 
 CONSULTATION_STAGE = (
-    ('new', 'NEW'), ('follow up', 'FOLLOW UP'), ('conclusion', 'CONCLUSION')
+    ('new', 'NEW'), ('follow up', 'FOLLOW UP'), ('conclusion', 'CONCLUSION'), ('admission', 'ADMISSION')
 )
 
 
@@ -106,4 +106,8 @@ ASSET_TYPE = (
 
 DRUG_FORM = (
     ('capsule', 'CAPSULE'), ('injection', 'INJECTION'), ('syrup', 'SYRUP'), ('balm', 'BALM')
+)
+
+MORTALITY_STATUS = (
+    ('alive', 'ALIVE'), ('dead', 'DEAD')
 )

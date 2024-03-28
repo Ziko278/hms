@@ -1,0 +1,20 @@
+{% load humanize %}
+{% if layout_activity_list %}
+<ul class="timeline">
+    {% for activity in layout_activity_list %}
+    <li>
+        <div class="timeline-badge
+        {% if activity.category == 'expense_registration' %} danger {% else %} success {% endif %}"
+        ></div>
+        <a class="timeline-panel text-muted" href="javascript:void(0);">
+            <span>{{activity.created_at|naturaltime}}</span>
+            <h6 class="mb-0">{{ activity.subject }}</h6>
+        </a>
+    </li>
+    {% endfor %}
+
+
+</ul>
+{% else %}
+<p>No Activity Yet</p>
+{% endif %}

@@ -2,13 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 from admin_site.model_info import *
 from admin_site.models import GeneralSettingModel
-from pharmacy.models import DrugModel
 import random
 # import barcode
 from datetime import date
 # from barcode.writer import ImageWriter
 from django.apps import apps
 from finance.models import RegistrationPaymentModel
+from admin_site.models import GeneralSettingModel
 
 
 # def generate_barcode(identifier):
@@ -44,7 +44,6 @@ class PatientModel(models.Model):
     genotype = models.CharField(max_length=20, choices=GENOTYPE, null=True, blank=True)
     age = models.IntegerField(null=True, blank=True)
     medical_conditions = models.TextField(null=True, blank=True)
-    medication = models.ManyToManyField(DrugModel, blank=True)
 
     emergency_contact_name = models.CharField(max_length=200,  null=True, blank=True)
     emergency_contact_number = models.CharField(max_length=20,  null=True, blank=True)
@@ -91,7 +90,7 @@ class PatientModel(models.Model):
     def save(self, *args, **kwargs):
         if not self.last_visit:
             self.last_visit = date.today()
-        patient_setting = PatientSettingModel.objects.first()
+        patient_setting = GeneralSettingModel.objects.first()
 
         if patient_setting.auto_generate_card_number and not self.card_number:
             last_patient = PatientIDGeneratorModel.objects.filter(status='s').last()
@@ -113,6 +112,36 @@ class PatientModel(models.Model):
             generate_id.save()
 
         super(PatientModel, self).save(*args, **kwargs)
+
+    def admission_price(self):
+        AdmissionFeeModel = apps.get_model('finance', 'AdmissionFeeModel')
+        admission = None
+        if self.insurance_provider:
+            admission = AdmissionFeeModel.objects.filter(insurance=self.insurance_provider).first()
+        if not admission:
+            admission = AdmissionFeeModel.objects.filter(insurance=None).first()
+        if not admission:
+            admission = AdmissionFeeModel.objects.first()
+        if admission:
+            price = admission.amount
+        else:
+            price = 0
+        return price
+    
+    def delivery_price(self):
+        DeliveryFeeModel = apps.get_model('finance', 'DeliveryFeeModel')
+        delivery = None
+        if self.insurance_provider:
+            delivery = DeliveryFeeModel.objects.filter(insurance=self.insurance_provider).first()
+        if not delivery:
+            delivery = DeliveryFeeModel.objects.filter(insurance=None).first()
+        if not delivery:
+            delivery = DeliveryFeeModel.objects.first()
+        if delivery:
+            price = delivery.amount
+        else:
+            price = 0
+        return price
 
 
 class PatientVitalsModel(models.Model):
@@ -136,10 +165,6 @@ class PatientIDGeneratorModel(models.Model):
     status = models.CharField(max_length=10, choices=STATUS, blank=True, default='f')
 
 
-class PatientSettingModel(models.Model):
-    auto_generate_card_number = models.BooleanField(default=True)
-
-
 class PatientProfileModel(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, related_name='user_patient_profile')
     patient = models.OneToOneField(PatientModel, on_delete=models.CASCADE, null=True, related_name='patient_profile')
@@ -147,3 +172,11 @@ class PatientProfileModel(models.Model):
 
     def __str__(self):
         return self.patient.__str__()
+
+
+class PatientMonthlyStatisticModel(models.Model):
+    date = models.DateField(auto_now_add=True)
+    no_of_new_patient = models.IntegerField(default=1)
+    no_of_returning_patient = models.IntegerField(default=1)
+    patients = models.ManyToManyField(PatientModel)
+

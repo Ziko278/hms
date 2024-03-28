@@ -24,7 +24,7 @@
 							<tr>
 								<th>Patient</th>
 								<th>Test</th>
-								<th class="text-center">Payment</th>
+								{% if not admission %}<th class="text-center">Payment</th>{% endif %}
 								<th class="text-center">Sample</th>
 								<th class="text-center">Result</th>
 								<th>Action</th>
@@ -36,7 +36,7 @@
 							<tr>
 								<td>{{ test.patient|title }} ({{ test.patient.card_number|upper }})</td>
 								<td>{{ test|title }}</td>
-								<td class="text-center">{% if test.payment_made %} <i class="bi bi-check text-success" style="font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-size:20px"></i> {% endif %}</td>
+								{% if not admission %}<td class="text-center">{% if test.payment_made %} <i class="bi bi-check text-success" style="font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-size:20px"></i> {% endif %}</td>{% endif %}
 								<td class="text-center">{% if test.sample_collected %} <i class="bi bi-check text-success" {% if test.sample_label %} title="Label: {{ test.sample_label }}" {% endif %} style="font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-size:20px"></i> {% endif %}</td>
 								<td class="text-center">{% if test.result_ready %} <i class="bi bi-check text-success" style="font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-size:20px"></i> {% endif %}</td>
 								<td>

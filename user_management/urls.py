@@ -11,6 +11,7 @@ urlpatterns = [
 
     path('sign-in', user_sign_in_view, name='login'),
     path('sign-out', user_sign_out_view, name='logout'),
+    path('change-password', user_change_password_view, name='change_password'),
 
 
 ]

@@ -2,10 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 from admin_site.models import GeneralSettingModel
 from admin_site.model_info import *
-from datetime import date
+from datetime import date, datetime
 from django.apps import apps
-
-from human_resource.models import StaffModel
 
 
 def generate_payment_id():
@@ -51,6 +49,48 @@ class PatientRegistrationFeeModel(models.Model):
         return self.name.upper()
 
 
+class AdmissionFeeModel(models.Model):
+    """"""
+    name = models.CharField(max_length=200)
+    description = models.TextField(null=True, blank=True)
+    amount = models.FloatField()
+    insurance = models.CharField(max_length=100, null=True, blank=True, choices=INSURANCE_PROVIDER)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name'],
+                name='unique_patient_admission_fee_name'
+            )
+        ]
+
+    def __str__(self):
+        return self.name.upper()
+
+
+class DeliveryFeeModel(models.Model):
+    """"""
+    name = models.CharField(max_length=200)
+    description = models.TextField(null=True, blank=True)
+    amount = models.FloatField()
+    insurance = models.CharField(max_length=100, null=True, blank=True, choices=INSURANCE_PROVIDER)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name'],
+                name='unique_patient_delivery_fee_name'
+            )
+        ]
+
+    def __str__(self):
+        return self.name.upper()
+
+
 class RegistrationPaymentModel(models.Model):
     """"""
     full_name = models.CharField(max_length=200)
@@ -60,6 +100,8 @@ class RegistrationPaymentModel(models.Model):
     registration_type = models.ForeignKey(PatientRegistrationFeeModel, on_delete=models.CASCADE)
     registration_status = models.CharField(max_length=50, choices=TEMPORAL_STATUS)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
+    date = models.DateField(auto_now_add=True, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         ordering = ['id']
@@ -134,6 +176,8 @@ class ExpenseModel(models.Model):
     amount = models.FloatField()
     date = models.DateField(blank=True)
     expense_proof = models.FileField(upload_to='finance/expense', blank=True, null=True)
+    STATUS = (('pending', 'PENDING'), ('confirmed', 'CONFIRMED'))
+    status = models.CharField(max_length=20, choices=STATUS, blank=True, default='pending')
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
@@ -172,9 +216,11 @@ class IncomeModel(models.Model):
     category = models.ForeignKey(IncomeCategoryModel, on_delete=models.CASCADE)
     description = models.TextField(null=True, blank=True)
     amount = models.FloatField()
-    date = models.DateTimeField(blank=True)
+    date = models.DateField(blank=True, null=True)
     income_proof = models.FileField(upload_to='finance/income', blank=True, null=True)
-    user = models.ForeignKey(User, on_delete=models.RESTRICT, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    STATUS = (('pending', 'PENDING'), ('confirmed', 'CONFIRMED'))
+    status = models.CharField(max_length=20, choices=STATUS, blank=True, default='pending')
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     def __str__(self):
@@ -186,51 +232,6 @@ class IncomeModel(models.Model):
         super(IncomeModel, self).save(*args, **kwargs)
 
 
-class StaffLoanModel(models.Model):
-    staff = models.ForeignKey(StaffModel, on_delete=models.CASCADE)
-    amount = models.FloatField()
-    date = models.DateField(blank=True, auto_now_add=True)
-    confirmation_date = models.DateField(blank=True, null=True)
-    status = models.CharField(max_length=20, choices=CONFIRMATION_STATUS, default=CONFIRMATION_STATUS[0], blank=True)
-    refund_type = models.CharField(max_length=50, choices=LOAN_REFUND_TYPE, default=LOAN_REFUND_TYPE[0], blank=True)
-    is_refunded = models.BooleanField(default=False)
-    expected_refund_date = models.DateTimeField(blank=True, null=True)
-    refund_date = models.DateTimeField(blank=True, null=True)
-
-
-class StaffDeductionModel(models.Model):
-    staff = models.ForeignKey(StaffModel, on_delete=models.CASCADE)
-    amount = models.FloatField()
-    purpose = models.TextField(null=True, blank=True)
-    date = models.DateField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=CONFIRMATION_STATUS, default=CONFIRMATION_STATUS[0], blank=True)
-    confirmation_date = models.DateField(blank=True, null=True)
-
-
-class StaffBonusModel(models.Model):
-    staff = models.ForeignKey(StaffModel, on_delete=models.CASCADE)
-    amount = models.FloatField()
-    subject = models.CharField(max_length=200)
-    description = models.TextField(null=True, blank=True)
-    date = models.DateField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=CONFIRMATION_STATUS, default=CONFIRMATION_STATUS[0], blank=True)
-    confirmation_date = models.DateField(blank=True, null=True)
-
-
-class PayrollModel(models.Model):
-    staff = models.ForeignKey(StaffModel, on_delete=models.CASCADE)
-    salary = models.FloatField()
-    loan_deduction = models.FloatField()
-    other_deduction = models.FloatField()
-    bonus = models.FloatField()
-    payable = models.FloatField()
-    date_prepared = models.DateField(auto_now_add=True)
-    confirmation_date = models.DateField(blank=True, null=True)
-    month = models.DateField()
-    confirmation_status = models.CharField(max_length=20, choices=CONFIRMATION_STATUS, default=CONFIRMATION_STATUS[0], blank=True)
-    payment_status = models.BooleanField(default=False, blank=True)
-
-
 class PaymentIDGeneratorModel(models.Model):
     last_id = models.IntegerField()
     last_payment_id = models.CharField(max_length=100, null=True, blank=True)
@@ -238,6 +239,51 @@ class PaymentIDGeneratorModel(models.Model):
         ('s', 'SUCCESS'), ('f', 'FAIL')
     )
     status = models.CharField(max_length=10, choices=STATUS, blank=True, default='f')
+
+
+class PaymentRemittanceModel(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.FloatField()
+    previous_balance = models.FloatField(blank=True, null=True)
+    current_balance = models.FloatField(blank=True, null=True)
+    STATUS = (
+        ('pending', 'PENDING'), ('confirmed', 'CONFIRMED'), ('declined', 'DECLINED')
+    )
+    status = models.CharField(max_length=10, choices=STATUS, blank=True, default='pending')
+    confirming_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='remittance_confirm')
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    confirmed_at = models.DateTimeField(blank=True, null=True)
+    date = models.DateField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.date or self.date == None:
+            self.date = date.today()
+        StaffProfileModel = apps.get_model('human_resource', 'StaffProfileModel')
+        if not self.previous_balance:
+            staff = StaffProfileModel.objects.filter(user=self.user).first().staff
+            self.previous_balance = staff.pending_remittance()
+        if self.status == 'confirmed' and not self.current_balance:
+            staff = StaffProfileModel.objects.filter(user=self.user).first().staff
+            self.current_balance = staff.pending_remittance() - self.amount
+        super(PaymentRemittanceModel, self).save(*args, **kwargs)
+
+
+class FundingModel(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.FloatField()
+    STATUS = (
+        ('pending', 'PENDING'), ('confirmed', 'CONFIRMED'), ('declined', 'DECLINED')
+    )
+    status = models.CharField(max_length=10, choices=STATUS, blank=True, default='pending')
+    confirming_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='funding_confirm')
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    confirmed_at = models.DateTimeField(blank=True, null=True)
+    date = models.DateField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.date:
+            self.date = date.today()
+        super(FundingModel, self).save(*args, **kwargs)
 
 
 

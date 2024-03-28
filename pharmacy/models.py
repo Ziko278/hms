@@ -58,6 +58,7 @@ class DrugVariantModel(models.Model):
     strength = models.ForeignKey(DrugStrengthModel, on_delete=models.SET_NULL, null=True, blank=True)
     form = models.CharField(max_length=50, choices=DRUG_FORM, default='capsule', blank=True, null=True)
     quantity = models.FloatField(blank=True, default=0)
+    low_limit = models.IntegerField(default=0)
 
     def __str__(self):
         drug_name = ''
@@ -116,8 +117,9 @@ class DrugStockModel(models.Model):
     total_cost_price = models.FloatField(blank=True, null=True)
     unit_cost_price = models.FloatField()
     selling_price = models.FloatField()
+    current_worth = models.FloatField(default=0, blank=True, null=True)
     status = models.CharField(max_length=15, blank=True, default='active')
-    date = models.DateTimeField(auto_now_add=True, blank=True)
+    date = models.DateField(auto_now_add=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -139,6 +141,8 @@ class DrugStockModel(models.Model):
 
         if not self.quantity_left:
             self.quantity_left = self.quantity_bought
+
+        self.current_worth = self.quantity_left * self.selling_price
 
         super(DrugStockModel, self).save(*args, **kwargs)
 

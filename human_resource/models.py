@@ -1,11 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
+from django.db.models import Sum
+
 from admin_site.models import GeneralSettingModel
 from admin_site.model_info import *
 import barcode
 from django.apps import apps
 from barcode.writer import ImageWriter
 from admin_site.models import DaysModel
+from finance.models import PaymentRemittanceModel, IncomeModel, ExpenseModel, RegistrationPaymentModel
 
 
 def generate_barcode(identifier):
@@ -120,7 +123,7 @@ class StaffModel(models.Model):
             return "{} {}".format(self.first_name, self.last_name)
 
     def save(self, *args, **kwargs):
-        staff_setting = HRSettingModel.objects.first()
+        staff_setting = GeneralSettingModel.objects.first()
 
         if staff_setting.auto_generate_staff_id and not self.staff_id:
             last_staff = StaffIDGeneratorModel.objects.filter(status='s').last()
@@ -145,7 +148,8 @@ class StaffModel(models.Model):
             user_profile = StaffProfileModel.objects.filter(staff=self).first()
             if user_profile:
                 user = user_profile.user
-                user.email = self.email
+                if self.email:
+                    user.email = self.email
                 user.save()
 
                 if self.group:
@@ -156,6 +160,60 @@ class StaffModel(models.Model):
             self.barcode = barcode_file_path
 
         super(StaffModel, self).save(*args, **kwargs)
+
+    def get_user_account(self):
+        user = StaffProfileModel.objects.filter(staff=self).first().user
+        return user
+
+    def pending_remittance(self):
+        registration_fee = RegistrationPaymentModel.objects.filter(user=self.get_user_account()).aggregate(Sum('amount'))['amount__sum']
+        registration_fee = registration_fee if registration_fee else 0
+
+        ConsultationPaymentModel = apps.get_model('consultation', 'ConsultationPaymentModel')
+        consultation_fee = ConsultationPaymentModel.objects.filter(user=self.get_user_account()).aggregate(Sum('amount'))['amount__sum']
+        consultation_fee = consultation_fee if consultation_fee else 0
+
+        ConductTestModel = apps.get_model('laboratory', 'ConductTestModel')
+        test_fee = ConductTestModel.objects.filter(payment_made=True, payment_user=self.get_user_account()).aggregate(Sum('cost'))['cost__sum']
+        test_fee = test_fee if test_fee else 0
+
+        PrescriptionModel = apps.get_model('consultation', 'PrescriptionModel')
+        drug_fee = PrescriptionModel.objects.filter(payment_made=True, payment_user=self.get_user_account()).aggregate(
+            Sum('total_price'))['total_price__sum']
+        drug_fee = drug_fee if drug_fee else 0
+
+        AdmissionPaymentModel = apps.get_model('medication', 'AdmissionPaymentModel')
+        admission_fee = AdmissionPaymentModel.objects.filter(user=self.get_user_account()).aggregate(
+            Sum('amount'))['amount__sum']
+        admission_fee = admission_fee if admission_fee else 0
+
+        DeliveryPaymentModel = apps.get_model('medication', 'DeliveryPaymentModel')
+        delivery_fee = DeliveryPaymentModel.objects.filter(user=self.get_user_account()).aggregate(
+            Sum('amount'))['amount__sum']
+        delivery_fee = delivery_fee if delivery_fee else 0
+
+        income = IncomeModel.objects.filter(status='confirmed', user=self.get_user_account()).aggregate(Sum('amount'))['amount__sum']
+        income = income if income else 0
+
+        expense = ExpenseModel.objects.filter(status='confirmed', user=self.get_user_account()).aggregate(Sum('amount'))['amount__sum']
+        expense = expense if expense else 0
+
+        FundingModel = apps.get_model('finance', 'FundingModel')
+        funding = FundingModel.objects.filter(status='confirmed', confirming_user=self.get_user_account()).aggregate(
+            Sum('amount'))['amount__sum']
+        funding = funding if funding else 0
+
+        amount_collected = registration_fee + consultation_fee + test_fee + drug_fee + funding + admission_fee + delivery_fee + income - expense
+        amount_remitted = PaymentRemittanceModel.objects.filter(user=self.get_user_account(), status='confirmed').aggregate(Sum('amount'))['amount__sum']
+        amount_remitted = amount_remitted if amount_remitted else 0
+        return amount_collected - amount_remitted
+
+    def last_remittance(self):
+        PaymentRemittanceModel = apps.get_model('finance', 'PaymentRemittanceModel')
+        remittance = PaymentRemittanceModel.objects.filter(user=self.get_user_account(), status='confirmed').last()
+        if remittance:
+            return remittance.created_at
+        return None
 
     class Meta:
         constraints = [
@@ -182,10 +240,6 @@ class StaffProfileModel(models.Model):
 
     def __str__(self):
         return self.staff.__str__()
-
-
-class HRSettingModel(models.Model):
-    auto_generate_staff_id = models.BooleanField(default=True, blank=True, null=True)
 
 
 class StaffCertificateModel(models.Model):

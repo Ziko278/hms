@@ -1,0 +1,27 @@
+{% load static %}
+{% if message_list %}
+{% for message in message_list %}
+<div class="d-flex justify-content-start mb-4">
+    <div class="img_cont_msg">
+        <img  {% if message.sender == request.user.user_staff_profile.staff %}
+                {% if message.sender.image %} src="{{ message.sender.image.url }}"  {% else %} src="{% static 'admin_site/images/default_image.jpg' %}"  {% endif %}
+             {% else %}
+                 {% if message.sender.image %} src="{{ message.sender.image.url }}"  {% else %} src="{% static 'admin_site/images/default_image.jpg' %}"  {% endif %}
+             {% endif %} class="rounded-circle user_img_msg" alt="">
+    </div>
+    <div class="{% if message.sender == request.user.user_staff_profile.staff %} msg_cotainer {% else %} msg_cotainer_send {% endif %}">
+        {{ message.message }}
+        <span class="{% if message.sender == request.user.user_staff_profile.staff %} msg_time {% else %} msg_time_send {% endif %}">{{ message.created_at }}</span>
+    </div>
+</div>
+{% endfor %}
+
+{% else %}
+<div class="d-flex justify-content-start mb-4">
+
+    <div class="">
+        <p>No Message with this contact</p>
+    </div>
+</div>
+{% endif %}
+

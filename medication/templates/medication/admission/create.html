@@ -1,0 +1,106 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+
+<form action="" method="post">
+	{% csrf_token %}
+	<input type="hidden" name="user" value="{{request.user.id}}" />
+	<input type="hidden" name="patient" value="{{patient.id}}" />
+	<div class="row">
+		<div class="card">
+			<div class="card-body px-0" style="padding:20px">
+				<div class="row" style="margin:20px">
+
+					<div class="col-6 m-b30 reg_div">
+						<img  class="rounded-circle" class="rounded-circle" {% if patient.image %} src="{{ patient.image.url }}" {% else %} src="{% static 'admin_site/images/default_image.jpg' %}" {% endif %} />
+					</div>
+					<div class="col-6 m-b30 reg_div">
+						<h3>{{ patient|title }} ({{ patient.card_number|upper }})</h3>
+						<p>Genotype: {% if patient.genotype %} {{ patient.genotype|upper }} {% endif %}</p>
+						<p>Blood Group: {% if patient.blood_group %} {{ patient.blood_group|upper }} {% endif %}</p>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+
+		<div class="col-xl-12 active-p">
+			<div class="tab-content" id="pills-tabContent">
+				<div class="tab-pane fade show active" id="pills-colm" role="tabpanel" aria-labelledby="pills-colm-tab">
+					<div class="card">
+						<div class="card-body px-0" style="padding:20px">
+							<div class="row" style="margin:20px">
+
+								<div class="col-sm-4 m-b30 reg_div" id="card_number_div">
+									<label class="form-label">Admission Type</label>
+									<select class="form-control" name="price_per_day" required>
+										<option value="">----------</option>
+										{% for admission in admission_type_list %}
+											<option value="{{admission.amount}}">{{ admission|upper }} (N{{admission.amount|floatformat|intcomma}})</option>
+										{% endfor %}
+									</select>
+								</div>
+
+								<div class="col-sm-4 m-b30 reg_div">
+									<label class="form-label">Ward</label>
+									<select class="form-control" id="ward" name="ward">
+                                      <option value="">-----------------</option>
+                                      {% for ward in ward_list %}
+                                      <option value="{{ward.id}}"  bed="<option value=''>----------</option>
+                                      {% for bed_id, bed in ward.free_beds.items %}
+                                      <option value='{{bed_id}}'>{{bed|upper}}</option>
+                                      {% endfor %}
+                                      ">
+
+                                      {{ward|upper}} ({{ward.no_of_free_beds}} free bed{{ward.no_of_free_beds|pluralize}})</option>
+                                      {% endfor %}
+                                    </select>
+								</div>
+
+								<div class="col-sm-4 m-b30 reg_div">
+									<label class="form-label">Bed</label>
+									<select name="bed" class="form-control" id="bed">
+                                    <option value="">----------</option>
+                                    </select>
+								</div>
+
+								<div class="col-sm-4 m-b30 reg_div">
+									<br />
+									<label class="form-label">Reason for Admission</label>
+									{{ form.purpose }}
+								</div>
+
+								<div class="col-sm-8 m-b30" id="reg_button">
+									<br />
+									<button class="btn btn-primary" style="margin-top:25px">Save</button>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+{% endblock %}
+
+
+{% block 'script' %}
+<script>
+$(document).ready(function(){
+
+  $('#ward').change(function(){
+  	$('#bed').html('<option value="">----------</option>')
+    bed = $('option:selected', this).attr('bed')
+    $('#bed').html(bed)
+  })
+
+})
+
+</script>
+{% endblock %}

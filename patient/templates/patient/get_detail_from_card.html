@@ -17,6 +17,12 @@
                 <button class="btn btn-primary">Take Payment</button>
                 {% elif payment_type == 'test' %}
                 <a href="{% url 'patient_test_list' patient.id %}" class="btn btn-primary">Proceed</a>
+                {% elif payment_type == 'prescription' %}
+                <a href="{% url 'patient_prescription_list' patient.id %}" class="btn btn-primary">Proceed</a>
+                {% elif payment_type == 'admission' %}
+                <a href="{% url 'admission_create' %}?pk={{patient.id}}" class="btn btn-primary">Proceed</a>
+                {% elif payment_type == 'delivery' %}
+                <a href="{% url 'delivery_create' %}?pk={{patient.id}}" class="btn btn-primary">Proceed</a>
                 {% endif %}
             </div>
         </div>

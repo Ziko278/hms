@@ -12,6 +12,7 @@ urlpatterns = [
     path('site-admin/human-resource/', include('human_resource.urls')),
     path('site-admin/inventory/', include('inventory.urls')),
     path('site-admin/consultation/', include('consultation.urls')),
+    path('site-admin/medication/', include('medication.urls')),
     path('site-admin/pharmacy/', include('pharmacy.urls')),
     path('site-admin/finance/', include('finance.urls')),
     path('site-admin/user-management/', include('user_management.urls')),

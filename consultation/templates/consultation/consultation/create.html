@@ -219,7 +219,7 @@
                                                     <td class="text-center">{% if test.sample_collected %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
                                                     <td class="text-center">{% if test.result_ready %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
                                                     <td class="text-center">
-                                                        {% if not test.payment_made %} <a class="btn btn-danger" title="Remove Test" data-bs-toggle="modal" data-bs-target="#remove-test"><i class="bi bi-trash"></i></a> {% endif %}
+                                                        {% if not test.payment_made %} <a class="btn btn-danger" title="Remove Test" data-bs-toggle="modal" data-bs-target="#remove-test{{forloop.counter}}"><i class="bi bi-trash"></i></a> {% endif %}
                                                     </td>
                                                 </tr>
                                                 {% endfor %}
@@ -230,9 +230,9 @@
                                             <thead>
                                                 <tr class="bg-dark">
                                                     <th>Drug</th>
+                                                    <th>Availability</th>
                                                     <th>Payment</th>
-                                                    <th>Test Sample</th>
-                                                    <th>Test Result</th>
+                                                    <th>Collection</th>
                                                     <th class="text-center">Action</th>
                                                 </tr>
                                             </thead>
@@ -241,13 +241,11 @@
                                                 {% for prescription in history.prescriptions.all %}
                                                 <tr>
                                                     <td>{{ prescription }}</td>
-                                                    <td class="text-center">{% if test.payment_made %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
-                                                    <td class="text-center">{% if test.payment_made %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
-                                                    <td class="text-center">{% if test.payment_made %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
+                                                    <td class="text-center">{% if prescription.drug_available %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
+                                                    <td class="text-center">{% if prescription.payment_made %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
+                                                    <td class="text-center">{% if prescription.collected %} <i class="bi bi-check text-success" style="font-weight:bolder;font-size:20px"></i> {% else %} <i class="bi bi-x text-danger" style="font-weight:bolder;font-size:20px"></i> {% endif %}</td>
                                                     <td class="text-center">
-                                                        <a class="btn btn-primary" title="View Test Result"><i class="bi bi-eye"></i></a>
-                                                        <a class="btn btn-warning" title="Edit Test Result"><i class="bi bi-pencil"></i></a>
-                                                        <a class="btn btn-danger" title="Delete Test Result"><i class="bi bi-trash"></i></a>
+                                                        <a class="btn btn-danger" title="Remove Prescription" data-bs-toggle="modal" data-bs-target="#remove-prescription{{forloop.counter}}"><i class="bi bi-trash"></i></a>
                                                     </td>
                                                 </tr>
                                                 {% endfor %}
@@ -312,9 +310,7 @@
                             <thead>
                                 <tr>
                                     <th class='text-center'>Drug</th>
-                                    <th class='text-center'>Strength</th>
                                     <th class='text-center'>Quantity</th>
-                                    <th class='text-center'>Unit</th>
                                     <th class='text-center'>Extra Note</th>
                                 </tr>
                             </thead>
@@ -323,18 +319,9 @@
                               <tr class='blank_row'><td></td><td></td><td></td><td></td><td></td></tr>
                               <tr class='product_row' id='sale_row1' row=1>
                                   <td><a id='1' class='remove_sale_row' href='#' style='display:inline;color:red;background:white;height:40px;'><i style='font-size:25px' class='fa fa-close'></i></a>
-                                      <input autocomplete=off class="form-control m-bot15 product-name-input" type='text' style='display:inline;width:150px;' id='product-name1' row=1 />
+                                      <input autocomplete=off class="form-control m-bot15 product-name-input" type='text' style='display:inline;width:250px;' id='product-name1' row=1 />
                                         <input type='hidden' name='drugs' id='product-id1' /><br>
                                         <ul style='' class='search-result' id='result1'></ul>
-                                  </td>
-
-                                  <td class='text-center'>
-                                      <select id="strength1" class="form-control" style='width:150px;display:none'>
-                                            <option>---- select ----- </option>
-                                            {% for strength in drug_strength_list %}
-                                            <option value="{{ strength.id }}">{{ strength|upper }}</option>
-                                            {% endfor %}
-                                      </select>
                                   </td>
 
                                   <td class='text-center'>
@@ -342,17 +329,8 @@
                                   </td>
 
                                   <td class='text-center'>
-                                      <select id="unit1" class="form-control" style="width:150px">
-                                          <option>---- select ----- </option>
-                                        {% for unit in drug_unit_list %}
-                                        <option value="{{ unit.id }}">{{ unit|upper }}</option>
-                                        {% endfor %}
-                                      </select>
-                                  </td>
-
-                                  <td class='text-center'>
                                       <div class="form-group col-md-4 text-center" style='align:center'>
-                                          <textarea id='note1' style='width:100px;' row='1' class='one form-control col-lg-6'  name='note[]'></textarea>
+                                          <textarea id='note1' style='width:150px;' row='1' class='one form-control col-lg-6'  name='note'></textarea>
                                     </div>
                                   </td>
 
@@ -362,6 +340,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary light" id="add_row_button">Add Row</button>
                     <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
                     <button class="btn btn-primary">Save</button>
                 </div>
@@ -512,11 +491,39 @@
 
 
 {% for history in history_list %}
-      {% if history.type == 'test' %}
+      {% if history.type == 'prescription' %}
+            {% for prescription in history.prescriptions.all %}
+                <form action="{% url 'consultation_prescription_remove' history.id prescription.id %}" method="post">
+                    {% csrf_token %}
+                <div class="modal fade" id="remove-prescription{{forloop.counter}}">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"><b>Remove Prescription</b></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="card-description" style="font-size:20px">
+                                    {{prescription|title}} will be permanently removed
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Cancel</button>
+                                <button class="btn btn-primary">Proceed</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </form>
+        {% endfor %}
+    {% endif %}
+
+    {% if history.type == 'test' %}
             {% for test in history.tests.all %}
                 <form action="{% url 'consultation_test_remove' history.id test.id %}" method="post">
                     {% csrf_token %}
-                <div class="modal fade" id="remove-test">
+                <div class="modal fade" id="remove-test{{forloop.counter}}">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -568,18 +575,20 @@
             $(document).on('keyup', '.product-name-input', function() {
                 row=$(this).attr('row')
                 search_value = $(this).val().toLowerCase()
-
+                attribute = $(this).attr('readonly')
                 if(search_value==''){
                     $('#result'+row).slideUp('fast')
                 }else{
-                    $.ajax({
-                        url: "{% url 'get_drug_from_name' %}",
-                        data: {'name': search_value, 'row': row},
-                        success: function(data){
-                            $('#result'+row).html(data)
-			                $('#result'+row).slideDown('fast')
-                        }
-                    })
+                    if (attribute != 'readonly'){
+                        $.ajax({
+                            url: "{% url 'get_drug_from_name' %}",
+                            data: {'name': search_value, 'row': row},
+                            success: function(data){
+                                $('#result'+row).html(data)
+                                $('#result'+row).slideDown('fast')
+                            }
+                        })
+                    }
                 }
 
             })
@@ -592,7 +601,6 @@
                     totalAmount()
                 }else{
                     id=$(this).attr('id')
-                    alert(id)
                     $('#product-name'+row).val(product_name)
                     $('#product-id'+row).val(id)
                     $('#product-name'+row).attr('readonly',true)
@@ -600,6 +608,23 @@
                 }
 
 			})
+
+			$(document).on('click', '#add_row_button',  function() {
+                previous_row=$('.product_row').last().attr('row')
+                current_row=parseInt(previous_row)+1
+                $('.product_row').last().after("<tr class='product_row' id="+'sale_row'+current_row+" row="+current_row+"><td><a id="+current_row+" class='remove_sale_row' href='#' style='display:inline;color:red;background:white;height:40px;'><i style='font-size:25px' class='fa fa-close'></i></a><input autocomplete=off class='form-control m-bot15 product-name-input' type='text' style='display:inline;width:250px' name='product_name[]' id="+'product-name' +current_row+ " row="+current_row+" /><input type='hidden' name='drugs' id=" +'product-id'+current_row+" /><br><ul style='' class='search-result' id=" +'result'+current_row+"></ul></td><td class='text-center'><div class='form-group col-md-4 text-center' style='align:center'><input id="+'quantity_input'+current_row+" row="+current_row+" style='width:100px' type='number' step='.01' class='form-control col-lg-6' id='' name='quantity' required placeholder=''></div></td><td class='text-center'><textarea name='note' style='width:150px' class='form-control'></textarea></td></tr>")
+                if($('.product_row').length==0){
+                    current_row=1
+                    $('.blank_row').after("<tr class='product_row' id="+'sale_row'+current_row+" row="+current_row+"><td><a id="+current_row+" class='remove_sale_row' href='#' style='display:inline;color:red;background:white;height:40px;'><i style='font-size:25px' class='fa fa-close'></i></a><input autocomplete=off class='form-control m-bot15 product-name-input' type='text' style='display:inline;width:250px' name='product_name[]' id="+'product-name' +current_row+ " row="+current_row+" /><input type='hidden' name='drugs' id=" +'product-id'+current_row+" /><br><ul style='' class='search-result' id=" +'result'+current_row+"></ul></td><td class='text-er'><div class='form-group col-md-4 text-center' style='align:center'><input id="+'quantity_input'+current_row+" row="+current_row+" style='width:100px' type='number' step='.01' class='form-control col-lg-6' id='' name='quantity' required placeholder=''></div></td><td class='text-center'><textarea name='note' style='width:150px' class='form-control'></textarea></td></tr>")
+                }
+
+
+             })
+
+             $(document).on('click','.remove_sale_row',function() {
+                 row=$(this).attr('id')
+                 $('#sale_row'+row).remove()
+            })
 
         })
     </script>

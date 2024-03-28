@@ -17,7 +17,7 @@ from laboratory.forms import *
 
 class TestUnitCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = TestUnitModel
-    permission_required = 'laboratory.add_testunitmodel'
+    permission_required = 'laboratory.add_testmodel'
     form_class = TestUnitForm
     template_name = 'laboratory/test_unit/index.html'
     success_message = 'Test Unit Successfully Added'
@@ -33,7 +33,7 @@ class TestUnitCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMes
 
 class TestUnitListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = TestUnitModel
-    permission_required = 'laboratory.view_testunitmodel'
+    permission_required = 'laboratory.view_testmodel'
     fields = '__all__'
     template_name = 'laboratory/test_unit/index.html'
     context_object_name = "test_unit_list"
@@ -49,7 +49,7 @@ class TestUnitListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
 class TestUnitUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = TestUnitModel
-    permission_required = 'laboratory.change_testunitmodel'
+    permission_required = 'laboratory.add_testmodel'
     form_class = TestUnitForm
     template_name = 'laboratory/test_unit/index.html'
     success_message = 'Test Unit Successfully Updated'
@@ -64,7 +64,7 @@ class TestUnitUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMes
 
 class TestUnitDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = TestUnitModel
-    permission_required = 'laboratory.delete_testunitmodel'
+    permission_required = 'laboratory.add_testmodel'
     fields = '__all__'
     template_name = 'laboratory/test_unit/delete.html'
     context_object_name = "test_unit"
@@ -78,9 +78,72 @@ class TestUnitDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMes
         return reverse('test_unit_index')
 
 
+class TestObservationCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
+    model = TestObservationModel
+    permission_required = 'laboratory.add_testmodel'
+    form_class = TestObservationForm
+    template_name = 'laboratory/test_observation/index.html'
+    success_message = 'TestObservation Successfully Added'
+
+    def get_success_url(self):
+        return reverse('test_observation_index')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['test_observation_list'] = TestObservationModel.objects.all().order_by('name')
+        return context
+
+
+class TestObservationListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    model = TestObservationModel
+    permission_required = 'laboratory.view_testmodel'
+    fields = '__all__'
+    template_name = 'laboratory/test_observation/index.html'
+    context_object_name = "test_observation_list"
+
+    def get_queryset(self):
+        return TestObservationModel.objects.all().order_by('name')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = TestObservationForm
+        return context
+
+
+class TestObservationUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = TestObservationModel
+    permission_required = 'laboratory.add_testmodel'
+    form_class = TestObservationForm
+    template_name = 'laboratory/test_observation/index.html'
+    success_message = 'TestObservation Successfully Updated'
+
+    def get_success_url(self):
+        return reverse('test_observation_index')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class TestObservationDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = TestObservationModel
+    permission_required = 'laboratory.add_testmodel'
+    fields = '__all__'
+    template_name = 'laboratory/test_observation/delete.html'
+    context_object_name = "test_observation"
+    success_message = 'TestObservation Successfully Deleted'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def get_success_url(self):
+        return reverse('test_observation_index')
+
+
 class TestFieldCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = TestFieldModel
-    permission_required = 'laboratory.add_testfieldmodel'
+    permission_required = 'laboratory.add_testmodel'
     form_class = TestFieldForm
     template_name = 'laboratory/test_field/index.html'
     success_message = 'Test Field Successfully Added'
@@ -98,7 +161,7 @@ class TestFieldCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMe
 
 class TestFieldListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = TestFieldModel
-    permission_required = 'laboratory.view_testfieldmodel'
+    permission_required = 'laboratory.view_testmodel'
     fields = '__all__'
     template_name = 'laboratory/test_field/index.html'
     context_object_name = "test_field_list"
@@ -116,7 +179,7 @@ class TestFieldListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
 class TestFieldUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = TestFieldModel
-    permission_required = 'laboratory.change_testfieldmodel'
+    permission_required = 'laboratory.add_testmodel'
     form_class = TestFieldForm
     template_name = 'laboratory/test_field/index.html'
     success_message = 'Test Field Successfully Updated'
@@ -131,7 +194,7 @@ class TestFieldUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMe
 
 class TestFieldDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = TestFieldModel
-    permission_required = 'laboratory.delete_test_fieldmodel'
+    permission_required = 'laboratory.add_testmodel'
     fields = '__all__'
     template_name = 'laboratory/test_field/delete.html'
     context_object_name = "test_field"
@@ -191,7 +254,7 @@ class TestDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
 
 class TestUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = TestModel
-    permission_required = 'laboratory.change_testmodel'
+    permission_required = 'laboratory.add_testmodel'
     form_class = TestForm
     template_name = 'laboratory/test/edit.html'
     success_message = 'Laboratory Test Successfully Updated'
@@ -206,7 +269,7 @@ class TestUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessage
 
 class TestDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = TestModel
-    permission_required = 'laboratory.delete_testmodel'
+    permission_required = 'laboratory.add_testmodel'
     fields = '__all__'
     template_name = 'laboratory/test/delete.html'
     context_object_name = "test"
@@ -237,7 +300,7 @@ class TestPriceCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMe
 
 class TestPriceUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = TestPriceModel
-    permission_required = 'laboratory.change_testpricemodel'
+    permission_required = 'laboratory.add_testpricemodel'
     form_class = TestPriceForm
     template_name = 'laboratory/test/detail.html'
     success_message = 'Laboratory Test Successfully Updated'
@@ -252,7 +315,7 @@ class TestPriceUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMe
 
 class TestPriceDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = TestPriceModel
-    permission_required = 'laboratory.delete_testpricemodel'
+    permission_required = 'laboratory.add_testpricemodel'
     fields = '__all__'
     template_name = 'laboratory/test/price_delete.html'
     context_object_name = "test_price"
@@ -266,9 +329,8 @@ class TestPriceDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMe
         return reverse('test_detail', kwargs={'pk': self.object.test.pk})
 
 
-class ConsultationTestListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+class ConsultationTestListView(LoginRequiredMixin, ListView):
     model = ConductTestModel
-    permission_required = 'consultation.view_conducttestmodel'
     fields = '__all__'
     template_name = 'laboratory/lab_test/index.html'
     context_object_name = "lab_test_list"
@@ -294,19 +356,54 @@ class ConsultationTestListView(LoginRequiredMixin, PermissionRequiredMixin, List
         return context
 
 
+class AdmissionTestListView(LoginRequiredMixin, ListView):
+    model = ConductTestModel
+    fields = '__all__'
+    template_name = 'laboratory/lab_test/index.html'
+    context_object_name = "lab_test_list"
+
+    def get_queryset(self):
+        start_date = self.request.GET.get('start_date', date.today())
+        end_date = self.request.GET.get('end_date', date.today())
+        return ConductTestModel.objects.filter(date__gte=start_date, date__lte=end_date).exclude(
+            admission=None).order_by('date').reverse()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        start_date = self.request.GET.get('start_date', '')
+        end_date = self.request.GET.get('end_date', '')
+        if not start_date:
+            start_date = end_date = date.today()
+        else:
+            start_date = datetime.strptime(start_date, "%Y-%m-%d")
+            end_date = datetime.strptime(end_date, "%Y-%m-%d")
+
+        context['start_date'] = start_date
+        context['end_date'] = end_date
+        context['admission'] = True
+
+        return context
+
+
 class ConsultationTestDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = ConductTestModel
-    permission_required = 'consultation.view_conducttestmodel'
+    permission_required = 'laboratory.view_conducttestresultmodel'
     fields = '__all__'
     template_name = 'laboratory/lab_test/detail.html'
     context_object_name = "lab_test"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
+        context['test_result'] = ConductTestResultModel.objects.filter(test=self.object).first()
+        observation_list = {}
+        observations = TestObservationModel.objects.all()
+        for observation in observations:
+            observation_list[observation.name.lower()] = observation.status.upper()
+        context['observation_list'] = observation_list
         return context
 
 
+@login_required
 def test_sample_collection_view(request, pk):
     if request.method == 'POST':
         test = get_object_or_404(ConductTestModel, pk=pk)
@@ -314,6 +411,7 @@ def test_sample_collection_view(request, pk):
         sample_collected = True if 'sample_collected' in request.POST else False
         test.sample_label = sample_label
         test.sample_collected = sample_collected
+        test.collection_user = request.user
         test.save()
 
         messages.success(request, 'Test Sample Record Updated Successfully')
@@ -349,6 +447,8 @@ def test_result_record_view(request, pk):
                 }
         if 'result_ready' in request.POST:
             test.result_ready = True
+            test.result_user = request.user
+
         else:
             test.result_ready = False
         test.save()
@@ -368,6 +468,24 @@ def test_result_record_view(request, pk):
 
     context = {
         'lab_test': test,
-        'test_result': test_result
+        'test_result': test_result,
+        'observation_list': TestObservationModel.objects.all().order_by('name')
     }
     return render(request, 'laboratory/lab_test/record_result.html', context)
+
+
+def print_test_result_view(request, pk):
+    test = get_object_or_404(ConductTestModel, pk=pk)
+    test_result = ConductTestResultModel.objects.filter(test=test).first()
+    if test_result:
+        context = {
+            'test': test,
+            'test_result': test_result
+        }
+        return render(request, 'laboratory/lab_test/print_result.html', context)
+    messages.warning(request, 'Test Result Not Yet Ready')
+    referring_url = request.META.get('HTTP_REFERER')
+    return redirect(referring_url)
+
+
+

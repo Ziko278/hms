@@ -27,7 +27,6 @@ class ServicesModel(models.Model):
     description = models.TextField()
     picture = models.ImageField(upload_to= 'images/services', null=True, blank=True)
 
-
     def __str__(self):
         return "{}".format(self.name).upper()
 

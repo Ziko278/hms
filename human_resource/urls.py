@@ -26,6 +26,6 @@ urlpatterns = [
     path('staff-certificate/<int:pk>/delete', StaffCertificateDeleteView.as_view(), name='staff_certificate_delete'),
 
     path('staff-shift/<int:pk>/add', add_shift_view, name='add_shift'),
-
+    path('staff/generate-form', generate_form_view, name='staff_form'),
 ]
 

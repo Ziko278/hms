@@ -11,6 +11,7 @@
                 <div class="card-body">
                     <h4 class="card-title"> <b>Test Result for {{ lab_test.patient|title }}</b></h4>
                     <h4 class="card-title"> <b>Test: {{ lab_test|title }}</b></h4>
+                    <h4 class="card-title"> <b>Doctor: {{ lab_test.doctor.user_staff_profile|title }} <span style="float:right">{{ lab_test.date }}</span></b></h4>
                     <div class="row" style="margin-top:20px">
                         <div class="col-md-4">
                             <p style="">Test Field</p>
@@ -33,11 +34,21 @@
                         </div>
 
                         <div class="col-md-3">
-                            <p style="border:1px solid grey;padding:5px;border-radius:5px;color:black;font-family:cursive">{{field.range|title }}</p>
+                            <p style="border:1px solid grey;padding:5px;border-radius:5px;color:black;font-family:cursive">{% if field.result_type|lower == 'value' %} {{field.range|title }} {% else %} ------------- {% endif %}</p>
                         </div>
 
                         <div class="col-md-5">
+                            {% if field.result_type|lower == 'value' %}
                             <input type="text" name="{{field.name|lower }}" class="form-control" placeholder="value for {{field.field_code|upper}}" value="{% for key, value in test_result.test_result.items %}{% if key|lower == field|lower %}{{value.value}}{% endif %}{% endfor %}">
+                            {% else %}
+                            <select class="form-control" name="{{field.name|lower }}">
+                                <option value="">--------Select Observation-----</option>
+                                {% for observation in observation_list %}
+                                <option value="{{observation|lower}}"  {% for key, value in test_result.test_result.items %}{% if key|lower == field|lower %}{% if value.value|lower == observation|lower %} selected {% endif %}{% endif %}{% endfor %}>{{ observation }}</option>
+                                {% endfor %}
+
+                            </select>
+                            {% endif %}
                         </div>
 
                     </div>

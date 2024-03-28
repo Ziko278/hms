@@ -4,6 +4,7 @@
 
 <form action="{% url 'take_payment' %}" method="post">
 	{% csrf_token %}
+	<input type="hidden" name="user" value="{{request.user.id}}" />
 	<div class="row">
 		<div class="d-flex justify-content-between align-items-center mb-4">
 			<h4 class="heading mb-0"><b>Make Payment</b></h4>
@@ -22,6 +23,7 @@
 										<option value="registration">REGISTRATION</option>
 										<option value="consultation">CONSULTATION</option>
 										<option value="test">LABORATORY TEST</option>
+										<option value="prescription">PRESCRIPTION</option>
 									</select>
 								</div>
 
@@ -100,7 +102,7 @@
 				})
 			}
 
-			if(payment_type == 'consultation' | payment_type == 'test'){
+			if(payment_type == 'consultation' | payment_type == 'test' | payment_type == 'prescription'){
 				$('.reg_div').hide()
 				$('#reg_button').hide()
 

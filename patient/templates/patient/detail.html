@@ -8,7 +8,7 @@
             <div class="admin-user">
                 <div class="img-wrraper">
                     <div class="">
-                        <img {% if patient.image %} src="{{ patient.image.url }}" {% else %} src="{% static 'admin_site/images/user1.jpg' %}" {% endif %} class="rounded-circle"></div>
+                        <img {% if patient.image %} src="{{ patient.image.url }}" {% else %} src="{% static 'admin_site/images/default_image.jpg' %}" {% endif %} class="rounded-circle"></div>
                     <a class="icon-wrapper" href="{% url 'patient_edit' patient.id %}"><i class="fa-solid fa-pencil"></i></a>
                 </div>
                 <div class="user-details">
@@ -123,7 +123,7 @@
                                             <li>
                                                 <i class="fa-solid fa-user"></i>
                                                 <div>
-                                                    <h6><b>Username:</b> {{ patient.card_number|upper }}</h6>
+                                                    <h6><b>Username:</b> {{ patient.card_number }}</h6>
                                                     <h6><b>Default Password:</b> {{ patient.patient_profile.default_password }}</h6>
                                                 </div>
                                             </li>
@@ -153,8 +153,8 @@
                                     <div class="accordion-body">
                                         <div class="profile-interest">
                                             <div class="row mt-4 sp4" id="lightgallery">
-                                                <a href="{% url 'patient_edit' patient.id %}" style="width:50px;margin:15px" class="btn btn-warning" title="Edit Patient"><i class="bi bi-pencil"></i></a>
-                                                <a href="{% url 'patient_delete' patient.id %}" style="width:50px;margin:15px" class="btn btn-danger" title="Delete Patient"><i class="bi bi-trash"></i></a>
+                                                {% if 'patient.change_patientmodel' in perms %}<a href="{% url 'patient_edit' patient.id %}" style="width:50px;margin:15px" class="btn btn-warning" title="Edit Patient"><i class="bi bi-pencil"></i></a>{% endif %}
+                                                {% if 'patient.delete_patientmodel' in perms %}<a href="{% url 'patient_delete' patient.id %}" style="width:50px;margin:15px" class="btn btn-danger" title="Delete Patient"><i class="bi bi-trash"></i></a>{% endif %}
                                             </div>
                                         </div>
                                     </div>

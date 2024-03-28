@@ -44,7 +44,7 @@
 					<div class="card-body">
 						<div class="card-use-box">
 							<div class="crd-bx-img">
-							   <img {% if staff.image %} style="width:100px;height:100px" src="{{ staff.image.url }}" {% else %} src="{% static 'admin_site/images/profile/friends/f1.jpg' %}" {% endif %} class="rounded-circle" alt="">
+							   <img {% if staff.image %} style="width:100px;height:100px" src="{{ staff.image.url }}" {% else %} src="{% static 'admin_site/images/default_image.jpg' %}" {% endif %} class="rounded-circle" alt="">
 							   <div class="active {% if staff.status != 'active' %} deactive {% endif %}"></div>
 							</div>
 							<div class="card__text">
@@ -82,12 +82,7 @@
 					<table id="user-tbl" class="table shorting">
 						<thead>
 							<tr>
-								<th>
-									<div class="form-check custom-checkbox ms-0">
-										<input type="checkbox" class="form-check-input" id="checkAll" required="">
-										<label class="form-check-label" for="checkAll"></label>
-									</div>
-								</th>
+								<th>S/N</th>
 								<th>Image</th>
 								<th>Staff</th>
 								<th>Department</th>
@@ -100,15 +95,10 @@
 						<tbody>
 							{% for staff in staff_list %}
 							<tr>
-								<td>
-									<div class="form-check custom-checkbox">
-										<input type="checkbox" name="patients[]" class="form-check-input" id="customCheckBox2" required="">
-										<label class="form-check-label" for="customCheckBox2"></label>
-									</div>
-								</td>
+								<td>{{ forloop.counter }}</td>
 								<td>
 									<div class="d-flex align-items-center">
-										<img {% if staff.image %} src="{{ staff.image.url }}" {% else %} src="{% static 'admin_site/images/contacts/pic1.jpg' %}" {% endif %} class="avatar rounded-circle" alt="">
+										<img {% if staff.image %} src="{{ staff.image.url }}" {% else %} src="{% static 'admin_site/images/default_image.jpg' %}" {% endif %} class="avatar rounded-circle" alt="">
 										<p class="mb-0 ms-2">{{ user.profile }}</p>
 									</div>
 								</td>

@@ -14,28 +14,71 @@
                         <div class="email-right-box ms-0 ">
                             <div class="compose-wrapper mt-3 " id="compose-content">
                                 <div class="compose-content">
-                                    <form action="#">
-                                        <div class="mb-3">
-                                            <input type="text" class="form-control bg-transparent" placeholder=" To: Enter Email Addresses separated by comma">
+                                    <form action="{% url 'send_mail' %}" method="post" enctype="multipart/form-data">
+                                       {% csrf_token %}
+                                        <div class="mb-3 row">
+                                            <div class="col-4">
+                                                <label><b>Patient</b></label> <br />
+                                                <select name="patient" class="form-control">
+                                                    <option value="">------------</option>
+                                                    <option value="all">All Patient</option>
+                                                    <option value="male">Male Patient</option>
+                                                    <option value="female">Female Patient</option>
+
+                                                </select>
+                                            </div>
+
+                                            <div class="col-4">
+                                                <label><b>Staff</b></label> <br />
+                                                <select name="staff" class="form-control">
+                                                    <option value="">------------</option>
+                                                    <option value="all">All Staff</option>
+                                                    <option value="">---- BY GENDER ----</option>
+                                                    <option value="male">Male Staff</option>
+                                                    <option value="female">Female Staff</option>
+                                                    <option value="">---- BY DEPARTMENT ----</option>
+                                                    {% for department in department_list %}
+                                                    <option value="{{department.id}}">{{ department|upper }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+                                            <div class="col-4">
+                                                <label><b>Contacts</b></label> <br />
+                                                <select name="contact" class="form-control">
+                                                    <option value="">------------</option>
+                                                    <option value="all">All Contact</option>
+                                                    {% for contact in contact_category_list %}
+                                                    <option value="{{contact.id}}">{{ contact|upper }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
                                         </div>
                                         <div class="mb-3">
-                                            <input type="text" class="form-control bg-transparent" placeholder=" Subject:">
+                                            <input type="text" name="email" class="form-control bg-transparent" placeholder=" To: Enter Email Addresses separated by comma">
                                         </div>
                                         <div class="mb-3">
-                                            <textarea id="email-compose-editor" class="textarea_editor form-control bg-transparent" rows="5" placeholder="Enter text ..."></textarea>
+                                            <input type="text" name="subject" class="form-control bg-transparent" placeholder=" Subject:">
+                                        </div>
+                                        <div class="mb-3">
+                                            <textarea id="email-compose-editor" name="message" class="textarea_editor form-control bg-transparent" rows="5" placeholder="Enter text ..."></textarea>
+                                        </div>
+
+                                        <h5 class="my-3"><i class="fa fa-paperclip me-2"></i> Attachment</h5>
+                                        <div class="dropzone">
+                                            <div class="fallback">
+                                                <input name="file" type="file" multiple>
+                                            </div>
+                                        </div>
+                                        <div class="text-start mt-4 mb-3">
+                                            <button class="btn btn-primary btn-sl-sm me-2"><span class="me-2"><i class="fa fa-paper-plane"></i></span>Send</button>
+                                            <button class="btn btn-danger light btn-sl-sm" type="button"><span class="me-2"><i class="fa fa-times"></i></span>Discard</button>
                                         </div>
                                     </form>
-                                    <h5 class="my-3"><i class="fa fa-paperclip me-2"></i> Attatchment</h5>
-                                    <form action="#" class="dropzone">
-                                        <div class="fallback">
-                                            <input name="file" type="file" multiple>
-                                        </div>
-                                    </form>
+
                                 </div>
-                                <div class="text-start mt-4 mb-3">
-                                    <button class="btn btn-primary btn-sl-sm me-2" type="button"><span class="me-2"><i class="fa fa-paper-plane"></i></span>Send</button>
-                                    <button class="btn btn-danger light btn-sl-sm" type="button"><span class="me-2"><i class="fa fa-times"></i></span>Discard</button>
-                                </div>
+
                             </div>
                         </div>
                     </div>

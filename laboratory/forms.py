@@ -23,6 +23,26 @@ class TestUnitForm(ModelForm):
         }
 
 
+class TestObservationForm(ModelForm):
+    """"""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control',
+                'autocomplete': 'off'
+            })
+
+    class Meta:
+        model = TestObservationModel
+        fields = '__all__'
+        widgets = {
+            'description': TextInput(attrs={
+                'style': 'height:100px'
+            }),
+        }
+
+
 class TestFieldForm(ModelForm):
     """"""
     def __init__(self, *args, **kwargs):
@@ -48,7 +68,7 @@ class TestForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields:
-            self.fields['fields'].queryset = TestFieldModel.objects.all().order_by()
+            self.fields['fields'].queryset = TestFieldModel.objects.all().order_by('name')
             self.fields['possible_sicknesses'].queryset = SicknessModel.objects.all().order_by()
             if field != 'fields' and field != 'possible_sicknesses':
                 self.fields[field].widget.attrs.update({

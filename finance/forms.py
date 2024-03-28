@@ -26,6 +26,46 @@ class PatientRegistrationFeeForm(ModelForm):
         }
 
 
+class AdmissionFeeForm(ModelForm):
+    """"""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control',
+                'autocomplete': 'off'
+            })
+
+    class Meta:
+        model = AdmissionFeeModel
+        fields = '__all__'
+        widgets = {
+            'description': TextInput(attrs={
+                'style': 'height:100px'
+            }),
+        }
+
+
+class DeliveryFeeForm(ModelForm):
+    """"""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control',
+                'autocomplete': 'off'
+            })
+
+    class Meta:
+        model = DeliveryFeeModel
+        fields = '__all__'
+        widgets = {
+            'description': TextInput(attrs={
+                'style': 'height:100px'
+            }),
+        }
+
+
 class ExpenseCategoryForm(ModelForm):
     """"""
     def __init__(self, *args, **kwargs):
@@ -137,6 +177,26 @@ class IncomeForm(ModelForm):
             }),
             'description': TextInput(attrs={
                 'style': 'height:100px'
+            }),
+        }
+
+
+class FundingForm(ModelForm):
+    """"""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control',
+                'autocomplete': 'off'
+            })
+
+    class Meta:
+        model = FundingModel
+        fields = '__all__'
+        widgets = {
+            'date': TextInput(attrs={
+                'type': 'date'
             }),
         }
 

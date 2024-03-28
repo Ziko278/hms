@@ -30,6 +30,7 @@
                                     <th scope="col">Amount</th>
                                     <th scope="col">Invoice No.</th>
                                     <th scope="col">Date</th>
+                                    <th scope="col">Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -42,6 +43,7 @@
                                     <td>{{ expense.amount|intcomma }}</td>
                                     <td>{{ expense.invoice_number|upper }}</td>
                                     <td>{{ expense.date|date }}</td>
+                                    <td class="{% if expense.status == 'pending' %} text-warning {% else %} text-success{% endif %}">{{ expense.status|upper }}</td>
                                     <td>
                                         <div class="dropdown">
                                             <div class="btn-link" data-bs-toggle="dropdown" aria-expanded="false">
@@ -53,6 +55,9 @@
                                             </div>
                                             <div class="dropdown-menu dropdown-menu-right" style="">
                                                 <a class="dropdown-item text-primary" href="{% url 'expense_detail' expense.id %}">Detail</a>
+                                                {% if expense.status == 'pending' %}
+                                                <a class="dropdown-item text-primary" data-bs-toggle="modal" data-bs-target="#confirm{{ forloop.counter }}">Confirm</a>
+                                                {% endif %}
                                                 <a class="dropdown-item text-warning" href="{% url 'expense_edit' expense.id %}">Update</a>
                                                 <a class="dropdown-item text-danger" href="{% url 'expense_delete' expense.id %}">Delete</a>
                                             </div>
@@ -70,5 +75,35 @@
     </div>
 </div>
 
+
+{% for expense in expense_list %}
+{% if expense.status == 'pending' %}
+<form action="{% url 'expense_confirm' expense.id %}" method="post">
+	{% csrf_token %}
+	<div class="modal fade" id="confirm{{ forloop.counter }}">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+                    <h5 class="modal-title"><b>Confirm Expense</b></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+                        <p class="card-description">Confirm expense of {{ expense.amount|floatformat|intcomma }} on {{ expense.date|date }} by {{ expense.user.user_staff_profile.staff|title }}</p>
+                        <p class="card-description">This Action is permanent</p>
+
+                    </div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+					<input type="submit" class="btn btn-primary" value="Confirm" />
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+{% endif %}
+{% endfor %}
 
 {% endblock %}

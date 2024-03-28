@@ -1,0 +1,76 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% block 'main' %}
+
+<form action="{% url 'take_payment' %}" method="post">
+	{% csrf_token %}
+	<input type="hidden" name="user" value="{{request.user.id}}" />
+	<div class="row">
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h4 class="heading mb-0"><b>Patient Admission for Delivery</b></h4>
+
+		</div>
+		<div class="col-xl-12 active-p">
+			<div class="tab-content" id="pills-tabContent">
+				<div class="tab-pane fade show active" id="pills-colm" role="tabpanel" aria-labelledby="pills-colm-tab">
+					<div class="card">
+						<div class="card-body px-0" style="padding:20px">
+							<div class="row" style="margin:20px">
+
+								<div class="col-sm-4 m-b30 reg_div" id="card_number_div">
+									<label class="form-label">Enter Patient Card Number</label>
+									<input type="text" id="card_number" name="card_number" class="form-control" autocomplete="off">
+								</div>
+
+								<div class="col-sm-4 m-b30" id="card_number_button">
+									<a href="#" id="card_button" class="btn btn-primary" style="margin-top:25px">Check Number</a>
+								</div>
+
+								<div class="col-sm-12 m-b30" id="detail_from_card" style="padding-top:40px">
+
+								</div>
+
+								<div class="col-sm-8 m-b30" id="reg_button">
+									<button class="btn btn-primary" style="margin-top:25px">Save</button>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+<script src="{% static 'admin_site/scripts/jquery.js' %}"></script>
+<script>
+	$(document).ready(function(){
+		$('#reg_button').hide()
+
+        $('#card_button').click(function(){
+            card_number = $('#card_number').val()
+            $(this).attr('disabled', 'true')
+
+            $.ajax({
+                url : "{% url 'get_patient_with_card' %}",
+                data: {'card_number': card_number, 'payment_type': 'delivery'},
+                success: function(data){
+                    $('#detail_from_card').html(data)
+                },
+
+            })
+        })
+
+
+		$('form').submit(function(){
+			$(this).submit(function(){
+				return false
+			})
+			return true
+		 })
+
+	})
+</script>
+{% endblock %}

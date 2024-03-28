@@ -7,6 +7,7 @@ from patient.views import *
 urlpatterns = [
     path('register', PatientCreateView.as_view(), name='patient_create'),
     path('index', PatientListView.as_view(), name='patient_index'),
+    path('returning-patient/index', ReturningPatientListView.as_view(), name='returning_patient_index'),
     path('pending-registration/index', PatientPendingListView.as_view(), name='pending_patient_index'),
     path('<int:pk>/detail', PatientDetailView.as_view(), name='patient_detail'),
     path('<int:pk>/edit', PatientUpdateView.as_view(), name='patient_edit'),

@@ -1,0 +1,53 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+
+<div class="row">
+
+	<div class="col-xl-12 active-p">
+	<div class="tab-content" id="pills-tabContent">
+		<div class="tab-pane active" id="pills-colm" role="tabpanel" aria-labelledby="pills-colm-tab">
+			<div class="card">
+				<div class="card-body px-0">
+				  <div class="table-responsive active-projects user-tbl  dt-filter">
+					<table id="user-tbl" class="table shorting">
+						<thead>
+							<tr>
+								<th>Image</th>
+								<th>Staff</th>
+								<th>Pending Amount</th>
+								<th>Last Remittance</th>
+							</tr>
+						</thead>
+						<tbody>
+
+                            {% for staff_profile in other_staff_list %}
+                            {% if staff_profile.staff.pending_remittance > 0 %}
+							<tr>
+								<td>
+
+									<div class="d-flex align-items-center">
+										<img {% if staff_profile.staff.image %} src="{{ staff_profile.staff.image.url }}" {% else %} src="{% static 'admin_site/images/default_image.jpg' %}" {% endif %} class="avatar rounded-circle" alt="">
+										<p class="mb-0 ms-2">{{ user.profile }}</p>
+									</div>
+								</td>
+								<td>{{ staff_profile.staff|title }}</td>
+								<td>{{ staff_profile.staff.pending_remittance|floatformat|intcomma }}</td>
+								<td class="text-center">{% if staff_profile.staff.last_remittance %} {{ staff_profile.staff.last_remittance|date }} {% endif %}</td>
+
+							</tr>
+                            {% endif %}
+						    {% endfor %}
+						</tbody>
+
+					</table>
+				</div>
+			   </div>
+			</div>
+
+		</div>
+	</div>
+	</div>
+</div>
+{% endblock %}

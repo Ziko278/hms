@@ -31,6 +31,15 @@ class SiteInfoModel(models.Model):
         return self.short_name.upper()
 
 
+class GeneralSettingModel(models.Model):
+    site_in_maintenance = models.BooleanField(default=False)
+    auto_user_account = models.BooleanField(default=False)
+    patient_registration_without_payment = models.BooleanField(default=False)
+    allow_user_login = models.BooleanField(default=False)
+    auto_generate_staff_id = models.BooleanField(default=True)
+    auto_generate_card_number = models.BooleanField(default=True)
+
+
 class HospitalCertificateModel(models.Model):
     name = models.CharField(max_length=150)
     document = models.FileField(upload_to='images/certificate')
@@ -42,13 +51,6 @@ class HospitalCertificateModel(models.Model):
 
     def __str__(self):
         return self.name.upper()
-
-
-class GeneralSettingModel(models.Model):
-    site_in_maintenance = models.BooleanField(default=False)
-    auto_user_account = models.BooleanField(default=False)
-    patient_registration_without_payment = models.BooleanField(default=False)
-    allow_user_login = models.BooleanField(default=False)
 
 
 class DaysModel(models.Model):

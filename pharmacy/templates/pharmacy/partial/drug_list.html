@@ -4,12 +4,12 @@
             <option>{{ drug|upper }}</option>
         {% endfor %}
     {% else %}
-        <option value="" class="bg-dnager">NO DRUG FOUND</option>
+        <option value="" class="bg-danger">NO DRUG FOUND</option>
     {% endif %}
 {% else %}
     {% if drug_list %}
         {% for drug in drug_list %}
-            <li class="class='btn result-item" row="{{row}}" id="{{drug.id}}">{{ drug|upper }}</li>
+            <li class="class='btn result-item" style="padding:5px;border-radius:5px;margin-bottom:5px" row="{{row}}" id="{{drug.id}}">{{ drug|upper }}</li>
         {% endfor %}
 
     {% else %}

@@ -32,7 +32,7 @@
 							<tr>
 								<td>
 									<div class="d-flex align-items-center">
-										<img {% if payment.patient.image %} src="{{ payment.patient.image.url }}" {% else %} src="{% static 'admin_site/images/contacts/pic1.jpg' %}" {% endif %} class="avatar rounded-circle" alt="">
+										<img {% if payment.patient.image %} src="{{ payment.patient.image.url }}" {% else %} src="{% static 'admin_site/images/default_image.jpg' %}" {% endif %} class="avatar rounded-circle" alt="">
 										<p class="mb-0 ms-2">{{ user.profile }}</p>
 									</div>
 								</td>

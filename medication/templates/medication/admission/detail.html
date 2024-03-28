@@ -1,0 +1,643 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'style' %}
+<style>
+
+	.customer-list li{
+		width:300px;
+		border:1px solid black;
+		margin:2px;
+		padding:2px;
+		border-radius:5px;
+		color:white;
+		background:grey;
+	}
+
+	.customer-list li:hover{
+		background:black;
+	}
+
+.search-result{
+	position:absolute;z-index:1000;
+	background:white;
+	min-width:200px;
+	padding:10px;
+	border:1px solid black;
+	left:50px;
+	border-radius:10px;
+	display:none;
+}
+.search-result li{
+	width:100%;
+	height:30px;
+	padding-left:10px;
+	border:1px solid grey;
+	margin-bottom:1px;
+}
+.search-result li:hover{
+	background:grey;
+	color:white;
+}
+</style>
+
+{% endblock %}
+
+{% block 'main' %}
+<div class="col-lg-12">
+    <div class="card card-profile">
+        <div class="admin-user">
+            <div class="img-wrraper">
+                <div class="">
+                    <img {% if patient.image %} src="{{ patient.image.url }}" {% else %} src="{% static 'admin_site/images/default_image.jpg' %}" {% endif %} class="rounded-circle"></div>
+                <a class="icon-wrapper" href="{% url 'patient_detail' patient.id %}"><i class="fa-solid fa-eye"></i></a>
+            </div>
+            <div class="user-details">
+                <div class="title">
+                    <h4>{{ patient|title }}</h4>
+                  <h6>{{ patient.card_number|upper }}</h6>
+                </div>
+
+                  <ul class="follow-list">
+
+                    <li>
+                      <div class="follow-num ">{{ admission.admission_date|date }}</div><span>Date Admitted</span>
+                    </li>
+                      <li>
+                      <div class="follow-num ">{{ admission.status|upper }}</div><span>Admission Status</span>
+                    </li>
+
+                  </ul>
+
+              </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-xl-3 col-xxl-4">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body profile-accordion pb-0">
+                        <div class="accordion" id="accordionExample1">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne1">
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne1" aria-expanded="true" aria-controls="collapseOne1">
+                                      <b>About Patient</b>
+                                  </button>
+                                </h2>
+                                <div id="collapseOne1" class="accordion-collapse collapse" aria-labelledby="headingOne1" data-bs-parent="#accordionExample1">
+                                  <div class="accordion-body">
+                                    <div class="about-me">
+                                        <ul>
+                                            <li>
+                                                <i class="fa-solid fa-location-dot"></i>
+                                                <div>
+                                                    <h6>{% if patient.mobile %} {{ patient.mobile }} {% else %} No Phone Number {% endif %}</h6>
+                                                    <span>{% if patient.address %} {{ patient.address }} {% else %} No Address {% endif %}</span>
+                                                    <h6>Gender: {{ patient.gender|title }}</h6>
+                                                    <h6>DOB: {{ patient.date_of_birth|date }}</h6>
+                                                </div>
+                                            </li>
+
+                                            <li>
+                                                <i class="fa-solid fa-box"></i>
+                                                <div>
+                                                    <h6>Date Admitted: {% if admission.admission_date %} {{ admission.admission_date|date }} {% endif %}</h6>
+                                                    <h6>Ward: {% if admission.ward %} {{ admission.ward|upper }} {% endif %}</h6>
+                                                    <h6>Bed: {% if admission.bed %} {{ admission.bed }} {% endif %}</h6>
+                                                    <h6>Purpose:  {{ admission.purpose }} </h6>
+                                                </div>
+                                            </li>
+
+                                            <li>
+                                                <i class="fa-solid fa-stethoscope"></i>
+                                                <div>
+                                                    <h6>Blood Group: {% if patient.blood_group %} {{ patient.blood_group|upper }} {% endif %}</h6>
+                                                    <h6>Genotype: {% if patient.genotype %} {{ patient.genotype|upper }} {% endif %}</h6>
+                                                    <h6>Health Note: {% if patient.medical_conditions %} {{ patient.medical_conditions }} {% endif %}</h6>
+                                                </div>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body profile-accordion pb-0">
+                        <div class="accordion" id="accordionHealth">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingHealth">
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHealth" aria-expanded="true" aria-controls="collapseHealth">
+                                    <b>Patient Vitals</b>
+                                  </button>
+                                </h2>
+                                <div id="collapseHealth" class="accordion-collapse collapse" aria-labelledby="headingHealth" data-bs-parent="#accordionHealth">
+                                  <div class="accordion-body">
+                                    <div class="about-me">
+                                        <ul>
+                                            <li>
+                                                <i class="fa-solid fa-person"></i>
+                                                <div>
+                                                    <h6>BP: {{patient.today_vital.bp_diastolic}}/{{patient.today_vital.bp_systolic}}</h6>
+                                                    <h6>Pulse: {{patient.today_vital.pulse }} B/min</h6>
+                                                    <h6>Temp: {{patient.today_vital.temperature }} C</h6>
+                                                    <h6>Weight: {{patient.today_vital.weight }} Kg</h6>
+                                                    <h6>Respiration: {{patient.today_vital.respiratory_rate }} </h6>
+                                                    <h6>Extra Note: {{patient.today_vital.extra_note }} </h6>
+                                                </div>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body profile-accordion pb-0">
+                        <div class="accordion" id="accordionBill">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingBill">
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBill" aria-expanded="true" aria-controls="collapseHealth">
+                                    <b>Patient Bills</b>
+                                  </button>
+                                </h2>
+                                <div id="collapseBill" class="accordion-collapse collapse" aria-labelledby="headingBill" data-bs-parent="#accordionBill">
+                                  <div class="accordion-body">
+                                    <div class="about-me">
+                                        <ul>
+                                            <li>
+                                                <i class="bi bi-cash"></i>
+                                                <div>
+                                                    <h6>Bed Space:<b> N{{ admission_fee|floatformat|intcomma }}</b></h6>
+                                                    <h6>Lab Test:<b> N{{ test_fee|floatformat|intcomma }}</b></h6>
+                                                    <h6>Drugs:<b> N{{ drug_fee|floatformat|intcomma }}</b></h6>
+                                                    <h6>Total Cost:<b> N{{ total_fee|floatformat|intcomma }}</b></h6>
+                                                    <h6>Amount Paid:<b> N{{ admission.amount_paid|floatformat|intcomma }}</b></h6>
+                                                    <h6>Wave Fee:<b> N{{ admission.amount_waved|floatformat|intcomma }}</b></h6>
+                                                    <h6>Balance:<b> N{{ admission.balance|floatformat|intcomma }}</b></h6>
+                                                </div>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-9 col-xxl-8">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body pb-0">
+                        <h2 class="card-title"><b>Patient Admission History</b>
+
+                        <button title="Add Prescription" data-bs-toggle="modal" data-bs-target="#vital" style="float:right;margin-right:20px" class="btn btn-primary">
+                            <i class="fa-solid fa-person" title="Take Vitals"></i>
+                        </button>
+
+                            <button title="Add Prescription" data-bs-toggle="modal" data-bs-target=".pres-modal" style="float:right;margin-right:20px" class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-prescription" viewBox="0 0 16 16">
+                              <path d="M5.5 6a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 1 0V9h.293l2 2-1.147 1.146a.5.5 0 0 0 .708.708L9 11.707l1.146 1.147a.5.5 0 0 0 .708-.708L9.707 11l1.147-1.146a.5.5 0 0 0-.708-.708L9 10.293 7.695 8.987A1.5 1.5 0 0 0 7.5 6zM6 7h1.5a.5.5 0 0 1 0 1H6z"/>
+                              <path d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v10.5a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 14.5V4a1 1 0 0 1-1-1zm2 3v10.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V4zM3 3h10V1H3z"/>
+                            </svg>
+                        </button>
+
+                        <button title="Add Test" data-bs-toggle="modal" data-bs-target=".drug-modal" style="float:right;margin-right:20px" class="btn btn-primary">
+                            <i class="fa-solid fa-stethoscope"></i>
+                        </button>
+
+                        <button title="Record Consultation" data-bs-toggle="modal" data-bs-target=".consultation-modal" style="float:right;margin-right:20px" class="btn btn-primary">
+                            <i class="fa-solid fa-book"></i>
+                        </button>
+                        </h2>
+                        {% include 'patient/partial/history.html' %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<form action="{% url 'consultation_prescription_create' %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="patient_pk" value="{{patient.id}}">
+    <input type="hidden" name="doctor" value="{{ request.user.user_staff_profile.staff.id }}">
+    <input type="hidden" name="admission" value="{{ admission.id }}">
+
+    <div class="modal fade pres-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Prescription for {{ patient|title }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class='text-center'>Drug</th>
+                                    <th class='text-center'>Quantity</th>
+                                    <th class='text-center'>Extra Note</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                              <tr class='blank_row'><td></td><td></td><td></td><td></td><td></td></tr>
+                              <tr class='product_row' id='sale_row1' row=1>
+                                  <td><a id='1' class='remove_sale_row' href='#' style='display:inline;color:red;background:white;height:40px;'><i style='font-size:25px' class='fa fa-close'></i></a>
+                                      <input autocomplete=off class="form-control m-bot15 product-name-input" type='text' style='display:inline;width:250px;' id='product-name1' row=1 />
+                                        <input type='hidden' name='drugs' id='product-id1' /><br>
+                                        <ul style='' class='search-result' id='result1'></ul>
+                                  </td>
+
+                                  <td class='text-center'>
+                                        <input id='quantity_input1' step=".01" style='width:100px;' min=0 row='1' type='number' class='one form-control col-lg-6'  name='quantity'>
+                                  </td>
+
+                                  <td class='text-center'>
+                                      <div class="form-group col-md-4 text-center" style='align:center'>
+                                          <textarea id='note1' style='width:150px;' row='1' class='one form-control col-lg-6'  name='note'></textarea>
+                                    </div>
+                                  </td>
+
+                              </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary light" id="add_row_button">Add Row</button>
+                    <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<form action="{% url 'consultation_test_create' %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="patient_pk" value="{{patient.id}}">
+    <input type="hidden" name="doctor" value="{{ request.user.user_staff_profile.staff.id }}">
+    <input type="hidden" name="admission" value="{{ admission.id }}">
+
+    <div class="modal fade drug-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><b>Add Test for {{ patient|title }}</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="card-body">
+                            <p><b>No of Test: <span id="test-count">0</span></b></p>
+                            <p><b>Selected Test: <span id="selected_test"></span></b></p>
+                        </div>
+                    </div>
+                   <div class="table-responsive active-projects user-tbl  dt-filter">
+						<table id="user-tbl" class="table shorting" style="min-height:120px">
+							<thead>
+								<tr>
+									<th>
+										<div class="form-check custom-checkbox ms-0">
+										    S/N
+										</div>
+									</th>
+									<th>Test Name</th>
+									<th>Status</th>
+
+								</tr>
+							</thead>
+							<tbody>
+								{% for test in test_list %}
+								<tr>
+									<td>
+										<div class="form-check custom-checkbox">
+											<input type="checkbox" test_name="{{ test|title }}" {% if test.status|lower != 'active' %} disabled {% endif %}" name="tests[]" value="{{test.id}}" class="select-test" id="customCheckBox2">
+											<label class="form-check-label" for="customCheckBox2"></label>
+										</div>
+									</td>
+
+									<td>{{ test|title }}</td>
+									<td>{% if test.status|lower == 'active' %} <i class="bi bi-check text-success fs-2"></i> {% else %} <i class="bi bi-x text-danger fs-2"></i> {% endif %}</td>
+
+								</tr>
+							{% endfor %}
+							</tbody>
+
+						</table>
+					</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary" value="save">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<!--    ---------------------------------------------------------    -->
+<!--                 CONSULTATION MODAL START                        -->
+<!--    ---------------------------------------------------------    -->
+<form action="{% url 'consultation_create' patient.id %}" method="POST">
+    {% csrf_token %}
+    <div class="modal fade consultation-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Record Consultation for {{ patient|title }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+                        {% csrf_token %}
+                        <input type="hidden" name="patient" value="{{patient.id}}">
+                        <input type="hidden" name="doctor" value="{{ request.user.user_staff_profile.staff.id }}">
+                        <input type="hidden" name="admission" value="{{ admission.id }}">
+                        <div class="row p-2">
+                            <div class="col-9">
+                                <input type="text" autocomplete="off" name="subject" class="form-control" required placeholder="Consultation Subject">
+                            </div>
+
+                            <div class="col-3">
+                                <select class="form-control" name="status" required>
+                                    <option value="admission">ADMISSION</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="card-body custom-ekeditor">
+                            <textarea id="ckeditor" name="detail"></textarea>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary" value="save">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+{% for history in history_list %}
+      {% if history.type == 'consultation' %}
+        <form action="{% url 'consultation_delete' history.id %}" method="post">
+            {% csrf_token %}
+        <div class="modal fade" id="consultation-delete">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b>Delete Consultation Record</b></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal">
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="card-description" style="font-size:20px">
+                            The consultation record will be permanently deleted
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary">Proceed</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+    {% endif %}
+{% endfor %}
+
+
+{% for history in history_list %}
+      {% if history.type == 'prescription' %}
+            {% for prescription in history.prescriptions.all %}
+                <form action="{% url 'consultation_prescription_remove' history.id prescription.id %}" method="post">
+                    {% csrf_token %}
+                <div class="modal fade" id="remove-prescription{{forloop.counter}}">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"><b>Remove Prescription</b></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="card-description" style="font-size:20px">
+                                    {{prescription|title}} will be permanently removed
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Cancel</button>
+                                <button class="btn btn-primary">Proceed</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </form>
+        {% endfor %}
+    {% endif %}
+
+    {% if history.type == 'test' %}
+            {% for test in history.tests.all %}
+                <form action="{% url 'consultation_test_remove' history.id test.id %}" method="post">
+                    {% csrf_token %}
+                <div class="modal fade" id="remove-test{{forloop.counter}}">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"><b>Remove Test</b></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="card-description" style="font-size:20px">
+                                    {{test|title}} test will be permanently removed
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Cancel</button>
+                                <button class="btn btn-primary">Proceed</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </form>
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+
+<form action="{% if not patient.today_vital %} {% url 'patient_vitals_create' %} {% else %} {% url 'patient_vitals_edit' patient.today_vital.id %} {% endif %}" method="post">
+	{% csrf_token %}
+	<div class="modal fade" id="vital">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title"><b>Take Vital for {{ patient|title }}</b></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-6 m-b30">
+							<input type="hidden" name="patient" value="{{ patient.id }}" />
+							<label class="form-label">Blood Pressure <b style="color:red">*</b></label>
+							<br />
+							<input type="number" placeholder="diastolic" autocomplete="off" style="display:inline-block;width:100px" class="form-control" name="bp_diastolic" value="{{ patient.today_vital.bp_diastolic }}" required="required">
+							<input type="number" placeholder="systolic" autocomplete="off" style="display:inline-block;width:100px" class="form-control" name="bp_systolic" value="{{ patient.today_vital.bp_systolic }}" required="required">
+
+						</div>
+						<div class="col-sm-6 m-b30">
+							<label class="form-label">Pulse</label>
+							<input type="number" placeholder="pulse (B/min)" autocomplete="off" style="" class="form-control" name="pulse" value="{{ patient.today_vital.pulse }}">
+						</div>
+
+						<div class="col-sm-6 m-b30"><br/>
+							<label class="form-label">Temperature</label>
+							<input type="number" placeholder="temperature (C)" autocomplete="off" style="" class="form-control" name="temperature" value="{{ patient.today_vital.temperature }}">
+						</div>
+
+						<div class="col-sm-6 m-b30"><br/>
+							<label class="form-label">Weight</label>
+							<input type="number" placeholder="weight (Kg)" autocomplete="off" style="" class="form-control" name="weight" value="{{ patient.today_vital.weight }}">
+						</div>
+
+						<div class="col-sm-6 m-b30"><br/>
+							<label class="form-label">Respiratory Rate</label>
+							<input type="number" placeholder="" autocomplete="off" style="" class="form-control" name="respiratory_rate" value="{{ patient.today_vital.respiratory_rate }}">
+						</div>
+
+						<div class="col-sm-6 m-b30"><br/>
+							<label class="form-label">Extra Note</label>
+							<textarea placeholder="" autocomplete="off" style="" class="form-control" name="extra_note">{{ patient.today_vital.extra_note }}</textarea>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+					<input type="submit" class="btn btn-primary" value="Save" />
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+{% endblock %}
+
+
+{% block 'script' %}
+
+    <script src="{% static 'admin_site/vendor/ckeditor/ckeditor.js' %}"></script>
+
+    <script>
+        $(document).ready(function(){
+            $('.select-test').on('click', function() {
+                var count = 0;
+                selected_test = ''
+
+                $('.select-test').each(function() {
+                  // If checkbox is checked, add its amount to the sum
+                  if ($(this).prop('checked')) {
+                    count += 1;
+                    test_name = $(this).attr('test_name')
+                    selected_test += test_name + ', '
+                  }
+                });
+                $('#test-count').text(count)
+                $('#selected_test').text(selected_test)
+
+            });
+
+            $(document).on('keyup', '.product-name-input', function() {
+                row=$(this).attr('row')
+                search_value = $(this).val().toLowerCase()
+                attribute = $(this).attr('readonly')
+                if(search_value==''){
+                    $('#result'+row).slideUp('fast')
+                }else{
+                    if (attribute != 'readonly'){
+                        $.ajax({
+                            url: "{% url 'get_drug_from_name' %}",
+                            data: {'name': search_value, 'row': row},
+                            success: function(data){
+                                $('#result'+row).html(data)
+                                $('#result'+row).slideDown('fast')
+                            }
+                        })
+                    }
+                }
+
+            })
+
+            $(document).on('click', '.result-item', function() {
+                row=$(this).attr('row')
+                product_name=$(this).text()
+                if(product_name==''){
+                    $('#quantity_input'+row).fadeOut()
+                    totalAmount()
+                }else{
+                    id=$(this).attr('id')
+                    $('#product-name'+row).val(product_name)
+                    $('#product-id'+row).val(id)
+                    $('#product-name'+row).attr('readonly',true)
+                    $('#result'+row).slideUp('fast')
+                }
+
+			})
+
+			$(document).on('click', '#add_row_button',  function() {
+                previous_row=$('.product_row').last().attr('row')
+                current_row=parseInt(previous_row)+1
+                $('.product_row').last().after("<tr class='product_row' id="+'sale_row'+current_row+" row="+current_row+"><td><a id="+current_row+" class='remove_sale_row' href='#' style='display:inline;color:red;background:white;height:40px;'><i style='font-size:25px' class='fa fa-close'></i></a><input autocomplete=off class='form-control m-bot15 product-name-input' type='text' style='display:inline;width:250px' name='product_name[]' id="+'product-name' +current_row+ " row="+current_row+" /><input type='hidden' name='drugs' id=" +'product-id'+current_row+" /><br><ul style='' class='search-result' id=" +'result'+current_row+"></ul></td><td class='text-center'><div class='form-group col-md-4 text-center' style='align:center'><input id="+'quantity_input'+current_row+" row="+current_row+" style='width:100px' type='number' step='.01' class='form-control col-lg-6' id='' name='quantity' required placeholder=''></div></td><td class='text-center'><textarea name='note' style='width:150px' class='form-control'></textarea></td></tr>")
+                if($('.product_row').length==0){
+                    current_row=1
+                    $('.blank_row').after("<tr class='product_row' id="+'sale_row'+current_row+" row="+current_row+"><td><a id="+current_row+" class='remove_sale_row' href='#' style='display:inline;color:red;background:white;height:40px;'><i style='font-size:25px' class='fa fa-close'></i></a><input autocomplete=off class='form-control m-bot15 product-name-input' type='text' style='display:inline;width:250px' name='product_name[]' id="+'product-name' +current_row+ " row="+current_row+" /><input type='hidden' name='drugs' id=" +'product-id'+current_row+" /><br><ul style='' class='search-result' id=" +'result'+current_row+"></ul></td><td class='text-er'><div class='form-group col-md-4 text-center' style='align:center'><input id="+'quantity_input'+current_row+" row="+current_row+" style='width:100px' type='number' step='.01' class='form-control col-lg-6' id='' name='quantity' required placeholder=''></div></td><td class='text-center'><textarea name='note' style='width:150px' class='form-control'></textarea></td></tr>")
+                }
+
+
+             })
+
+             $(document).on('click','.remove_sale_row',function() {
+                 row=$(this).attr('id')
+                 $('#sale_row'+row).remove()
+            })
+
+        })
+    </script>
+{% endblock %}

@@ -22,26 +22,22 @@
 								<th>Image</th>
 								<th>Patient</th>
 								<th>Vitals</th>
-								<th>Attended</th>
 								<th>Action</th>
 
 							</tr>
 						</thead>
 						<tbody>
-							{% for payment in consultation_list %}
+							{% for consultation in consultation_list %}
 							<tr>
 
 								<td>{{ forloop.counter }}</td>
                                 <td>
 									<div class="d-flex align-items-center">
-										<img {% if payment.patient.image %} src="{{ payment.patient.image.url }}" {% else %} src="{% static 'admin_site/images/contacts/pic1.jpg' %}" {% endif %} class="avatar rounded-circle" alt="">
-										<p class="mb-0 ms-2">{{ user.profile }}</p>
+										<img {% if consultation.patient.image %} src="{{ consultation.patient.image.url }}" {% else %} src="{% static 'admin_site/images/default_image.jpg' %}" {% endif %} class="avatar rounded-circle" alt="">
 									</div>
 								</td>
-								<td>{{ payment.patient|title }} ({{ payment.patient.card_number|upper }})</td>
-								<td>{% if payment.patient.today_vital %} <i class="bi bi-check text-success fs-2"></i> {% else %} <i class="bi bi-x text-danger fs-2"></i> {% endif %}</td>
-								<td>{% if payment.is_attended %} <i class="bi bi-check text-success fs-2"></i> {% else %} <i class="bi bi-x text-danger fs-2"></i> {% endif %}</td>
-
+								<td>{{ consultation.patient|title }} ({{ consultation.patient.card_number|upper }})</td>
+								<td>{% if consultation.patient.today_vital %} <i class="bi bi-check text-success fs-2"></i> {% else %} <i class="bi bi-x text-danger fs-2"></i> {% endif %}</td>
 								<td>
 									<div class="dropdown">
 										<div class="btn-link" data-bs-toggle="dropdown" aria-expanded="false">
@@ -52,7 +48,8 @@
 											</svg>
 										</div>
 										<div class="dropdown-menu dropdown-menu-right" style="">
-											<a class="btn ttn-primary text-primary text-center" href="{% url 'consultation_create' payment.patient.id %}">Start Consultation</a>
+											<a class="btn ttn-primary text-primary text-center" href="{% url 'consultation_create' consultation.patient.id %}">Start Consultation</a><br />
+											<a class="btn ttn-primary text-primary text-center" href="{% url 'mark_patient_attended' consultation.id %}">Mark Attended</a>
 
                                         </div>
 									</div>

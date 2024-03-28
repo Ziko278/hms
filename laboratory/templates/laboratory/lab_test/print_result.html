@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ hospital_info.name|upper }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 20px;
+        }
+
+        .container {
+            width: 21cm;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        }
+
+        .letterhead {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .letterhead img {
+            max-width: 100px;
+            max-height: 100px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .patient-info {
+            margin-bottom: 20px;
+        }
+
+        .signature {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="letterhead">
+            <img src="{{ hospital_info.logo.url }}" alt="Hospital Logo">
+            <h2>{{ hospital_info.name|upper }}</h2>
+            <p>Email: {{ hospital_info.email|lower }} | Phone: {{ hospital_info.mobile_1 }}</p>
+            <p>Address: {{ hospital_info.address|title }} </p>
+        </div>
+
+        <h1 style="font-family:courier">Lab Test Results: {{ test }}</h1>
+
+        <div class="patient-info">
+            <table>
+                <tr>
+                    <td><strong>Patient Name:</strong> {{ test_result.test.patient|title }}</td>
+                    <td><strong>Patient Number:</strong> {{ test_result.test.patient.card_number|upper }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Gender:</strong> {{ test_result.test.patient.gender|title }}</td>
+                    <td><strong>Doctor Name:</strong> {{ test_result.test.doctor.user_staff_profile|title }}</td>
+                </tr>
+                <!-- Add more patient information as needed -->
+            </table>
+        </div>
+
+        <table>
+            <tr>
+                <th>Test Name</th>
+                <th style="text-align:center">Normal Range</th>
+                <th style="text-align:center">Result</th>
+            </tr>
+            {% for key, result in test_result.test_result.items %}
+            <tr>
+                <td>{{ key|title }}</td>
+                <td style="text-align:center">{{ result.normal_range }}</td>
+                <td style="text-align:center"> {{ result.value }}</td>
+            </tr>
+            {% endfor %}
+
+            <!-- Add more test results as needed -->
+        </table>
+
+        <div class="signature">
+            <p class="comment">Comment: {{ test_result.lab_attendant_comment }}</p>
+            <p>{{ test_result.attendant}}</p>
+            <p>{{ test_result.attendant.user_staff_profile.staff.position|title }}</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Trigger the print functionality
+            window.print();
+        });
+    </script>
+</body>
+</html>

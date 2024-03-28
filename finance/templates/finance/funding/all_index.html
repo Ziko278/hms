@@ -1,0 +1,55 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+
+<div class="row">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="heading mb-0"><b>List of Fundings</b></h4>
+        <div class="d-flex align-items-center">
+            <a class="btn btn-primary btn-sm ms-2" href="{% url 'funding_create' %}">+ Add Fund</a>
+        </div>
+    </div>
+    <div class="col-xl-12 active-p">
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-colm" role="tabpanel" aria-labelledby="pills-colm-tab">
+                <div class="card">
+                    <div class="card-body px-0">
+                      <div class="table-responsive active-projects user-tbl  dt-filter">
+                        <table id="user-tbl" class="table shorting">
+                            <thead>
+                                <tr>
+                                    <th>S/N</th>
+                                    <th>Sender</th>
+                                    <th>Amount</th>
+                                    <th>Recipient</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for funding in funding_list %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{% if funding.user.is_superuser %} {{ funding.user|upper }} {% else %} {{ funding.user.user_staff_profile.staff|title }} {% endif %}</td>
+                                    <td>{{ funding.amount|floatformat|intcomma }}</td>
+                                    <td>{% if funding.confirming_user.is_superuser %} {{ funding.confirming_user|upper }} {% else %} {{ funding.confirming_user.user_staff_profile.staff|title }} {% endif %}</td>
+                                    <td>{{ funding.date|date }}</td>
+                                    <td class="{% if funding.status == 'pending' %} text-warning {% elif funding.status == 'confirmed' %} text-success {% elif funding.status == 'declined' %} text-danger {% endif %}">
+                                        {{ funding.status|title }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+

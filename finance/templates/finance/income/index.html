@@ -28,6 +28,7 @@
                                     <th scope="col">Category</th>
                                     <th scope="col">Amount</th>
                                     <th scope="col">Date</th>
+                                    <th scope="col">Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -38,6 +39,7 @@
                                     <td>{{ income.category|title }}</td>
                                     <td>{{ income.amount|intcomma }}</td>
                                     <td>{{ income.date|date }}</td>
+                                    <td class="{% if income.status == 'pending' %} text-warning {% else %} text-success{% endif %}">{{ income.status|upper }}</td>
                                     <td>
                                         <div class="dropdown">
                                             <div class="btn-link" data-bs-toggle="dropdown" aria-expanded="false">
@@ -49,6 +51,9 @@
                                             </div>
                                             <div class="dropdown-menu dropdown-menu-right" style="">
                                                 <a class="dropdown-item text-primary" href="{% url 'income_detail' income.id %}">Detail</a>
+                                                 {% if income.status == 'pending' %}
+                                                    <a class="dropdown-item text-primary" data-bs-toggle="modal" data-bs-target="#confirm{{ forloop.counter }}">Confirm</a>
+                                                 {% endif %}
                                                 <a class="dropdown-item text-warning" href="{% url 'income_edit' income.id %}">Update</a>
                                                 <a class="dropdown-item text-danger" href="{% url 'income_delete' income.id %}">Delete</a>
                                             </div>
@@ -66,5 +71,34 @@
     </div>
 </div>
 
+{% for income in income_list %}
+{% if income.status == 'pending' %}
+<form action="{% url 'income_confirm' income.id %}" method="post">
+	{% csrf_token %}
+	<div class="modal fade" id="confirm{{ forloop.counter }}">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+                    <h5 class="modal-title"><b>Confirm Income</b></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+                        <p class="card-description">Confirm income of {{ income.amount|floatformat|intcomma }} on {{ income.date|date }} by {{ income.user.user_staff_profile.staff|title }}</p>
+                        <p class="card-description">This Action is permanent</p>
+
+                    </div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+					<input type="submit" class="btn btn-primary" value="Confirm" />
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+{% endif %}
+{% endfor %}
 
 {% endblock %}

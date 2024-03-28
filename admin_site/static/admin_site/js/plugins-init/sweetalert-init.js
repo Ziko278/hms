@@ -6,10 +6,7 @@ Sweet-alert JS
 *******************/
 
     document.querySelector(".sweet-wrong").onclick = function () {
-        sweetAlert("Oops...", "Something went wrong !!", "error"),
-        function () {
-            alert()
-        }
+        sweetAlert("Oops...", "Something went wrong !!", "error")
     }, document.querySelector(".sweet-message").onclick = function () {
         swal("Hey, Here's a message !!")
     }, document.querySelector(".sweet-text").onclick = function () {
@@ -28,20 +25,7 @@ Sweet-alert JS
         }, function () {
             swal("Deleted !!", "Hey, your imaginary file has been deleted !!", "success")
         })
-    },
-     document.querySelector(".sweet-delete-consultation").onclick = function () {
-        swal({
-            title: "Are you sure to delete ?",
-            text: "You will not be able to recover this imaginary file !!",
-            type: "warning",
-            showCancelButton: !0,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it !!",
-            closeOnConfirm: !1
-        }, function () {
-            swal("Deleted !!", "Hey, your imaginary file has been deleted !!", "success")
-        })
-    },document.querySelector(".sweet-success-cancel").onclick = function () {
+    }, document.querySelector(".sweet-success-cancel").onclick = function () {
         swal({
             title: "Are you sure to delete ?",
             text: "You will not be able to recover this imaginary file !!",

@@ -39,6 +39,7 @@
                                             <th>Unit </th>
                                             <th>Form</th>
                                             <th class="text-center">Quantity Available</th>
+                                            <th class="text-center">Low Limit</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -51,6 +52,7 @@
                                             <td>{% if variant.unit %} {{ variant.unit|title }} {% endif %}</td>
                                             <td>{% if variant.form %} {{ variant.form|title }} {% endif %}</td>
                                             <td class="text-center">{{ variant.quantity|floatformat }}</td>
+                                            <td class="text-center">{{ variant.low_limit|floatformat }}</td>
                                             <td>
                                                 <div class="dropdown">
                                                     <div class="btn-link" data-bs-toggle="dropdown" aria-expanded="false">
@@ -164,6 +166,12 @@
 							{{ variant_form.form }}
 						</div>
 
+                        <div class="col-sm-12 m-b30">
+                            <br />
+							<label class="form-label">Low Limit </label>
+							{{ variant_form.low_limit }}
+						</div>
+
 					</div>
 				</div>
 				<div class="modal-footer">
@@ -219,7 +227,7 @@
 		<div class="modal-dialog modal-dialog-centered" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-                    <h5 class="modal-title"><b>Edit Drug Price</b></h5>
+                    <h5 class="modal-title"><b>Edit Drug Variant</b></h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal">
 					</button>
 				</div>
@@ -267,6 +275,12 @@
                                     <option value="{{form|lower}}" {% if form|lower == variant.form|lower %} selected {% endif %}> {{ form|upper }}</option>
                                 {% endfor %}
                             </select>
+						</div>
+
+                        <div class="col-sm-12 m-b30">
+                            <br />
+							<label class="form-label">Low Limit</label>
+							<input type="number" class="form-control" name="low_level" value="{{variant.low_limit}}">
 						</div>
 
 					</div>

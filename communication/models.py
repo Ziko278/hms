@@ -12,6 +12,13 @@ class RecentActivityModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
 
+class NoteModel(models.Model):
+    subject = models.CharField(max_length=250)
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
+
+
 class SMTPConfigurationModel(models.Model):
     name = models.CharField(max_length=200)
     email = models.EmailField()
@@ -21,7 +28,6 @@ class SMTPConfigurationModel(models.Model):
     password = models.CharField(max_length=200)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    status = models.CharField(max_length=20, choices=ACTIVE_STATUS, default=ACTIVE_STATUS[0], blank=True)
 
     def __str__(self):
         return self.name.upper()
@@ -29,7 +35,7 @@ class SMTPConfigurationModel(models.Model):
 
 class CommunicationSettingModel(models.Model):
     default_smtp = models.ForeignKey(SMTPConfigurationModel, on_delete=models.SET_NULL, null=True, blank=True)
-    auto_save_sent_message = models.BooleanField(default=False)
+    whatsapp_number = models.CharField(max_length=20, blank=True, null=True)
 
 
 class EmailModel(models.Model):
@@ -41,17 +47,28 @@ class EmailModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
 
+class ContactCategoryModel(models.Model):
+    name = models.CharField(max_length=150)
+
+    def __str__(self):
+        return self.name.upper()
+
+
 class ContactModel(models.Model):
     full_name = models.CharField(max_length=150)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
-    address = models.TextField(blank=True, null=True)
-    extra_info = models.TextField(blank=True, null=True)
+    category = models.ForeignKey(ContactCategoryModel, null=True, blank=True, on_delete=models.SET_NULL)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+
+    def __str__(self):
+        return self.full_name.upper()
+
+    def formatted_phone_number(self):
+        return self.phone_number
 
 
 class MessageModel(models.Model):
-    title = models.CharField(max_length=255)
     message = models.TextField()
     sender = models.ForeignKey(StaffModel, on_delete=models.CASCADE, blank=True, related_name='sender')
     receiver = models.ForeignKey(StaffModel, on_delete=models.CASCADE, blank=True, related_name='receiver')

@@ -1,0 +1,102 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+
+<div class="row">
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<h4 class="heading mb-0"><b>Doctors Consultation Status: {{ doctor|title }}</b></h4>
+		<div class="d-flex align-items-center">
+			<button type="button" class="btn btn-primary btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#editdept">Update Status</button>
+		</div>
+	</div>
+	<div class="col-xl-12 active-p">
+	<div class="tab-content" id="pills-tabContent">
+
+		<div class="tab-pane fade show active" id="pills-colm" role="tabpanel" aria-labelledby="pills-colm-tab">
+			<div class="card">
+				<div class="card-body px-0">
+				  <div class="table-responsive active-projects user-tbl  dt-filter">
+					<table id="user-tbl" class="table shorting">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Doctor</th>
+								<th>Room</th>
+								<th>Room</th>
+								<th>Availability</th>
+								<th>Posting Status</th>
+
+							</tr>
+						</thead>
+						<tbody>
+
+							<tr>
+                                <td>
+									<div class="d-flex align-items-center">
+										<img {% if doctor.image %} src="{{ doctor.image.url }}" {% else %} src="{% static 'admin_site/images/default_image.jpg' %}" {% endif %} class="avatar rounded-circle" alt="">
+									</div>
+								</td>
+								<td>{{ doctor|title }}</td>
+								<td>{% if doctor.block %} {{ doctor.block|title }} {% endif %}</td>
+								<td>{% if doctor.room %} {{ doctor.room|title }} {% endif %}</td>
+								<td>{% if doctor.doctor_status == 'active' %} <i class="bi bi-check text-success fs-2"></i> {% else %} <i class="bi bi-x text-danger fs-2"></i> {% endif %}</td>
+								<td>{% if doctor.posting_status == 'active' %} <i class="bi bi-check text-success fs-2"></i> {% else %} <i class="bi bi-x text-danger fs-2"></i> {% endif %}</td>
+
+							</tr>
+
+						</tbody>
+
+					</table>
+				</div>
+			   </div>
+			</div>
+
+		</div>
+	</div>
+	</div>
+</div>
+
+
+<form action="{% url 'consultation_doctor_status' doctor.id %}" method="post">
+	{% csrf_token %}
+	<input type="hidden" name="doctor" value="{{doctor.id}}">
+	<div class="modal fade" id="editdept">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Update Consultation Status</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-12 m-b30">
+							<label class="form-label">Active Status <b style="color:red">*</b></label>
+							<select name="doctor_status" class="form-control">
+								<option value="active" {% if doctor.doctor_status == 'active' %} selected {% endif %}>ACTIVE</option>
+								<option value="inactive" {% if doctor.doctor_status == 'inactive' %} selected {% endif %}>INACTIVE</option>
+							</select>
+						</div>
+
+						<div class="col-sm-12 m-b30">
+							<br />
+							<label class="form-label">Posting Status <b style="color:red">*</b></label>
+							<select name="posting_status" class="form-control">
+								<option value="active" {% if doctor.posting_status == 'active' %} selected {% endif %}>ACTIVE</option>
+								<option value="inactive" {% if doctor.posting_status == 'inactive' %} selected {% endif %}>INACTIVE</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+					<input type="submit" class="btn btn-primary" value="Save" />
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+
+{% endblock %}

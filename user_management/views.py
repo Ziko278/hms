@@ -1,3 +1,4 @@
+import re
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
@@ -190,3 +191,52 @@ def user_sign_in_view(request):
 def user_sign_out_view(request):
     logout(request)
     return redirect(reverse('login'))
+
+
+@login_required
+def user_change_password_view(request):
+    if request.method == 'POST':
+        current_password = request.POST['current_password']
+        new_password1 = request.POST['new_password1']
+        new_password2 = request.POST['new_password2']
+
+        # Verify the current password
+        if not request.user.check_password(current_password):
+            messages.error(request, 'Incorrect current password.')
+            if 'route' in request.POST:
+                return redirect(reverse('admin_dashboard'))
+            return redirect(reverse('change_password'))
+
+        # Check if the new passwords match
+        if len(new_password1) < 8:
+            messages.error(request, 'Password must have at least 8 characters.')
+            if 'route' in request.POST:
+                return redirect(reverse('admin_dashboard'))
+            return redirect(reverse('change_password'))
+
+        if not re.match("^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+$", new_password1):
+            messages.error(request, 'Password must contain both letters and numbers.')
+            if 'route' in request.POST:
+                return redirect(reverse('admin_dashboard'))
+            return redirect(reverse('change_password'))
+
+        if new_password1 != new_password2:
+            messages.error(request, 'New passwords do not match.')
+            if 'route' in request.POST:
+                return redirect(reverse('admin_dashboard'))
+            return redirect(reverse('change_password'))
+
+        # Update the user's password
+        user = request.user
+        user.set_password(new_password1)
+        user.save()
+
+        # Update the user's session with the new password
+        update_session_auth_hash(request, user)
+
+        logout(request)
+
+        messages.success(request, 'Password successfully changed. Please log in with the new password.')
+        return redirect('login')
+
+    return render(request, 'user_management/user/change_password.html')

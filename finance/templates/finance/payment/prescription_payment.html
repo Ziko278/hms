@@ -1,0 +1,86 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% load finance_custom_filters %}
+{% block 'main' %}
+<form action="" method="post">
+	{% csrf_token %}
+	<div class="row">
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h4 class="heading mb-0"><b>Prescription List for {{ prescription.patient|title }}</b></h4>
+			<h2><span style="float:right">Total Price: <span id="sum"></span></span></h2>
+		</div>
+		<div class="col-xl-12 active-p">
+		<div class="tab-content" id="pills-tabContent">
+
+			<div class="tab-pane fade show active" id="pills-colm" role="tabpanel" aria-labelledby="pills-colm-tab">
+				<div class="card">
+					<div class="card-body px-0">
+					  <div class="table-responsive active-projects user-tbl  dt-filter">
+						<table id="" class="table shorting">
+							<thead>
+								<tr>
+									<th>S/N</th>
+									<th>Prescription</th>
+									<th class="text-center">Drug Availability</th>
+									<th class="text-center">Amount</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for a_prescription in prescription.prescriptions.all %}
+								<tr>
+									<td>
+										<div class="form-check custom-checkbox">
+											<input type="checkbox" name="prescription" value="{{a_prescription.id}}" {% if a_prescription.drug_available %} checked {% endif %} class="form-check-input" id="customCheckBox2" amount="{{ a_prescription.drug|get_patient_prescription_price:prescription.patient.id|floatformat }}">
+											<label class="form-check-label" for="customCheckBox2"></label>
+										</div>
+									</td>
+									<td>{{ a_prescription|title }}</td>
+									<td class="text-center">{% if a_prescription.drug_available %} <i class="bi bi-check text-success" style="font-size:20px"></i> {% else %} <i class="bi bi-x" style="font-size:20px"></i> {% endif %} </td>
+									<td class="text-center">{{ a_prescription.drug|get_patient_prescription_price:prescription.patient.id|floatformat|intcomma }}</td>
+
+								</tr>
+							{% endfor %}
+							</tbody>
+
+						</table>
+					</div>
+				   </div>
+				</div>
+
+			</div>
+		</div>
+		</div>
+	</div>
+	<input class="btn btn-primary" type="submit" value="Take Payment">
+</form>
+{% endblock %}
+
+{% block 'script' %}
+
+<script>
+    $(document).ready(function() {
+      // Attach a click event handler to checkboxes with class 'form-check-input'
+      get_total_price()
+      $('.form-check-input').on('click', function() {
+        // Initialize sum variable
+        get_total_price()
+
+      });
+    });
+
+	function get_total_price(){
+		var sum = 0;
+
+        // Loop through all checkboxes
+        $('.form-check-input').each(function() {
+          // If checkbox is checked, add its amount to the sum
+          if ($(this).prop('checked')) {
+            sum += parseFloat($(this).attr('amount'));
+          }
+        });
+		var formatted_sum = sum.toLocaleString();
+		$('#sum').text(formatted_sum)
+	}
+  </script>
+{% endblock %}

@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from datetime import datetime
+
+from django.shortcuts import render, get_object_or_404
 from pharmacy.models import DrugModel
 from django.http import HttpResponse, JsonResponse
 from patient.models import PatientModel
@@ -7,7 +9,7 @@ from django.shortcuts import render, redirect, reverse
 from django.core.exceptions import ObjectDoesNotExist
 from consultation.models import *
 from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.core import serializers
 from django.contrib.messages.views import SuccessMessageMixin, messages
 from django.views.generic import TemplateView
@@ -22,7 +24,7 @@ from pharmacy.forms import *
 
 class DrugCategoryCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = DrugCategoryModel
-    permission_required = 'academic.add_classesmodel'
+    permission_required = 'pharmacy.add_drugcategorymodel'
     form_class = DrugCategoryForm
     success_message = 'Drug Category Added Successfully'
     template_name = 'pharmacy/drug_category/index.html'
@@ -38,7 +40,7 @@ class DrugCategoryCreateView(LoginRequiredMixin, PermissionRequiredMixin, Succes
 
 class DrugCategoryListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = DrugCategoryModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'pharmacy.view_drugcategorymodel'
     fields = '__all__'
     template_name = 'pharmacy/drug_category/index.html'
     context_object_name = "drug_category_list"
@@ -54,7 +56,7 @@ class DrugCategoryListView(LoginRequiredMixin, PermissionRequiredMixin, ListView
 
 class DrugCategoryUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = DrugCategoryModel
-    permission_required = 'academic.change_classsesmodel'
+    permission_required = 'pharmacy.add_drugcategorymodel'
     form_class = DrugCategoryForm
     success_message = 'Drug Category Updated Successfully'
     template_name = 'pharmacy/drug_category/index.html'
@@ -70,7 +72,7 @@ class DrugCategoryUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Succes
 
 class DrugCategoryDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = DrugCategoryModel
-    permission_required = 'academic.delete_classesmodel'
+    permission_required = 'pharmacy.add_drugcategorymodel'
     success_message = 'Drug Category Deleted Successfully'
     fields = '__all__'
     template_name = 'pharmacy/drug_category/delete.html'
@@ -86,7 +88,7 @@ class DrugCategoryDeleteView(LoginRequiredMixin, PermissionRequiredMixin, Succes
 
 class DrugManufacturerCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = DrugManufacturerModel
-    permission_required = 'academic.add_classesmodel'
+    permission_required = 'pharmacy.add_drugcategorymodel'
     form_class = DrugManufacturerForm
     success_message = 'Drug Manufacturer Added Successfully'
     template_name = 'pharmacy/drug_manufacturer/index.html'
@@ -102,7 +104,7 @@ class DrugManufacturerCreateView(LoginRequiredMixin, PermissionRequiredMixin, Su
 
 class DrugManufacturerListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = DrugManufacturerModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'pharmacy.view_drugcategorymodel'
     fields = '__all__'
     template_name = 'pharmacy/drug_manufacturer/index.html'
     context_object_name = "drug_manufacturer_list"
@@ -118,7 +120,7 @@ class DrugManufacturerListView(LoginRequiredMixin, PermissionRequiredMixin, List
 
 class DrugManufacturerUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = DrugManufacturerModel
-    permission_required = 'academic.change_classsesmodel'
+    permission_required = 'pharmacy.add_drugcategorymodel'
     form_class = DrugManufacturerForm
     success_message = 'Drug Manufacturer Updated Successfully'
     template_name = 'pharmacy/drug_manufacturer/index.html'
@@ -134,7 +136,7 @@ class DrugManufacturerUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Su
 
 class DrugManufacturerDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = DrugManufacturerModel
-    permission_required = 'academic.delete_classesmodel'
+    permission_required = 'pharmacy.add_drugcategorymodel'
     success_message = 'Drug manufacturer Deleted Successfully'
     fields = '__all__'
     template_name = 'pharmacy/drug_manufacturer/delete.html'
@@ -150,7 +152,7 @@ class DrugManufacturerDeleteView(LoginRequiredMixin, PermissionRequiredMixin, Su
 
 class DrugStrengthCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = DrugStrengthModel
-    permission_required = 'academic.add_classesmodel'
+    permission_required = 'pharmacy.add_drugcategorymodel'
     form_class = DrugStrengthForm
     success_message = 'Drug Strength Added Successfully'
     template_name = 'pharmacy/drug_strength/index.html'
@@ -166,7 +168,7 @@ class DrugStrengthCreateView(LoginRequiredMixin, PermissionRequiredMixin, Succes
 
 class DrugStrengthListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = DrugStrengthModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'pharmacy.view_drugcategorymodel'
     fields = '__all__'
     template_name = 'pharmacy/drug_strength/index.html'
     context_object_name = "drug_strength_list"
@@ -182,7 +184,7 @@ class DrugStrengthListView(LoginRequiredMixin, PermissionRequiredMixin, ListView
 
 class DrugStrengthUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = DrugStrengthModel
-    permission_required = 'academic.change_classsesmodel'
+    permission_required = 'pharmacy.add_drugcategorymodel'
     form_class = DrugStrengthForm
     success_message = 'Drug Strength Updated Successfully'
     template_name = 'pharmacy/drug_strength/index.html'
@@ -198,7 +200,7 @@ class DrugStrengthUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Succes
 
 class DrugStrengthDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = DrugStrengthModel
-    permission_required = 'academic.delete_classesmodel'
+    permission_required = 'pharmacy.add_drugcategorymodel'
     success_message = 'Drug Strength Deleted Successfully'
     fields = '__all__'
     template_name = 'pharmacy/drug_strength/delete.html'
@@ -214,7 +216,7 @@ class DrugStrengthDeleteView(LoginRequiredMixin, PermissionRequiredMixin, Succes
 
 class DrugUnitCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = DrugUnitModel
-    permission_required = 'academic.add_classesmodel'
+    permission_required = 'pharmacy.add_drugcategorymodel'
     form_class = DrugUnitForm
     success_message = 'Drug Unit Added Successfully'
     template_name = 'pharmacy/drug_unit/index.html'
@@ -230,7 +232,7 @@ class DrugUnitCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMes
 
 class DrugUnitListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = DrugUnitModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'pharmacy.view_drugcategorymodel'
     fields = '__all__'
     template_name = 'pharmacy/drug_unit/index.html'
     context_object_name = "drug_unit_list"
@@ -246,7 +248,7 @@ class DrugUnitListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
 class DrugUnitUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = DrugUnitModel
-    permission_required = 'academic.change_classsesmodel'
+    permission_required = 'pharmacy.add_drugcategorymodel'
     form_class = DrugUnitForm
     success_message = 'Drug Unit Updated Successfully'
     template_name = 'pharmacy/drug_unit/index.html'
@@ -262,7 +264,7 @@ class DrugUnitUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMes
 
 class DrugUnitDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = DrugUnitModel
-    permission_required = 'academic.delete_classesmodel'
+    permission_required = 'pharmacy.add_drugcategorymodel'
     success_message = 'Drug Unit Deleted Successfully'
     fields = '__all__'
     template_name = 'pharmacy/drug_unit/delete.html'
@@ -278,7 +280,7 @@ class DrugUnitDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMes
 
 class DrugCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = DrugModel
-    permission_required = 'academic.add_classesmodel'
+    permission_required = 'pharmacy.add_drugmodel'
     form_class = DrugForm
     success_message = 'Drug Added Successfully'
     template_name = 'pharmacy/drug/create.html'
@@ -293,7 +295,7 @@ class DrugCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessage
 
 class DrugListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = DrugModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'pharmacy.view_drugmodel'
     fields = '__all__'
     template_name = 'pharmacy/drug/index.html'
     context_object_name = "drug_list"
@@ -309,7 +311,7 @@ class DrugListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
 class DrugDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = DrugModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'pharmacy.view_drugmodel'
     fields = '__all__'
     template_name = 'pharmacy/drug/detail.html'
     context_object_name = "drug"
@@ -328,7 +330,7 @@ class DrugDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
 
 class DrugUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = DrugModel
-    permission_required = 'academic.change_classsesmodel'
+    permission_required = 'pharmacy.add_drugmodel'
     form_class = DrugForm
     success_message = 'Drug Updated Successfully'
     template_name = 'pharmacy/drug/edit.html'
@@ -343,7 +345,7 @@ class DrugUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessage
 
 class DrugDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = DrugModel
-    permission_required = 'academic.delete_classesmodel'
+    permission_required = 'pharmacy.add_drugmodel'
     success_message = 'Drug Deleted Successfully'
     fields = '__all__'
     template_name = 'pharmacy/drug/delete.html'
@@ -359,7 +361,7 @@ class DrugDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessage
 
 class DrugVariantCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = DrugVariantModel
-    permission_required = 'academic.add_classesmodel'
+    permission_required = 'pharmacy.add_drugmodel'
     form_class = DrugVariantForm
     success_message = 'Drug Variant Added Successfully'
     template_name = 'pharmacy/drug/detail.html'
@@ -374,7 +376,7 @@ class DrugVariantCreateView(LoginRequiredMixin, PermissionRequiredMixin, Success
 
 class DrugVariantListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = DrugVariantModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'pharmacy.view_drugmodel'
     fields = '__all__'
     template_name = 'pharmacy/drug_variant/index.html'
     context_object_name = "drug_variant_list"
@@ -390,7 +392,7 @@ class DrugVariantListView(LoginRequiredMixin, PermissionRequiredMixin, ListView)
 
 class DrugVariantUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = DrugVariantModel
-    permission_required = 'academic.change_classsesmodel'
+    permission_required = 'pharmacy.add_drugmodel'
     form_class = DrugVariantForm
     success_message = 'Drug Variant Updated Successfully'
     template_name = 'pharmacy/drug_variant/edit.html'
@@ -405,7 +407,7 @@ class DrugVariantUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Success
 
 class DrugVariantDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = DrugVariantModel
-    permission_required = 'academic.delete_classesmodel'
+    permission_required = 'pharmacy.add_drugmodel'
     success_message = 'Drug Variant Deleted Successfully'
     fields = '__all__'
     template_name = 'pharmacy/drug_variant/delete.html'
@@ -421,7 +423,7 @@ class DrugVariantDeleteView(LoginRequiredMixin, PermissionRequiredMixin, Success
 
 class DrugVariantPriceCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = DrugVariantPriceModel
-    permission_required = 'academic.add_classesmodel'
+    permission_required = 'pharmacy.add_drugvariantpricemodel'
     form_class = DrugVariantPriceForm
     success_message = 'Drug Variant Price Added Successfully'
     template_name = 'pharmacy/drug/detail.html'
@@ -436,7 +438,7 @@ class DrugVariantPriceCreateView(LoginRequiredMixin, PermissionRequiredMixin, Su
 
 class DrugVariantPriceListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = DrugVariantPriceModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'pharmacy.view_drugvariantpricemodel'
     fields = '__all__'
     template_name = 'pharmacy/drug_variant_price/index.html'
     context_object_name = "drug_variant_price_list"
@@ -451,7 +453,7 @@ class DrugVariantPriceListView(LoginRequiredMixin, PermissionRequiredMixin, List
 
 class DrugVariantPriceUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = DrugVariantPriceModel
-    permission_required = 'academic.change_classsesmodel'
+    permission_required = 'pharmacy.add_drugvariantpricemodel'
     form_class = DrugVariantPriceForm
     success_message = 'Drug Variant Price Updated Successfully'
     template_name = 'pharmacy/drug/detail.html'
@@ -466,7 +468,7 @@ class DrugVariantPriceUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Su
 
 class DrugVariantPriceDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = DrugVariantPriceModel
-    permission_required = 'academic.delete_classesmodel'
+    permission_required = 'pharmacy.add_drugvariantpricemodel'
     success_message = 'Drug Variant Price Deleted Successfully'
     fields = '__all__'
     template_name = 'pharmacy/drug_variant_price/delete.html'
@@ -482,7 +484,7 @@ class DrugVariantPriceDeleteView(LoginRequiredMixin, PermissionRequiredMixin, Su
 
 class DrugBatchCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = DrugBatchModel
-    permission_required = 'academic.add_classesmodel'
+    permission_required = 'pharmacy.add_drugstockmodel'
     form_class = DrugBatchForm
     success_message = 'Drug Batch Added Successfully'
     template_name = 'pharmacy/drug_batch/index.html'
@@ -498,7 +500,7 @@ class DrugBatchCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMe
 
 class DrugBatchListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = DrugBatchModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'pharmacy.view_drugstockmodel'
     fields = '__all__'
     template_name = 'pharmacy/drug_batch/index.html'
     context_object_name = "drug_batch_list"
@@ -514,7 +516,7 @@ class DrugBatchListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
 class DrugBatchDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = DrugBatchModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'pharmacy.view_drugstockmodel'
     fields = '__all__'
     template_name = 'pharmacy/drug_batch/detail.html'
     context_object_name = "drug_batch"
@@ -526,7 +528,7 @@ class DrugBatchDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailVie
 
 class DrugBatchUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = DrugBatchModel
-    permission_required = 'academic.change_classsesmodel'
+    permission_required = 'pharmacy.add_drugstockmodel'
     form_class = DrugBatchForm
     success_message = 'Drug Batch Updated Successfully'
     template_name = 'pharmacy/drug_batch/index.html'
@@ -542,7 +544,7 @@ class DrugBatchUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMe
 
 class DrugBatchDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = DrugBatchModel
-    permission_required = 'academic.delete_classesmodel'
+    permission_required = 'pharmacy.add_drugstockmodel'
     success_message = 'Drug Batch Deleted Successfully'
     fields = '__all__'
     template_name = 'pharmacy/drug_batch/delete.html'
@@ -558,7 +560,7 @@ class DrugBatchDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMe
 
 class DrugStockCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = DrugStockModel
-    permission_required = 'academic.add_classesmodel'
+    permission_required = 'pharmacy.add_drugstockmodel'
     form_class = DrugStockForm
     success_message = 'Drug Stocked Successfully'
     template_name = 'pharmacy/drug_stock/create.html'
@@ -575,7 +577,7 @@ class DrugStockCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMe
 
 class DrugStockListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = DrugStockModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'pharmacy.view_drugstockmodel'
     fields = '__all__'
     template_name = 'pharmacy/drug_stock/index.html'
     context_object_name = "drug_stock_list"
@@ -602,7 +604,7 @@ class DrugStockListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
 class DrugStockDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = DrugStockModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'pharmacy.view_drugstockmodel'
     fields = '__all__'
     template_name = 'pharmacy/drug_stock/detail.html'
     context_object_name = "drug_stock"
@@ -614,7 +616,7 @@ class DrugStockDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailVie
 
 class DrugStockUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = DrugStockModel
-    permission_required = 'academic.change_classsesmodel'
+    permission_required = 'pharmacy.add_drugstockmodel'
     form_class = DrugStockForm
     success_message = 'Drug Stock Updated Successfully'
     template_name = 'pharmacy/drug_stock/edit.html'
@@ -629,7 +631,7 @@ class DrugStockUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMe
 
 class DrugStockDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = DrugStockModel
-    permission_required = 'academic.delete_classesmodel'
+    permission_required = 'pharmacy.add_drugstockmodel'
     success_message = 'Drug Stock Deleted Successfully'
     fields = '__all__'
     template_name = 'pharmacy/drug_stock/delete.html'
@@ -648,7 +650,7 @@ def get_drug_from_name(request):
     row = request.GET.get('row', 0)
     list_format = request.GET.get('list_format', '')
     if drug_name:
-        drug_list = DrugModel.objects.filter(name__icontains=drug_name).order_by('name')
+        drug_list = DrugVariantModel.objects.filter(drug__name__icontains=drug_name).order_by('drug__name')
     else:
         drug_list = None
 
@@ -714,4 +716,137 @@ def consultation_prescription_create_view(request):
 
         return redirect(reverse('sale_index'))
 
-    return render(request, 'sale/create.html', context=context)
+    return render(request, 'sale/create.html')
+
+
+class ConsultationPrescriptionListView(LoginRequiredMixin, ListView):
+    model = ConsultationPrescriptionModel
+    fields = '__all__'
+    template_name = 'pharmacy/prescription/index.html'
+    context_object_name = "prescription_list"
+
+    def get_queryset(self):
+        start_date = self.request.GET.get('start_date', date.today())
+        end_date = self.request.GET.get('end_date', date.today())
+        return ConsultationPrescriptionModel.objects.filter(date__gte=start_date, date__lte=end_date, amount_paid__gt=0).order_by('date').reverse()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        start_date = self.request.GET.get('start_date', '')
+        end_date = self.request.GET.get('end_date', '')
+        if not start_date:
+            start_date = end_date = date.today()
+        else:
+            start_date = datetime.strptime(start_date, "%Y-%m-%d")
+            end_date = datetime.strptime(end_date, "%Y-%m-%d")
+
+        context['start_date'] = start_date
+        context['end_date'] = end_date
+
+        return context
+
+
+class AdmissionPrescriptionListView(LoginRequiredMixin, ListView):
+    model = ConsultationPrescriptionModel
+    fields = '__all__'
+    template_name = 'pharmacy/prescription/index.html'
+    context_object_name = "prescription_list"
+
+    def get_queryset(self):
+        start_date = self.request.GET.get('start_date', date.today())
+        end_date = self.request.GET.get('end_date', date.today())
+        return ConsultationPrescriptionModel.objects.filter(date__gte=start_date, date__lte=end_date).exclude(admission=None).order_by('date').reverse()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        start_date = self.request.GET.get('start_date', '')
+        end_date = self.request.GET.get('end_date', '')
+        if not start_date:
+            start_date = end_date = date.today()
+        else:
+            start_date = datetime.strptime(start_date, "%Y-%m-%d")
+            end_date = datetime.strptime(end_date, "%Y-%m-%d")
+
+        context['start_date'] = start_date
+        context['end_date'] = end_date
+
+        return context
+
+
+def mark_prescription_collected(request, pk):
+    if request.method == 'POST':
+        prescription = get_object_or_404(PrescriptionModel, pk=pk)
+        if not prescription.payment_made and not prescription.admission:
+            messages.error(request, 'Payment for drug not yet made')
+            redirect_url = request.META.get('HTTP_REFERER') or reverse_lazy('admin_dashboard')
+            return redirect(redirect_url)
+
+        if prescription.drug.quantity < prescription.quantity:
+            messages.error(request, 'Insufficient Quantity of {} left'.format(prescription.drug.__str__()))
+            redirect_url = request.META.get('HTTP_REFERER') or reverse_lazy('admin_dashboard')
+            return redirect(redirect_url)
+
+        stock_list = DrugStockModel.objects.filter(drug_variant=prescription.drug, status='active')
+        quantity = float(prescription.quantity)
+        for stock in stock_list:
+            if stock.quantity_left >= quantity:
+                stock.quantity_left -= quantity
+                if stock.quantity_left == 0:
+                    stock.status = 'finished'
+                stock.save()
+                break
+            else:
+                quantity -= float(stock.quantity_left)
+                stock.quantity_left = 0
+                stock.status = 'finished'
+                stock.save()
+
+        if prescription.payment_made:
+            prescription.collected = True
+            prescription.save()
+
+            prescription.drug.quantity -= prescription.quantity
+            prescription.drug.save()
+
+        messages.success(request, 'Prescription Marked as Collected')
+        redirect_url = request.META.get('HTTP_REFERER') or reverse_lazy('admin_dashboard')
+        return redirect(redirect_url)
+    raise PermissionError('Permission Denied, Method Not Allowed')
+
+
+def mark_all_prescription_collected(request, pk):
+    if request.method == 'POST':
+        consultation_prescription = get_object_or_404(ConsultationPrescriptionModel, pk=pk)
+        prescription_marked = 0
+        for prescription in consultation_prescription.prescriptions.all():
+            if (prescription.payment_made or prescription.admission) and prescription.drug.quantity < prescription.quantity:
+                messages.error(request, 'Insufficient Quantity of {} left'.format(prescription.drug.__str__()))
+                continue
+
+            stock_list = DrugStockModel.objects.filter(drug_variant=prescription.drug, status='active')
+            quantity = float(prescription.quantity)
+            for stock in stock_list:
+                if stock.quantity_left >= quantity:
+                    stock.quantity_left -= quantity
+                    if stock.quantity_left == 0:
+                        stock.status = 'finished'
+                    stock.save()
+                    break
+                else:
+                    quantity -= float(stock.quantity_left)
+                    stock.quantity_left = 0
+                    stock.status = 'finished'
+                    stock.save()
+            if prescription.payment_made:
+                prescription.collected = True
+                prescription.save()
+
+                prescription.drug.quantity -= prescription.quantity
+                prescription.drug.save()
+                prescription_marked += 1
+
+        if prescription_marked > 0:
+            messages.success(request, 'Prescriptions Marked as Collected')
+        redirect_url = request.META.get('HTTP_REFERER') or reverse_lazy('admin_dashboard')
+        return redirect(redirect_url)
+    raise PermissionError('Permission Denied, Method Not Allowed')

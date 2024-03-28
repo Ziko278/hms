@@ -14,9 +14,12 @@ def create_staff_account(sender, instance, created, **kwargs):
         password = User.objects.make_random_password(length=8)
         email = staff.email
 
-        user = User.objects.create_user(username=username, email=email, password=password, is_active=True)
-        user_profile = StaffProfileModel.objects.create(user=user,  staff=staff,
-                                                       default_password=password)
+        user = User.objects.create_user(username=username, password=password)
+        if email:
+            user.email = email
+        user.save()
+
+        user_profile = StaffProfileModel.objects.create(user=user,  staff=staff, default_password=password)
         user_profile.save()
 
         staff.group.user_set.add(user)

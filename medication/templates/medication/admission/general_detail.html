@@ -1,0 +1,198 @@
+{% extends 'admin_site/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'style' %}
+<style>
+
+	.customer-list li{
+		width:300px;
+		border:1px solid black;
+		margin:2px;
+		padding:2px;
+		border-radius:5px;
+		color:white;
+		background:grey;
+	}
+
+	.customer-list li:hover{
+		background:black;
+	}
+
+.search-result{
+	position:absolute;z-index:1000;
+	background:white;
+	min-width:200px;
+	padding:10px;
+	border:1px solid black;
+	left:50px;
+	border-radius:10px;
+	display:none;
+}
+.search-result li{
+	width:100%;
+	height:30px;
+	padding-left:10px;
+	border:1px solid grey;
+	margin-bottom:1px;
+}
+.search-result li:hover{
+	background:grey;
+	color:white;
+}
+</style>
+
+{% endblock %}
+
+{% block 'main' %}
+<div class="col-lg-12">
+    <div class="card card-profile">
+        <div class="admin-user">
+            <div class="img-wrraper">
+                <div class="">
+                    <img {% if patient.image %} src="{{ patient.image.url }}" {% else %} src="{% static 'admin_site/images/default_image.jpg' %}" {% endif %} class="rounded-circle"></div>
+            </div>
+            <div class="user-details">
+                <div class="title">
+                    <h4>{{ patient|title }}</h4>
+                  <h6>{{ patient.card_number|upper }}</h6>
+                </div>
+
+                  <ul class="follow-list">
+
+                    <li>
+                      <div class="follow-num ">{{ admission.admission_date|date }}</div><span>Date Admitted</span>
+                    </li>
+                      <li>
+                      <div class="follow-num ">{{ admission.status|upper }}</div><span>Admission Status</span>
+                    </li>
+
+                  </ul>
+
+              </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-xl-3 col-xxl-4">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body profile-accordion pb-0">
+                        <div class="accordion" id="accordionExample1">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne1">
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne1" aria-expanded="true" aria-controls="collapseOne1">
+                                      <b>About Patient</b>
+                                  </button>
+                                </h2>
+                                <div id="collapseOne1" class="accordion-collapse collapse" aria-labelledby="headingOne1" data-bs-parent="#accordionExample1">
+                                  <div class="accordion-body">
+                                    <div class="about-me">
+                                        <ul>
+                                            <li>
+                                                <i class="fa-solid fa-location-dot"></i>
+                                                <div>
+                                                    <h6>{% if patient.mobile %} {{ patient.mobile }} {% else %} No Phone Number {% endif %}</h6>
+                                                    <span>{% if patient.address %} {{ patient.address }} {% else %} No Address {% endif %}</span>
+                                                    <h6>Gender: {{ patient.gender|title }}</h6>
+                                                    <h6>DOB: {{ patient.date_of_birth|date }}</h6>
+                                                </div>
+                                            </li>
+
+                                            <li>
+                                                <i class="fa-solid fa-box"></i>
+                                                <div>
+                                                    <h6>Date Admitted: {% if admission.admission_date %} {{ admission.admission_date|date }} {% endif %}</h6>
+                                                    <h6>Ward: {% if admission.ward %} {{ admission.ward|upper }} {% endif %}</h6>
+                                                    <h6>Bed: {% if admission.bed %} {{ admission.bed }} {% endif %}</h6>
+                                                    <h6>Purpose:  {{ admission.purpose }} </h6>
+                                                </div>
+                                            </li>
+
+                                            <li>
+                                                <i class="fa-solid fa-stethoscope"></i>
+                                                <div>
+                                                    <h6>Blood Group: {% if patient.blood_group %} {{ patient.blood_group|upper }} {% endif %}</h6>
+                                                    <h6>Genotype: {% if patient.genotype %} {{ patient.genotype|upper }} {% endif %}</h6>
+                                                    <h6>Health Note: {% if patient.medical_conditions %} {{ patient.medical_conditions }} {% endif %}</h6>
+                                                </div>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body profile-accordion pb-0">
+                        <div class="accordion" id="accordionHealth">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingHealth">
+                                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHealth" aria-expanded="true" aria-controls="collapseHealth">
+                                    <b>Patient Vitals</b>
+                                  </button>
+                                </h2>
+                                <div id="collapseHealth" class="accordion-collapse collapse" aria-labelledby="headingHealth" data-bs-parent="#accordionHealth">
+                                  <div class="accordion-body">
+                                    <div class="about-me">
+                                        <ul>
+                                            <li>
+                                                <i class="fa-solid fa-person"></i>
+                                                <div>
+                                                    <h6>BP: {{patient.today_vital.bp_diastolic}}/{{patient.today_vital.bp_systolic}}</h6>
+                                                    <h6>Pulse: {{patient.today_vital.pulse }} B/min</h6>
+                                                    <h6>Temp: {{patient.today_vital.temperature }} C</h6>
+                                                    <h6>Weight: {{patient.today_vital.weight }} Kg</h6>
+                                                    <h6>Respiration: {{patient.today_vital.respiratory_rate }} </h6>
+                                                    <h6>Extra Note: {{patient.today_vital.extra_note }} </h6>
+                                                </div>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-xl-9 col-xxl-8">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body pb-0">
+                        <h2 class="card-title"><b>Patient Admission Cost Breakdown</b></h2>
+                        <h6>Bed Space:<b> N{{ admission_fee|floatformat|intcomma }}</b></h6>
+                        <h6>Lab Test:<b> N{{ test_fee|floatformat|intcomma }}</b></h6>
+                        <h6>Drugs:<b> N{{ drug_fee|floatformat|intcomma }}</b></h6>
+                        <h6>Total Cost:<b> N{{ total_fee|floatformat|intcomma }}</b></h6>
+                        <h6>Amount Paid:<b> N{{ test_fee|floatformat|intcomma }}</b></h6>
+                        <h6>Wave Fee:<b> N{{ test_fee|floatformat|intcomma }}</b></h6>
+                        <h6>Balance:<b> N{{ test_fee|floatformat|intcomma }}</b></h6>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+

@@ -50,7 +50,9 @@ class InventoryStockModel(models.Model):
     quantity_left = models.FloatField(blank=True)
     unit_cost = models.FloatField()
     unit_selling = models.FloatField()
+    total_cost_price = models.FloatField(blank=True, null=True)
     date = models.DateField(blank=True)
+    current_worth = models.FloatField(default=0)
     user = models.ForeignKey(User, on_delete=models.RESTRICT, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
@@ -61,8 +63,12 @@ class InventoryStockModel(models.Model):
         self.item.save()
         if not self.quantity_left:
             self.quantity_left = self.quantity
+        if not self.total_cost_price:
+            self.total_cost_price = self.unit_cost * self.quantity
         if not self.date:
             self.date = date.today()
+
+        self.current_worth = self.quantity_left * self.unit_selling
         super(InventoryStockModel, self).save(*args, **kwargs)
 
 

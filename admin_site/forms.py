@@ -25,3 +25,22 @@ class SiteInfoForm(ModelForm):
                 'style': 'height:50px'
             })
         }
+
+
+class GeneralSettingForm(ModelForm):
+    """"""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            if field in []:
+                self.fields[field].widget.attrs.update({
+                    'class': 'form-control',
+                    'autocomplete': 'off'
+                })
+
+    class Meta:
+        model = GeneralSettingModel
+        fields = '__all__'
+        widgets = {
+
+        }

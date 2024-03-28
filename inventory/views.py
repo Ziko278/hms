@@ -15,7 +15,7 @@ from inventory.forms import *
 
 class InventorySupplierCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = InventorySupplierModel
-    permission_required = 'academic.add_classesmodel'
+    permission_required = 'inventory.add_inventorycategorymodel'
     form_class = InventorySupplierForm
     success_message = 'Inventory Supplier Added Successfully'
     template_name = 'inventory/supplier/index.html'
@@ -31,7 +31,7 @@ class InventorySupplierCreateView(LoginRequiredMixin, PermissionRequiredMixin, S
 
 class InventorySupplierListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = InventorySupplierModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'inventory.add_inventorycategorymodel'
     fields = '__all__'
     template_name = 'inventory/supplier/index.html'
     context_object_name = "inventory_supplier_list"
@@ -47,7 +47,7 @@ class InventorySupplierListView(LoginRequiredMixin, PermissionRequiredMixin, Lis
 
 class InventorySupplierDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = InventorySupplierModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'inventory.add_inventorycategorymodel'
     fields = '__all__'
     template_name = 'inventory/supplier/detail.html'
     context_object_name = "inventory_supplier"
@@ -60,7 +60,7 @@ class InventorySupplierDetailView(LoginRequiredMixin, PermissionRequiredMixin, D
 
 class InventorySupplierUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = InventorySupplierModel
-    permission_required = 'academic.change_classsesmodel'
+    permission_required = 'inventory.add_inventorycategorymodel'
     form_class = InventorySupplierForm
     success_message = 'Inventory Supplier Updated Successfully'
     template_name = 'inventory/supplier/index.html'
@@ -76,7 +76,7 @@ class InventorySupplierUpdateView(LoginRequiredMixin, PermissionRequiredMixin, S
 
 class InventorySupplierDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = InventorySupplierModel
-    permission_required = 'academic.delete_classesmodel'
+    permission_required = 'inventory.add_inventorycategorymodel'
     success_message = 'Inventory Supplier Deleted Successfully'
     fields = '__all__'
     template_name = 'inventory/supplier/delete.html'
@@ -92,7 +92,7 @@ class InventorySupplierDeleteView(LoginRequiredMixin, PermissionRequiredMixin, S
 
 class InventoryCategoryCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = InventoryCategoryModel
-    permission_required = 'academic.add_classesmodel'
+    permission_required = 'inventory.add_inventorycategorymodel'
     form_class = InventoryCategoryForm
     success_message = 'Inventory Category Added Successfully'
     template_name = 'inventory/category/index.html'
@@ -108,7 +108,7 @@ class InventoryCategoryCreateView(LoginRequiredMixin, PermissionRequiredMixin, S
 
 class InventoryCategoryListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = InventoryCategoryModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'inventory.add_inventorycategorymodel'
     fields = '__all__'
     template_name = 'inventory/category/index.html'
     context_object_name = "inventory_category_list"
@@ -124,7 +124,7 @@ class InventoryCategoryListView(LoginRequiredMixin, PermissionRequiredMixin, Lis
 
 class InventoryCategoryUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = InventoryCategoryModel
-    permission_required = 'academic.change_classsesmodel'
+    permission_required = 'inventory.add_inventorycategorymodel'
     form_class = InventoryCategoryForm
     success_message = 'Inventory Category Updated Successfully'
     template_name = 'inventory/category/index.html'
@@ -140,7 +140,7 @@ class InventoryCategoryUpdateView(LoginRequiredMixin, PermissionRequiredMixin, S
 
 class InventoryCategoryDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = InventoryCategoryModel
-    permission_required = 'academic.delete_classesmodel'
+    permission_required = 'inventory.add_inventorycategorymodel'
     success_message = 'Inventory Category Deleted Successfully'
     fields = '__all__'
     template_name = 'inventory/category/delete.html'
@@ -163,7 +163,7 @@ class InventoryCategoryDeleteView(LoginRequiredMixin, PermissionRequiredMixin, S
 
 class InventoryItemCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = InventoryItemModel
-    permission_required = 'academic.add_classesmodel'
+    permission_required = 'inventory.add_inventoryitemmodel'
     form_class = InventoryItemForm
     success_message = 'Inventory Item Added Successfully'
     template_name = 'inventory/item/index.html'
@@ -180,7 +180,7 @@ class InventoryItemCreateView(LoginRequiredMixin, PermissionRequiredMixin, Succe
 
 class InventoryItemListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = InventoryItemModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'inventory.view_inventoryitemmodel'
     fields = '__all__'
     template_name = 'inventory/item/index.html'
     context_object_name = "inventory_item_list"
@@ -198,7 +198,7 @@ class InventoryItemListView(LoginRequiredMixin, PermissionRequiredMixin, ListVie
 
 class InventoryItemDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = InventoryItemModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'inventory.view_inventoryitemmodel'
     fields = '__all__'
     template_name = 'inventory/item/detail.html'
     context_object_name = "inventory_item"
@@ -212,7 +212,7 @@ class InventoryItemDetailView(LoginRequiredMixin, PermissionRequiredMixin, Detai
 
 class InventoryItemUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = InventoryItemModel
-    permission_required = 'academic.change_classsesmodel'
+    permission_required = 'inventory.add_inventoryitemmodel'
     form_class = InventoryItemForm
     success_message = 'Inventory Item Updated Successfully'
     template_name = 'inventory/item/index.html'
@@ -229,7 +229,7 @@ class InventoryItemUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Succe
 
 class InventoryItemDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = InventoryItemModel
-    permission_required = 'academic.delete_classesmodel'
+    permission_required = 'inventory.add_inventoryitemmodel'
     success_message = 'Inventory Item Deleted Successfully'
     fields = '__all__'
     template_name = 'inventory/item/delete.html'
@@ -245,7 +245,7 @@ class InventoryItemDeleteView(LoginRequiredMixin, PermissionRequiredMixin, Succe
 
 class InventoryStockCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = InventoryStockModel
-    permission_required = 'academic.add_classesmodel'
+    permission_required = 'inventory.add_inventoryitemmodel'
     form_class = InventoryStockForm
     success_message = 'Inventory Stocked Successfully'
     template_name = 'inventory/item/detail.html'
@@ -262,7 +262,7 @@ class InventoryStockCreateView(LoginRequiredMixin, PermissionRequiredMixin, Succ
 
 class InventoryStockListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = InventoryStockModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'inventory.view_inventoryitemmodel'
     fields = '__all__'
     template_name = 'inventory/stock/index.html'
     context_object_name = "inventory_stock_list"
@@ -278,7 +278,7 @@ class InventoryStockListView(LoginRequiredMixin, PermissionRequiredMixin, ListVi
 
 class InventoryStockDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = InventoryStockModel
-    permission_required = 'academic.delete_classesmodel'
+    permission_required = 'inventory.add_inventoryitemmodel'
     success_message = 'Inventory Stock Deleted Successfully'
     fields = '__all__'
     template_name = 'inventory/stock/delete.html'
@@ -336,7 +336,7 @@ def stock_out_damaged_inventory(request, pk):
 
 class InventoryStockOutListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = InventoryStockOutModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'inventory.view_inventoryitemmodel'
     fields = '__all__'
     template_name = 'inventory/stock_out/index.html'
     context_object_name = "inventory_stock_out_list"
@@ -351,7 +351,7 @@ class InventoryStockOutListView(LoginRequiredMixin, PermissionRequiredMixin, Lis
 
 class AssetCategoryCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = AssetCategoryModel
-    permission_required = 'academic.add_classesmodel'
+    permission_required = 'inventory.add_inventorycategorymodel'
     form_class = AssetCategoryForm
     success_message = 'Asset Category Added Successfully'
     template_name = 'inventory/asset_category/index.html'
@@ -367,7 +367,7 @@ class AssetCategoryCreateView(LoginRequiredMixin, PermissionRequiredMixin, Succe
 
 class AssetCategoryListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = AssetCategoryModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'inventory.view_inventorycategorymodel'
     fields = '__all__'
     template_name = 'inventory/asset_category/index.html'
     context_object_name = "asset_category_list"
@@ -383,7 +383,7 @@ class AssetCategoryListView(LoginRequiredMixin, PermissionRequiredMixin, ListVie
 
 class AssetCategoryUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = AssetCategoryModel
-    permission_required = 'academic.change_classsesmodel'
+    permission_required = 'inventory.add_inventorycategorymodel'
     form_class = AssetCategoryForm
     success_message = 'Asset Category Updated Successfully'
     template_name = 'inventory/asset_category/index.html'
@@ -399,7 +399,7 @@ class AssetCategoryUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Succe
 
 class AssetCategoryDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = AssetCategoryModel
-    permission_required = 'academic.delete_classesmodel'
+    permission_required = 'inventory.add_inventorycategorymodel'
     success_message = 'Asset Category Deleted Successfully'
     fields = '__all__'
     template_name = 'inventory/asset_category/delete.html'
@@ -415,7 +415,7 @@ class AssetCategoryDeleteView(LoginRequiredMixin, PermissionRequiredMixin, Succe
 
 class AssetCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = AssetModel
-    permission_required = 'academic.add_classesmodel'
+    permission_required = 'inventory.add_assetmodel'
     form_class = AssetForm
     success_message = 'Asset Added Successfully'
     template_name = 'inventory/asset/index.html'
@@ -432,7 +432,7 @@ class AssetCreateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessag
 
 class AssetListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = AssetModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'inventory.view_assetmodel'
     fields = '__all__'
     template_name = 'inventory/asset/index.html'
     context_object_name = "asset_list"
@@ -450,7 +450,7 @@ class AssetListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
 class AssetDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = AssetModel
-    permission_required = 'academic.view_classesmodel'
+    permission_required = 'inventory.view_assetmodel'
     fields = '__all__'
     template_name = 'inventory/asset/detail.html'
     context_object_name = "asset"
@@ -464,7 +464,7 @@ class AssetDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
 
 class AssetUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = AssetModel
-    permission_required = 'academic.change_classsesmodel'
+    permission_required = 'inventory.add_assetmodel'
     form_class = AssetForm
     success_message = 'Asset Updated Successfully'
     template_name = 'inventory/asset/index.html'
@@ -481,7 +481,7 @@ class AssetUpdateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessag
 
 class AssetDeleteView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
     model = AssetModel
-    permission_required = 'academic.delete_classesmodel'
+    permission_required = 'inventory.add_assetmodel'
     success_message = 'Asset Deleted Successfully'
     fields = '__all__'
     template_name = 'inventory/asset/delete.html'

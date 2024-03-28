@@ -16,7 +16,7 @@
 	<meta name="format-detection" content="telephone=no">
 	
 	<!-- PAGE TITLE HERE -->
-	<title>Yash Admin Sales Management System</title>
+	<title>Rose of Sharon Hospital</title>
 	
 	<!-- FAVICONS ICON -->
 	<link rel="shortcut icon" type="image/png" href="images/favicon.png">
@@ -56,6 +56,28 @@
 													<div class="dz-separator-outer m-b5">
 														<div class="dz-separator bg-primary style-liner"></div>
 													</div>
+													{% if messages %}
+													{% for message in messages %}
+													<div class="alert alert-{{ message.tags }} {% if message.tags == 'error' %} alert-danger {% endif %} alert-dismissible fade show">
+														<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+														<strong>{{ message }}</strong>
+														<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close">
+														X
+														</button>
+													</div>
+													{% endfor %}
+													{% endif %}
+
+													{% if form.errors %}
+													{% for key, error in form.errors.items %}
+													<div class="alert alert-danger alert-dismissible fade show">
+														<strong>{{ error }}</strong>
+														<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close">
+														X
+														</button>
+													</div>
+													{% endfor %}
+													{% endif %}
 													<p>Enter your username and your password. </p>
 													<div class="form-group mb-3">
 														<input type="text" class="form-control" autocomplete="off" name="username" placeholder="Enter your username" required>
